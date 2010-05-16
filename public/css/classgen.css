@@ -1,0 +1,13 @@
+@CHARSET "ISO-8859-1";
+
+*:LINK, a:visited{
+	color: #666666;
+	text-decoration: none;
+}
+
+*:LINK:hover{
+	color: #999999;
+}
+table tr td{
+	border-bottom: 1px solid navy;
+}

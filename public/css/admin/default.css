@@ -1,0 +1,560 @@
+@CHARSET "ISO-8859-1";
+
+body {
+	background: #FCFCFC;
+	margin: 0;
+	padding: 0;
+}
+*:LINK{
+	color: #666666;
+	text-decoration: none;
+}
+*:TABLE { empty-cells: show }
+
+*:LINK:hover{
+	color: #999999;
+}
+/*
+ * INDEX
+ */
+
+.border{
+ 	width: 96%;
+ 	margin: 10px 2%;
+ 	padding:5px;
+    border:1px solid #000;
+    -webkit-box-shadow: 0 0px 7px #666;
+    -webkit-box-shadow: 0 0px 7px #666;
+    -moz-box-shadow:0px 0px 7px #666;
+    box-shadow: 0 0px 7px #666;
+    color:#000;
+    background: #FFFFFF;
+    
+	/* FIREFOX */
+   	-moz-border-radius: 10px;
+   	
+   	/* SAFIRA E CHROME */
+   	-webkit-border-radius: 10px;
+   	
+   	/* CSS3 */
+   	border-radius: 10px;
+   	
+   	/* LINUX */
+   	-khtml-border-radius: 10px;
+}
+
+#top, #middle, #bottom{
+	display: block;
+	width: 100%;
+}
+#top{
+	height: 100px;
+	margin: 0;
+	
+    border:1px solid #999999;
+   	
+   	/* FIREFOX */
+   	-moz-border-radius-topright: 10px;
+   	-moz-border-radius-topleft: 10px;
+   	
+   	/* SAFIRA E CHROME */
+   	-webkit-border-radius-top-right: 10px;
+   	-webkit-border-radius-top_left: 10px;
+   	
+   	/* CSS3 */
+   	border-top-left-radius: 10px;
+   	border-top-right-radius: 10px;
+   	
+   	/* LINUX */
+   	-khtml-border-top-left-radius: 10px;
+   	-khtml-border-top-right-radius: 10px;
+    
+    background: url(../../images/top_bg.jpg) repeat-x;
+}
+#top #logo{
+	width: 270px;
+ 	height: 90px;
+ 	margin: 5px 0px 0px 30px;
+ 	text-indent: -1000px;
+ 	overflow: hidden;
+ 	background: url(../../images/logo.png) no-repeat;
+ 	float: left;
+}
+#middle{
+	min-height:400px;
+}
+#bottom{
+	height: 30px;
+	background: #F5F5F5;
+}
+#middle .table_menu{
+	width: 100%;
+	height: 100%;
+	vertical-align: top;
+}
+#middle .table_menu .td_work{
+	width: inherit;
+	vertical-align: top;
+}
+#middle .table_menu .td_work #work{
+	display: inline-table;
+	width: 100%;
+	height:100%;
+	margin: 14px 0;
+}
+#middle .table_menu .td_menu{
+	width: 165px;
+	
+	border-right:1px solid #E8E8E8;
+	background:#F7F7F7;
+}
+ 
+.required{
+	float:left;
+	padding-left:12px;
+	background:url(../../images/required.png) left center no-repeat;
+}
+.tr_color td{
+	background: #FFFFFF;
+}
+
+/*
+ * INPUT
+ */
+.pequeno, .normal, .medio, .grande{
+	background: #FCFCFC;
+	border: 1px solid #cccccc;
+}
+.pequeno{width:100px;}
+.normal{width:250px;}
+.medio{width:350px;}
+.grande{width:450px;}
+
+/*
+ * CONTENT
+ */
+ 
+.body{
+ 	text-align: left !important;
+ 	width: 500px;
+ 	padding:5px;
+    border:1px solid #000;
+    -webkit-box-shadow: 0 0px 7px #666;
+    -webkit-box-shadow: 0 0px 7px #666;
+    -moz-box-shadow:0px 0px 7px #666;
+    box-shadow: 0 0px 7px #666;
+    color:#000;
+    
+	/* FIREFOX */
+   	-moz-border-radius: 10px;
+   	
+   	/* SAFIRA E CHROME */
+   	-webkit-border-radius: 10px;
+   	
+   	/* CSS3 */
+   	border-radius: 10px;
+   	
+   	/* LINUX */
+   	-khtml-border-radius: 10px;
+}
+.body .innerBody{
+	margin: 2% 2%;
+	width: 96%;
+}
+.body .innerBody h1{
+	margin-bottom: 0;
+	color: #333333;
+	padding: 0 5px;
+	background: url("../../images/blank.png");
+	
+	border-top: 1px solid #cccccc;
+	border-left: 1px solid #cccccc;
+	border-right: 1px solid #cccccc;
+	border-bottom: 1px solid #cccccc;
+	
+	/* FIREFOX */
+   	-moz-border-radius: 6px;
+   	
+   	/* SAFIRA E CHROME */
+   	-webkit-border-radius: 6px;
+   	
+   	/* CSS3 */
+   	border-radius: 6px;
+   	
+   	/* LINUX */
+   	-khtml-border-radius: 6px;
+}
+.body .innerBody sub{
+	margin: 0 0 10px 0;
+	padding: 0 20px;
+	display: block;
+	
+	color: #999999;
+	font-size: 16px;
+	font-style: italic;
+	font-weight: 900;
+}
+.body .innerBody .content{
+	margin-bottom: 0;
+	padding: 5px;
+	background: url("../../images/blank.png");
+	
+	border-top: 1px solid #cccccc;
+	border-left: 1px solid #cccccc;
+	border-right: 1px solid #cccccc;
+	border-bottom: 1px solid #cccccc;
+	
+	/* FIREFOX */
+   	-moz-border-radius-topright: 6px;
+   	-moz-border-radius-bottomleft: 6px;
+   	-moz-border-radius-bottomright: 6px;
+   	
+   	/* SAFIRA E CHROME */
+   	-webkit-border-radius-top-right: 6px;
+   	-webkit-border-radius-bottom_left: 6px;
+   	-webkit-border-radius-bottom_right: 6px;
+   	
+   	/* CSS3 */
+   	border-top-right-radius: 6px;
+   	border-bottom-left-radius: 6px;
+   	border-bottom-right-radius: 6px;
+   	
+   	/* LINUX */
+   	-khtml-border-top-right-radius: 6px;
+   	-khtml-border-bottom-left-radius: 6px;
+   	-khtml-border-bottom-right-radius: 6px;
+}
+.label{
+	display: block;
+	margin: 10px 0 0 0;
+	text-align: left;
+	color:#666666;
+	font-size:11px;
+	width: 100%;
+}
+
+.line{
+	clear:both;
+	padding:0 0;
+}
+
+#miniload{
+	float: left;
+}
+.controle{
+	margin: 10px 0;
+}
+
+/*
+ * DATAGRID
+ */
+ .dg_table{
+ 	float: left;
+ 	width: 100%;
+ }
+.datagrid{
+	margin: 0;
+	padding:5px;
+	min-width:800px;
+	
+    border:1px solid #000;
+    -webkit-box-shadow: 0 0px 7px #666;
+    -webkit-box-shadow: 0 0px 7px #666;
+    -moz-box-shadow:0px 0px 7px #666;
+    box-shadow: 0 0px 7px #666;
+    color:#000;
+   
+	/* FIREFOX */
+   	-moz-border-radius: 10px;
+   	
+   	/* SAFIRA E CHROME */
+   	-webkit-border-radius: 10px;
+   	
+   	/* CSS3 */
+   	border-radius: 10px;
+   	
+   	/* LINUX */
+   	-khtml-border-radius: 10px;
+}
+
+/*
+ * DATAGRID => CONTROLLER
+ */
+.dg_controller_tr td{
+	background: url("../../images/blank.png");
+	
+	border-top: 1px solid #cccccc;
+	border-left: 1px solid #cccccc;
+	border-right: 1px solid #cccccc;
+	border-bottom: 1px solid #cccccc;
+	
+	/* FIREFOX */
+   	-moz-border-radius: 6px;
+   	
+   	/* SAFIRA E CHROME */
+   	-webkit-border-radius: 6px;
+   	
+   	/* CSS3 */
+   	border-radius: 6px;
+   	
+   	/* LINUX */
+   	-khtml-border-radius: 6px;
+}
+.dg_controller{
+	display: block;
+	width: 100%;
+	margin: 10px 0;
+	padding: 0;
+	
+}
+.db_controller_ul{
+	margin: 0 2%;
+	padding: 0;
+	width: 96%;
+	display: block;
+	list-style: none;
+}
+.db_controller_ul li{
+	width: 32px;
+	height: 32px;
+	position: relative;
+	display: inline;
+}
+
+.li_a_insert, .li_a_find, .li_a_refresh{
+	color: #999999;
+	text-decoration: none;
+	float: left;
+	margin-right: 10px;
+	
+	width: 32px;
+	height: 52px;
+}
+.li_a_insert span, .li_a_find span, .li_a_refresh span{
+	display: block;
+	font-size: 10px;
+	margin-top: 32px;
+	text-align: center;
+}
+
+.li_a_insert{background: url("../../images/admin/datagrid/add_32.png") no-repeat;}
+.li_a_find{background: url("../../images/admin/datagrid/find_32.png") no-repeat;}
+.li_a_refresh{background: url("../../images/admin/datagrid/refresh_32.png") no-repeat;}
+
+.db_controller_ul li a:hover{background-position:-32px 0; color:#666666;}
+
+/*
+ * DATAGRID => HEADER
+ */
+.dg_header td{
+	text-align: center;
+	color: #333333;
+	padding: 0 8px;
+	border-top: 1px solid #999999;
+	border-bottom: 1px solid #CCCCCC;
+	border-left: 1px solid #999999;
+	
+	background: url("../../images/admin/datagrid/header.png") repeat-x;
+	height: 20px;
+	
+	/* FIREFOX */
+   	-moz-border-radius: 6px;
+   	
+   	/* SAFIRA E CHROME */
+   	-webkit-border-radius: 6px;
+   	
+   	/* CSS3 */
+   	border-radius: 6px;
+   	
+   	/* LINUX */
+   	-khtml-border-radius: 6px;
+}
+
+/*
+ * DATAGRID => BODY
+ */
+.dg_body td{
+	color: #666666;
+	padding: 0 4px;
+	border-left: 1px solid #CCCCCC;
+	border-bottom: 1px solid #CCCCCC;
+	text-align: center;
+	height: 15px;
+	font-size: 11px;
+}
+.dg_body:hover td{
+	background: #9BBCE8;
+	color: #FFFFFF;
+}
+
+.data_controller{
+	width: 50px;
+}
+	
+.data_controller_ul{
+	margin: 0 7%;
+	padding: 0;
+	width: 86%;
+	list-style: none;
+}
+.data_controller_ul li{
+	display: inline;
+	margin: 0 4px;
+}
+.data_controller_ul li a{
+	width: 16px;
+}
+
+.li_a_edit, .li_a_delete{
+	margin: 0 2px;
+}
+.li_a_edit span, .li_a_delete span{
+	float: left;
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
+	text-indent: -10000px;
+}
+.li_a_edit span{background: url("../../images/admin/datagrid/edit_16.png") no-repeat;}
+.li_a_delete span{float: right; background: url("../../images/admin/datagrid/delete_16.png") no-repeat;}
+.li_a_edit:hover span, .li_a_delete:hover span{background-position: -16px;}
+
+
+/*
+ * DATAGRID => FOOTER
+ */
+.dg_footer td{
+	padding: 0 5px;
+	color: #999999;
+	font-size: 10px;
+	font-weight: 900;
+	text-align: right;
+	height: 20px;
+	
+	background: url("../../images/blank.png");
+	
+	border-bottom: 1px solid #cccccc;
+	border-left: 1px solid #cccccc;
+	
+	/* FIREFOX */
+   	-moz-border-radius: 6px;
+   	
+   	/* SAFIRA E CHROME */
+   	-webkit-border-radius: 6px;
+   	
+   	/* CSS3 */
+   	border-radius: 6px;
+   	
+   	/* LINUX */
+   	-khtml-border-radius: 6px;
+}
+
+/*
+ * ABAS
+ */
+.divAba{
+	
+}
+.aba{
+	margin: 0;
+	padding: 0;
+	
+	border-top: 1px solid #cccccc;
+	border-right: 1px solid #cccccc;
+	
+	/* FIREFOX */
+   	-moz-border-radius-topright: 6px;
+   	-moz-border-radius-topleft: 6px;
+   	
+   	/* SAFIRA E CHROME */
+   	-webkit-border-radius-top-right: 6px;
+   	-webkit-border-radius-top_left: 6px;
+   	
+   	/* CSS3 */
+   	border-top-left-radius: 6px;
+   	border-top-right-radius: 6px;
+   	
+   	/* LINUX */
+   	-khtml-border-top-left-radius: 6px;
+   	-khtml-border-top-right-radius: 6px;
+   	
+   	background: url(../../images/admin/aba.jpg) repeat-x;
+}
+
+.selected{background: url(../../images/admin/aba_selected.jpg) repeat-x;}
+
+.aba .bt_aba{
+	background: transparent !important;
+	border: none;
+	cursor: pointer;
+	color: #666666;
+}
+.aba .bt_aba:hover{color: #999999;}
+
+.bt_remove{
+	margin: 0;
+	padding: 0;
+	width: 14px;
+	height: 14px;
+	text-indent: 20px;
+	overflow: hidden;
+	border: none;
+	background: url(../../images/admin/delete_16.png) no-repeat;
+}
+.bt_remove:hover{
+	cursor: pointer;
+	background-position: -14px;
+}
+
+.divDatagridObjects{
+	margin: 10px 0;
+	display: block;
+	width: 100%;
+	overflow: auto;
+}
+.datagridObjects{
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	border-collapse: 0px;
+	border-spacing: 0px;
+}
+
+.datagridObjects .gridTitle td{
+	background: url(../../images/admin/aba_selected.jpg) repeat-x;
+	border-right: 1px solid #666666;
+	border-bottom: 1px solid #666666;	
+	
+	/* FIREFOX */
+	-moz-border-radius-topleft: 6px;
+   	-moz-border-radius-topright: 6px;
+   	
+   	/* SAFIRA E CHROME */
+   	-webkit-border-radius-top-left: 6px;
+   	-webkit-border-radius-top-right: 6px;
+   	
+   	/* CSS3 */
+   	border-top-left-radius: 6px;
+   	border-top-right-radius: 6px;
+   	
+   	/* LINUX */
+   	-khtml-border-top-left-radius: 6px;
+   	-khtml-border-top-right-radius: 6px;
+}
+.datagridObjects .gridTitle td:first-child, .datagridObjects tbody tr td:first-child{
+	border-left: 1px solid #999999;
+}
+.datagridObjects tbody tr td{
+	border-right: 1px solid #666666;
+	border-bottom: 1px solid #666666;
+}
+.datagridObjects tbody tr:hover td{
+	color: #666666 !important; 
+	background: #CFDEF3;
+}
+
+.datagridObjects *{
+	font-size: 10px;
+	color: #333333;
+	text-align: center;
+}
