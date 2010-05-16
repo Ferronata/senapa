@@ -1,0 +1,138 @@
+@CHARSET "ISO-8859-1";
+/*
+* {
+	font: 11px Trebuchet MS, Verdana, Tahoma, Arial, Sans-Serif;
+	background-color: transparent;
+	padding: 0;
+	margin: 0;
+}
+*/
+.overlay {
+	background: #000;
+}
+div.jqmAlert,
+div.jqmMessage,
+div.jqmError,
+div.jqmConfirm {
+	display: none;
+	position: fixed;
+	top: 40%;
+	left: 50%;
+	width: 480px;
+	margin-left: -240px;
+}
+div.jqmAlertWindow,
+div.jqmMessageWindow,
+div.jqmErrorWindow,
+div.jqmConfirmWindow {
+	height:auto;
+	width: auto;
+	margin: auto;
+	max-width:480px;
+	padding: 0 10px 10px;
+	background:#DCDCDC;
+	border:3px solid #E6E6FA;
+	text-align: center;
+}
+.jqmAlertTitle,
+div.jqmMessageTitle,
+div.jqmErrorTitle,
+.jqmConfirmTitle {
+	margin:5px 2px;
+	height:10px;
+	color:black;
+	background:#DCDCDC;
+	text-align: left !important;
+}
+.jqmAlertTitle h1,
+div.jqmMessageTitle h1,
+div.jqmErrorTitle h1,
+.jqmConfirmTitle h1 {
+	font-size: 12px;
+	font-weight: bold;
+	text-align: left !important;
+}
+div.jqmAlertContent,
+div.jqmMessageContent,
+div.jqmErrorContent,
+div.jqmConfirmContent {
+	padding:5px 20px 5px;
+	margin:10px 5px 5px 5px;
+	border:1px dotted #111;
+	letter-spacing:0px;
+	background:#FFFAF0;
+	text-align: left !important;
+}
+
+div.jqmAlertContent span,
+div.jqmMessageContent span,
+div.jqmErrorContent span,
+div.jqmConfirmContent span {
+	color:#708090;
+	font-size:16px;
+	vertical-align: 25px;
+	padding: 0 0 0 10px;
+	font-weight: bold;
+}
+div.jqmAlert .jqmClose em,
+div.jqmMessage .jqmClose em,
+div.jqmError .jqmClose em,
+div.jqmConfirm .jqmClose em {
+	display:none;
+}
+div.jqmAlert .jqmClose,
+div.jqmMessage .jqmClose,
+div.jqmError .jqmClose,
+div.jqmConfirm .jqmClose {
+  width:20px;
+  height:20px;
+  display:block;
+  float:right;
+  clear:right;
+  background:transparent url(/loja/templates/padrao/imagens/exit.gif) 0 0 no-repeat;
+}
+
+.jqmInputBt{
+	position: relative;
+	width: 99%;
+	height: 30px;
+}
+div.jqmAlert input,
+div.jqmMessage input,
+div.jqmError input,
+div.jqmConfirm input {
+	text-align: center;
+	width: auto;
+	font-size: 13px;
+	font-weight: bold;
+	border-width: 1px;
+	padding: 4px 10px 4px 10px;
+	float: right;
+}
+
+* html div.jqmAlert,
+* html div.jqmMessage,
+* html div.jqmError,
+* html div.jqmConfirm {
+     position: absolute;
+     top: expression((document.documentElement.scrollTop || document.body.scrollTop) + Math.round(17 * (document.documentElement.offsetHeight || document.body.clientHeight) / 100) + 'px');
+}
+
+.clearfix:after {
+    content: "."; 
+    display: block; 
+    height: 0; 
+    clear: both; 
+    visibility: hidden;
+}
+
+.clearfix {
+	display: inline-block;
+}
+
+* html .clearfix {
+	height: 1%;
+}
+.clearfix {
+	display: block;
+}
