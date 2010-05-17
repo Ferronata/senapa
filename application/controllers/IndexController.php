@@ -39,15 +39,17 @@ class IndexController extends Zend_Controller_Action
     		$tables = $post->tables;
 	    	foreach($tables as $table){
 				$class = new Classgen(PROJECT_ROOT . SYS_BAR . 'application' . SYS_BAR .'models'. SYS_BAR ,$table);
+				$pasta = strtolower($class->default_name($class->table_name));
+				
 				if(empty($post->viewTable)){
 					$class->create();
 				
 					$msg .= "<tr><td>".$table."</td>";
 					if(
 						is_file(PROJECT_ROOT . SYS_BAR . 'application' . SYS_BAR .'models'. SYS_BAR .$class->get_file_name()).'.php' && 
-						is_file(PROJECT_ROOT . SYS_BAR . 'application' . SYS_BAR .'views'. SYS_BAR .'scripts'. SYS_BAR .'admin'. SYS_BAR . strtolower($class->get_file_name()) .'.tpl')
+						is_file(PROJECT_ROOT . SYS_BAR . 'application' . SYS_BAR .'views'. SYS_BAR .'scripts'. SYS_BAR . $pasta . SYS_BAR . strtolower($class->get_file_name()) .'.tpl')
 					)
-						$msg .= "<td style=\"color:navy\">Criado</td><td><a class=\"view\" href=\"".BASE_URL."/admin/". strtolower($class->get_file_name()) ."\" target=\"_blank\">View</a></td>";
+						$msg .= "<td style=\"color:navy\">Criado</td><td><a class=\"view\" href=\"".BASE_URL."/".$pasta."/". strtolower($class->get_file_name()) ."\" target=\"_blank\">View</a></td>";
 					else
 						$msg .= "<td style=\"color:red\" colspan=\"2\">Não Criado</td>";
 					$msg .= "</tr>";
@@ -55,9 +57,9 @@ class IndexController extends Zend_Controller_Action
 					$msg .= "<tr><td>".$table."</td>";
 					if(
 						is_file(PROJECT_ROOT . SYS_BAR . 'application' . SYS_BAR .'models'. SYS_BAR .$class->get_file_name()).'.php' && 
-						is_file(PROJECT_ROOT . SYS_BAR . 'application' . SYS_BAR .'views'. SYS_BAR .'scripts'. SYS_BAR .'admin'. SYS_BAR . strtolower($class->get_file_name()) .'.tpl')
+						is_file(PROJECT_ROOT . SYS_BAR . 'application' . SYS_BAR .'views'. SYS_BAR .'scripts'. SYS_BAR . $pasta . SYS_BAR . strtolower($class->get_file_name()) .'.tpl')
 					)
-						$msg .= "<td style=\"color:navy\">Existe</td><td><a class=\"view\" href=\"".BASE_URL."/admin/". strtolower($class->get_file_name()) ."\" target=\"_blank\">View</a></td>";
+						$msg .= "<td style=\"color:navy\">Existe</td><td><a class=\"view\" href=\"".BASE_URL."/".$pasta."/". strtolower($class->get_file_name()) ."\" target=\"_blank\">View</a></td>";
 					else
 						$msg .= "<td style=\"color:red\" colspan=\"2\">Não Existe</td>";
 					$msg .= "</tr>";
@@ -66,6 +68,8 @@ class IndexController extends Zend_Controller_Action
 			$msg .= "</table>";
     	}elseif(!empty($post->tabelas)){
     		$class = new Classgen(PROJECT_ROOT . SYS_BAR . 'application' . SYS_BAR .'models'. SYS_BAR ,$post->tabelas);
+    		$pasta = strtolower($class->default_name($class->table_name));
+    		
     		$class->create();
     		
     		$msg .= "<h4>Arquivo Criado</h4>";
@@ -73,9 +77,9 @@ class IndexController extends Zend_Controller_Action
     		
     		if(
 				is_file(PROJECT_ROOT . SYS_BAR . 'application' . SYS_BAR .'models'. SYS_BAR .$class->get_file_name()).'.php' && 
-				is_file(PROJECT_ROOT . SYS_BAR . 'application' . SYS_BAR .'views'. SYS_BAR .'scripts'. SYS_BAR .'admin'. SYS_BAR . strtolower($class->get_file_name()) .'.tpl')
+				is_file(PROJECT_ROOT . SYS_BAR . 'application' . SYS_BAR .'views'. SYS_BAR .'scripts'. SYS_BAR . $pasta . SYS_BAR . strtolower($class->get_file_name()) .'.tpl')
 			)
-				$msg .= "<td style=\"color:navy\">Criado</td><td><a class=\"view\" href=\"".BASE_URL."/admin/". strtolower($class->get_file_name()) ."\" target=\"_blank\">View</a></td>";
+				$msg .= "<td style=\"color:navy\">Criado</td><td><a class=\"view\" href=\"".BASE_URL."/".$pasta."/". strtolower($class->get_file_name()) ."\" target=\"_blank\">View</a></td>";
 			else
 				$msg .= "<td style=\"color:red\" colspan=\"2\">Não Criado</td>";
 			$msg .= "</tr></table>";
