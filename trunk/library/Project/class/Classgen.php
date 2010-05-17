@@ -3,7 +3,7 @@
 class Classgen  {
 	private $path;
 	private $file_name;
-	private $table_name;
+	public $table_name;
 	private $key = "id";
 	private $columns;
 	private $restricts;
@@ -26,7 +26,7 @@ class Classgen  {
 			$colunas[] = new Coluna($coluna['Field'], $coluna['Type'], (($coluna['Null'] == 'YES')?true:false), (($coluna['Extra'] == 'auto_increment')?true:false), $coluna['Default'], $coluna['Key']);
 		$this->columns = $colunas;
 	}
-	private function default_name($file_name){
+	public function default_name($file_name){
 		$file_name = strtoupper(substr($file_name,0,1)).strtolower(substr($file_name,1));
 		$pos = strpos($file_name,"_");
 		while($pos){
@@ -37,6 +37,16 @@ class Classgen  {
 			$pos = strpos($file_name,"_",$pos+1);
 		}
 		return $file_name;
+	}
+	private function default_method_name($file_name){
+		return $this->default_name($file_name);
+	}
+	private function default_var_name($file_name){
+		
+		$nm = $this->default_name($file_name);
+		$ini = (empty($nm))?"":strtolower(substr($nm,0,1));
+
+		return (empty($ini))?"":$ini.substr($nm,1);
 	}
 	public function create(){
 		// CRIA MODELO
@@ -55,14 +65,61 @@ class Classgen  {
 			$str .= "/**\n";
 			$str .= " * Modelo da classe ".$this->file_name."\n";
 			$str .= " * Data de Cricação - ".date("d/m/Y")."\n";
-			$str .= " * @author Léo Popik => Classgen ".$this->classgen_versao."\n";
-			$str .= " * @package photograf\n";
-			$str .= " * @subpackage photograf.application.models\n";
+			$str .= " * @author Leonardo Popik e João Marcos => Classgen ".$this->classgen_versao."\n";
+			$str .= " * @package senapa\n";
+			$str .= " * @subpackage senapa.application.models\n";
 			$str .= " * @version 1.0\n";
 			$str .= " */\n\n";
 			
 			$str .= "class ".$this->file_name." extends Zend_Db_Table {\n";
 			$str .= "	protected \$_name = '".$this->table_name."';\n";
+			
+			
+			foreach($this->columns as $column){
+				if($this->find_restrict($column->get_nome())<0)
+					$str .= "	private \$".$this->default_var_name($column->get_nome()).";\n";
+			}
+			
+			$str .= "\n";
+			
+			foreach($this->columns as $column){
+				if($this->find_restrict($column->get_nome())<0){
+					$str .= "	public function get".$this->default_method_name($column->get_nome())."(){return \$this->".$this->default_var_name($column->get_nome()).";}\n";
+					$str .= "	public function set".$this->default_method_name($column->get_nome())."(\$var){\$this->".$this->default_var_name($column->get_nome())." = \$var;}\n\n";
+				}
+			}
+			
+			$data = "  ";
+			
+			foreach($this->columns as $column)
+				$data .= "			'".$column->get_nome()."' => \$this->get".$this->default_method_name($column->get_nome())."(),\n";
+			
+			$data = trim(substr($data,0,-2));
+				
+			$str .= "	public function insert(){\n";
+			$str .= "		\$array = array\n";
+			$str .= "			(\n";
+			$str .= "			".$data."\n";
+			$str .= "			);\n";	
+			$str .= "		return parent::insert(\$array);\n";
+			$str .= "	}\n";
+			
+			$str .= "	public function update(){\n";
+			$str .= "		\$array = array\n";
+			$str .= "			(\n";
+			$str .= "			".$data."\n";
+			$str .= "			);\n";	
+			$str .= "		return parent::update(\$array,\"".$this->key." = '\".\$this->get".$this->default_method_name($this->key)."().\"'\");\n";
+			$str .= "	}\n";
+			
+			$str .= "	public function load(){\n";
+			$str .= "		return parent::fetchRow(\"".$this->key." = '\".\$this->get".$this->default_method_name($this->key)."().\"'\");\n";
+			$str .= "	}\n";
+			
+			$str .= "	public function delete(){\n";
+			$str .= "		return parent::delete(\"".$this->key." = '\".\$this->get".$this->default_method_name($this->key)."().\"'\");\n";
+			$str .= "	}\n";
+					
 			$str .= "}\n";
 			
 			$file = fopen($file,'w');
@@ -72,13 +129,13 @@ class Classgen  {
 	}
 	private function file_action(){
 	
-		$file_path = PROJECT_ROOT. 'application'. SYS_BAR .'controllers'. SYS_BAR .'AdminController.php';
+		$file_path = PROJECT_ROOT. 'application'. SYS_BAR .'controllers'. SYS_BAR .$this->default_name($this->table_name).'Controller.php';
 		if(is_file($file_path)){
 			include_once($file_path);
 			
 			$metodo = strtolower(substr($this->file_name,0,1)).substr($this->file_name,1);
 			
-			if(!method_exists ("AdminController", $metodo."Action")){
+			if(!method_exists ($this->default_name($this->table_name)."Controller", $metodo."Action")){
 				$file = fopen($file_path,'rb');
 				$str = "";
 				$i = 0;
@@ -105,14 +162,16 @@ class Classgen  {
 		}else{
 			$str  = "<?php\n";
 			$str .= "/*\n";
-			$str .= " * Controle da parte administrativa => Admin\n";
+			$str .= " * Controle de ".$this->default_name($this->table_name)."\n";
 			$str .= " * Data de Cricação - ".date("d/m/Y")."\n";
-			$str .= " * @author Léo Popik => Classgen ".$this->classgen_versao."\n";
-			$str .= " * @package photograf\n";
-			$str .= " * @subpackage photograf.application.controllers\n";
+			$str .= " * @author Leonardo Popik e João Marcos=> Classgen ".$this->classgen_versao."\n";
+			$str .= " * @package senapa\n";
+			$str .= " * @subpackage senapa.application.controllers\n";
 			$str .= " * @version 1.0\n";
 			$str .= " */\n";
-			$str .= "class AdminController extends Zend_Controller_Action{\n";
+			$str .= "class ".$this->default_name($this->table_name)."Controller extends Zend_Controller_Action{\n";
+			
+			$pasta = strtolower($this->default_name($this->table_name));
 			
 			$str .= "	public function init(){\n";
 			$str .= "		include_once(\"Project/include.php\");\n";
@@ -121,9 +180,9 @@ class Classgen  {
 			$str .= "		//Exemplo => \$datagrid = new Datagrid('com_endereco', array('id'=>'ID', 'logradouro'=>'Rua'));\n";
 			$str .= "		\$datagrid = new Datagrid(\$table,\$display);\n";
 			$str .= "		\$view->assign(\"datagrid\",\$datagrid);\n\n";
-			$str .= "		\$view->assign(\"body\",\"html/admin/datagrid.tpl\");\n";
-			$str .= "		\$view->assign(\"header\",\"html/admin/header.tpl\");\n";
-			$str .= "		\$view->assign(\"footer\",\"html/admin/footer.tpl\");\n";
+			$str .= "		\$view->assign(\"body\",\"html/default/datagrid.tpl\");\n";
+			$str .= "		\$view->assign(\"header\",\"html/default/header.tpl\");\n";
+			$str .= "		\$view->assign(\"footer\",\"html/default/footer.tpl\");\n";
 			$str .= "		\$view->output(\"index.tpl\");\n";
 			$str .= "	}\n";
 			$str .= "	public function acesso(\$view){\n";
@@ -134,11 +193,7 @@ class Classgen  {
 			$str .= "		}\n";
 			$str .= "	}\n\n";
 		    $str .= "	public function indexAction(){\n";
-		    $str .= "		\$view = Zend_Registry::get(\"view\");\n";
-		   	$str .= " 		\$view->assign(\"header\",\"html/admin/header.tpl\");\n";
-		    $str .= "		\$view->assign(\"body\",\"admin/index.tpl\");\n";
-		    $str .= "		\$view->assign(\"footer\",\"html/admin/footer.tpl\");\n";
-		    $str .= "		\$view->output(\"index.tpl\");\n";
+		    $str .= "		\$this->".$this->default_name($this->table_name)."Action();\n";
 		    $str .= "	}";
 			
 		    $str .= $this->get_action();
@@ -195,6 +250,12 @@ class Classgen  {
 		$str .= "		if(isset(\$get->action)){";
 			
 		$str .= $innerStr;
+		
+		$caminho = PROJECT_ROOT. 'application'. SYS_BAR .'views'. SYS_BAR .'scripts'. SYS_BAR;
+		
+		$pasta = strtolower($this->default_name($this->table_name));
+		if(!is_dir($caminho.$pasta))
+			mkdir($caminho.$pasta);
 			
 		$str .= "			switch(\$get->action){\n";
 		$str .= "				case 'edit':\n";
@@ -204,15 +265,15 @@ class Classgen  {
 		$str .= "					\$".$this->table_name." = \$".$this->table_name."->fetchRow(\"`".$this->key."` = '\".\$get->".$this->key.".\"'\");\n";
 		$str .= "					\$".$this->table_name."->delete();\n\n";
 					
-		$str .= "					\$this->_redirect(\"admin/".$file_name."\");\n";
+		$str .= "					\$this->_redirect(\"".$pasta."/".$file_name."\");\n";
 		$str .= "					die();\n";
 		$str .= "			}\n";
 			
 		$str .= "			\$view->assign(\"".$this->table_name."\",\$".$this->table_name.");\n";
 			
-		$str .= "\n			\$view->assign(\"header\",\"html/admin/header.tpl\");\n";
-    	$str .= "			\$view->assign(\"body\",\"admin/".$file_name.".tpl\");\n";
-    	$str .= "			\$view->assign(\"footer\",\"html/admin/footer.tpl\");\n";
+		$str .= "\n			\$view->assign(\"header\",\"html/default/header.tpl\");\n";
+    	$str .= "			\$view->assign(\"body\",\"".$pasta."/".$file_name.".tpl\");\n";
+    	$str .= "			\$view->assign(\"footer\",\"html/default/footer.tpl\");\n";
     	$str .= "			\$view->output(\"index.tpl\");\n";
     	
 		$str .= "		}elseif(isset(\$post->".$this->key.")){\n";
@@ -277,7 +338,7 @@ class Classgen  {
 			if($length>200)
 				$class_length = " grande";
 		}
-		$innerValue = "\$".$this->table_name."->".$nome;
+		$innerValue = "\$".$this->table_name."->get".$this->default_method_name($nome)."()";
 		$value = "{".$innerValue."}";
 		
 		$input = "";
@@ -314,7 +375,7 @@ class Classgen  {
 				
 				case "tinyint":
 					if($length == 1)
-						$input = "<input type=\"checkbox\" class=\"".$class."\" id=\"".$nome."\" name=\"".$nome."\"  value=\"1\" {if \$".$this->table_name."->".$nome."}checked=\"checked\"{/if} />\n";
+						$input = "<input type=\"checkbox\" class=\"".$class."\" id=\"".$nome."\" name=\"".$nome."\"  value=\"1\" {if ".$innerValue."}checked=\"checked\"{/if} />\n";
 					else
 						$input = "<input type=\"text\" class=\"".$class.$class_length."\" id=\"".$nome."\" name=\"".$nome."\" onkeypress=\"mascara(this,soNumeros)\" maxlength=\"".$length."\" value=\"".$value."\" />\n";
 					break;
@@ -357,7 +418,7 @@ class Classgen  {
 			$var = substr($nome,0,-3);
 			$input  = "<select name=".$nome." class=\"".$class.$class_length."\">\n";
 			$input .= "								{foreach item=item from=\$".$var."}\n";
-			$input .= "									<option value=\"{\$item.id}\" {if \$item.id == \$".$this->table_name."->".$nome."}selected=\"selected\"{/if}>{\$item.nome}</option>\n";
+			$input .= "									<option value=\"{\$item.id}\" {if \$item.id == ".$innerValue."}selected=\"selected\"{/if}>{\$item.nome}</option>\n";
 			$input .= "								{foreachelse}\n";
 			$input .= "									<option>Nenhum Registro</option>\n";
 			$input .= "								{/foreach}\n";
@@ -380,18 +441,20 @@ class Classgen  {
 	}
 	private function file_input(){
 		$str  = "{*\n";
-		$str .= " * Admin => View de manipulação de dados da classe '".$this->file_name."'\n";
+		$str .= " * ".$this->default_name($this->table_name)." => View de manipulação de dados da classe '".$this->file_name."'\n";
 		$str .= " * Data de Cricação - ".date("d/m/Y")."\n";
-		$str .= " * @author Léo Popik => Classgen ".$this->classgen_versao."\n";
+		$str .= " * @author Leonardo Popik e João Marcos=> Classgen ".$this->classgen_versao."\n";
 		$str .= " * @version 1.0\n";
 		$str .= " *}\n\n";
 
+		$pasta = strtolower($this->default_name($this->table_name));
+		
 		$file_name = strtolower($this->file_name);
 		
 		$str .= "<center>\n";
 		$str .= "	<div class=\"body\">\n";
 		$str .= "		<div class=\"innerBody\">\n";
-		$str .= "			<form id=\"form\" name=\"form\" method=\"post\" action=\"javascript: enviarForm('".BASE_URL."/admin/".$this->file_name."', 'form', 'save');\" onsubmit=\"return(runAction(this))\">\n";
+		$str .= "			<form id=\"form\" name=\"form\" method=\"post\" action=\"javascript: enviarForm('".BASE_URL."/".$pasta."/".$this->file_name."', 'form', 'save');\" onsubmit=\"return(runAction(this))\">\n";
 		$str .= "				<h1>".$this->file_name."</h1>\n";
 		$str .= "				<sub>Gerencimento - ".$this->file_name."</sub>\n";
 		$str .= "				<div class=\"content\">\n";
@@ -407,10 +470,19 @@ class Classgen  {
 		$str .= "	</div>\n";
 		$str .= "</center>\n";
 		
-		$file_path = PROJECT_ROOT. 'application'. SYS_BAR .'views'. SYS_BAR .'scripts'. SYS_BAR .'admin'. SYS_BAR .$file_name.'.tpl';
+		$caminho = PROJECT_ROOT. 'application'. SYS_BAR .'views'. SYS_BAR .'scripts'. SYS_BAR;
+		
+		if(!is_dir($caminho.$pasta))
+			mkdir($caminho.$pasta);
+		
+		$file_path = $caminho . $pasta . SYS_BAR .$file_name.'.tpl';
 		/**/
 		if(is_file($file_path)){
-			$tmp = PROJECT_ROOT. 'application'. SYS_BAR .'views'. SYS_BAR .'scripts'. SYS_BAR .'admin'. SYS_BAR .'backup'. SYS_BAR .$file_name;
+			$bkp = PROJECT_ROOT. 'application'. SYS_BAR .'views'. SYS_BAR .'scripts'. SYS_BAR .'backup'. SYS_BAR;
+			if(!is_dir($bkp))
+				mkdir($bkp);
+			$bkp .= $file_name;
+
 			rename($file_path, $tmp.date("YmdHis").'.tpl');
 		}
 		/**/
@@ -450,4 +522,12 @@ class Classgen  {
 		$this->restricts = $restricts;
 	}
 	public function get_file_name(){return $this->file_name;}
+	
+	private function find_restrict($txt){
+		for($i=0;$i<sizeof($this->restricts);$i++){
+			if($this->restricts[$i] == $txt)
+				return $i;
+		}
+		return -1;
+	}
 }
