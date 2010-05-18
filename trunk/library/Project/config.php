@@ -16,7 +16,7 @@
 
 // Configura as mensagens de erro que devem ser apresentadas
 //error_reporting(E_ALL|E_STRICT|~E_NOTICE);
-error_reporting(~E_NOTICE&~E_STRICT);
+error_reporting(~E_NOTICE&~E_STRICT&~E_WARNING);
 
 // Identifica o SO do servidor e configura as variáveis delimitadoras
 define('SYS_OS',			(stripos($_SERVER['SERVER_SOFTWARE'],'win32') !== false) ? 'WINDOWS' : 'LINUX');

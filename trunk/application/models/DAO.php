@@ -25,7 +25,7 @@ class DAO extends DefaultObject{
 	
 	public function insert($array, $where){
 		$array['date_create'] = date("Y-m-d H:i:s");
-		return parent::update($array,$where);
+		return parent::insert($array,$where);
 	}
 	
 	public function update($array, $where){

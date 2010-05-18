@@ -45,7 +45,8 @@ class PessoaController extends Zend_Controller_Action{
 		$funcao 	= new FuncoesProjeto();
 		$display_datagrid = array();
 
-		if(isset($get->action)){			switch($get->action){
+		if(isset($get->action)){
+			switch($get->action){
 				case 'edit':
 					$pessoa->load($get->id);
 					break;
@@ -71,7 +72,7 @@ class PessoaController extends Zend_Controller_Action{
 			if(empty($post->id)){
 				// CREATE
 				if($pessoa->insert())
-					$retorno = array('msg' => 'ok', 'display' => htmlentities('Pessoa inserido com sucesso'), 'url' => '?');
+					$retorno = array('msg' => 'ok', 'display' => htmlentities('Pessoa inserido com sucesso'), 'url' => '/?');
 				else
 					$retorno = array('msg' => 'error', 'display' => htmlentities('Erro ao inserir Pessoa'));
 

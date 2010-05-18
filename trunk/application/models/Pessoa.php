@@ -31,7 +31,6 @@ class Pessoa extends DAO {
 	public function insert(){
 		$array = array
 			(
-			'id' => $this->getId(),
 			'nome' => $this->getNome(),
 			'email' => $this->getEmail(),
 			'site' => $this->getSite()
@@ -42,7 +41,6 @@ class Pessoa extends DAO {
 		$this->load($this->getId());
 		$array = array
 			(
-			'id' => $this->getId(),
 			'nome' => $this->getNome(),
 			'email' => $this->getEmail(),
 			'site' => $this->getSite()
