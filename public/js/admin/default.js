@@ -616,7 +616,7 @@ function valida_cnpj(id){
 
 function openPage(page,method_,params_){
 	if(page){
-		var url 	= "/"+project_root+"/admin/"+page;
+		var url 	= "/"+project_root+"/"+page;
 		
 		this.gerarCookie('url', page, 1);
 		
