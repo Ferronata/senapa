@@ -112,7 +112,12 @@ class Classgen  {
 			$str .= "		return parent::update(\$array,\"".$this->key." = '\".\$this->get".$this->default_method_name($this->key)."().\"'\");\n";
 			$str .= "	}\n";
 			
-			$str .= "	public function load(){\n";
+			$str .= "	public function load(\$id = \"\"){\n";
+			$str .= "		\$object = parent::fetchRow(\"".$this->key." = '\".\$id.\"'\");\n";
+			$str .= "		if(\$object){\n";
+			foreach($this->columns as $column)
+				$str .= "			\$this->set".$this->default_method_name($column->get_nome())."(\$object->".$column->get_nome().");\n";	
+			$str .= "		}\n";
 			$str .= "		return parent::fetchRow(\"".$this->key." = '\".\$this->get".$this->default_method_name($this->key)."().\"'\");\n";
 			$str .= "	}\n";
 			
@@ -259,10 +264,10 @@ class Classgen  {
 			
 		$str .= "			switch(\$get->action){\n";
 		$str .= "				case 'edit':\n";
-		$str .= "					\$".$this->table_name." = \$".$this->table_name."->fetchRow(\"`".$this->key."` = '\".\$get->".$this->key.".\"'\");\n";					
+		$str .= "					\$".$this->table_name."->load(\$get->".$this->key.");\n";
 		$str .= "					break;\n";
 		$str .= "				case 'delete':\n";
-		$str .= "					\$".$this->table_name." = \$".$this->table_name."->fetchRow(\"`".$this->key."` = '\".\$get->".$this->key.".\"'\");\n";
+		$str .= "					\$".$this->table_name."->load(\$get->".$this->key.");\n";
 		$str .= "					\$".$this->table_name."->delete();\n\n";
 					
 		$str .= "					\$this->_redirect(\"".$pasta."/".$file_name."\");\n";
@@ -278,21 +283,19 @@ class Classgen  {
     	
 		$str .= "		}elseif(isset(\$post->".$this->key.")){\n";
 		$str .= "			// SALVA E ATUALIZA REGISTRO\n";
-		$str .= "			\$data = array\n";
-		$str .= "				(\n";
 		
-		$tmp = "  ";
+		$tmp = "";
 		foreach($this->columns as $column){
 			if($column->get_key() != 'PRI')
-				$tmp .= "				'".$column->get_nome()."' => \$funcao->to_sql(\$post->".$column->get_nome()."),\n";
+				$tmp .= "			\$".$this->table_name."->set".$this->default_method_name($column->get_nome())."(\$funcao->to_sql(\$post->".$column->get_nome()."));\n";
 		}
-		$str .= substr($tmp,0,-2);
 		
-		$str .= "\n				);\n";
+		$str .= $tmp."\n";
+		
 		$str .= "			if(empty(\$post->".$this->key.")){\n";
 		$str .= "				// CREATE\n\n";
 				
-		$str .= "				if(\$".$this->table_name."->insert(\$data))\n";				
+		$str .= "				if(\$".$this->table_name."->insert())\n";				
 		$str .= "					\$retorno = array('msg' => 'ok', 'display' => htmlentities('".$this->file_name." inserido com sucesso'), 'url' => '?');\n";
 		$str .= "				else\n";
 		$str .= "					\$retorno = array('msg' => 'error', 'display' => htmlentities('Erro ao inserir ".$this->file_name."'));\n\n";
@@ -300,7 +303,8 @@ class Classgen  {
 		$str .= "				die(\$funcao->array2json(\$retorno));\n";
 		$str .= "			}else{\n";
 		$str .= "				// UPDATE\n";
-		$str .= "				\$".$this->table_name."->update(\$data,\"`".$this->key."` = '\".\$post->".$this->key.".\"'\");\n";
+		$str .= "				\$".$this->table_name."->set".$this->default_method_name($this->key)."(\$post->".$this->key.");\n";
+		$str .= "				\$".$this->table_name."->update();\n";
 		$str .= "				\$retorno = array('msg' => 'ok', 'display' => htmlentities('".$this->file_name." modificado com sucesso'));\n";
 		$str .= "				die(\$funcao->array2json(\$retorno));\n";
 		$str .= "			}\n";
@@ -476,7 +480,7 @@ class Classgen  {
 			mkdir($caminho.$pasta);
 		
 		$file_path = $caminho . $pasta . SYS_BAR .$file_name.'.tpl';
-		/**/
+		/**
 		if(is_file($file_path)){
 			$bkp = PROJECT_ROOT. 'application'. SYS_BAR .'views'. SYS_BAR .'scripts'. SYS_BAR .'backup'. SYS_BAR;
 			if(!is_dir($bkp))
@@ -486,9 +490,11 @@ class Classgen  {
 			rename($file_path, $tmp.date("YmdHis").'.tpl');
 		}
 		/**/
-		$file= @fopen($file_path,'w');
-		@fwrite($file,$str);
-		@fclose($file);
+		if(!is_file($file_path)){
+			$file= @fopen($file_path,'w');
+			@fwrite($file,$str);
+			@fclose($file);
+		}
 	}
 	private function set_restrict(){
 		$db 	= Zend_Registry::get('db');
