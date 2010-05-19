@@ -65,6 +65,7 @@ class PessoaController extends Zend_Controller_Action{
 			$view->output("index.tpl");
 		}elseif(isset($post->id)){
 			// SALVA E ATUALIZA REGISTRO
+			
 			$pessoa->setNome($funcao->to_sql($post->nome));
 			$pessoa->setEmail($funcao->to_sql($post->email));
 			$pessoa->setSite($funcao->to_sql($post->site));
