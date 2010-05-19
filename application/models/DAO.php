@@ -33,7 +33,10 @@ class DAO extends DefaultObject{
 		return parent::update($array,$where);
 	}
 	public function delete($where){
-		$array = array('date_delete' => date("Y-m-d H:i:s"));
-		return parent::update($array,$where);
+		if(!$this->getDateDelete()){
+			$array = array('date_delete' => date("Y-m-d H:i:s"));
+			return parent::update($array,$where);
+		}
+		return NULL;
 	}
 }

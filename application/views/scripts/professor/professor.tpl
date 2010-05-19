@@ -11,15 +11,19 @@
 			<form id="form" name="form" method="post" action="javascript: enviarForm('/senapa/professor/Professor', 'form', 'save');" onsubmit="return(runAction(this))">
 				<h1>Professor</h1>
 				<sub>Gerencimento - Professor</sub>
-				<div class="content">
+				
+				<div id="abas" class="divAba">{html_aba value='Dados Gerais' forid='aba1' classe=selected}{html_aba value='Dados Pessoais' forid='aba2'}{html_aba value='Professor' forid='aba3'}</div>
+				
+				<div id="aba1">{include file="professor/pessoa.tpl"}</div>
+				
+				<div id="aba2" style="display: none;">{include file="professor/pessoafisica.tpl"}</div>
+				
+				<div id="aba3" class="content" style="display: none;">
+
+					<input type="hidden" id="pessoa_escola_pessoa_fisica_pessoa_id" name="pessoa_escola_pessoa_fisica_pessoa_id" value="{$professor->getPessoaEscolaPessoaFisicaPessoaId()}" />
+
 					<div class="line">
-						<label class="label required" for="pessoa_escola_pessoa_fisica_pessoa_id">pessoa_escola_pessoa_fisica_pessoa_id</label>
-						<div class="innerLine">
-							<input type="text" class="key input pequeno" id="pessoa_escola_pessoa_fisica_pessoa_id" name="pessoa_escola_pessoa_fisica_pessoa_id" onkeypress="mascara(this,soNumeros)" maxlength="10" value="{$professor->getPessoaEscolaPessoaFisicaPessoaId()}" />
-						</div>
-					</div>
-					<div class="line">
-						<label class="label required" for="pessoa_escola_matricula">pessoa_escola_matricula</label>
+						<label class="label required" for="pessoa_escola_matricula">matricula</label>
 						<div class="innerLine">
 							<input type="text" class="key input pequeno" id="pessoa_escola_matricula" name="pessoa_escola_matricula" maxlength="10" value="{$professor->getPessoaEscolaMatricula()}" />
 						</div>
