@@ -16,7 +16,10 @@ class PessoaFisica extends Pessoa {
 	private $dataNascimento;
 
 	public function getPessoaId(){return $this->pessoaId;}
-	public function setPessoaId($var){$this->pessoaId = $var;}
+	public function setPessoaId($var){
+		$this->pessoaId = $var;
+		$this->setId($var);
+	}
 
 	public function getCpf(){return $this->cpf;}
 	public function setCpf($var){$this->cpf = $var;}
@@ -25,35 +28,44 @@ class PessoaFisica extends Pessoa {
 	public function setDataNascimento($var){$this->dataNascimento = $var;}
 
 	public function insert(){
-		$array = array
-			(
-			'pessoa_id' => $this->getPessoaId(),
-			'cpf' => $this->getCpf(),
-			'data_nascimento' => $this->getDataNascimento()
-			);
+		$id = parent::insert(); // INSERE UMA NOVA PESSOA NO BANCO
 		
-		return parent::insert($array);
+		$this->_name = "pessoa_fisica"; // INFORMA AO OBJETO QUE A TABELA RELACIONADA VOLTA A SER PESSOA FISICA
+		$pFisica = NULL;
+		
+		if($id){ // EM CASO DE SUCESSO INSERE A PESSOA FISICA
+			$pFisica = $this->getAdapter();
+			$this->setPessoaId($id);
+			$array = array
+				(
+				'pessoa_id' => $this->getPessoaId(),
+				'cpf' => $this->getCpf(),
+				'data_nascimento' => $this->getDataNascimento()
+				);
+			$pFisica->insert($this->_name ,$array);
+		}
+		return $id;
 	}
 	public function update(){
+		parent::update(); // ATUALIZA OS DADOS DE PESSOA
+		
+		$this->_name = "pessoa_fisica"; // INFORMA AO OBJETO QUE A TABELA RELACIONADA VOLTA A SER PESSOA JURIDICA
 		$array = array
 			(
 			'cpf' => $this->getCpf(),
 			'data_nascimento' => $this->getDataNascimento()
 			);
-		$this->setId($this->getPessoaId());
+		$pFisica = $this->getAdapter();
+			
+		return $pFisica->update($this->_name,$array,"pessoa_id = '".$this->getPessoaId()."'");  // ATUALIZA OS DADOS DE PESSOA FISICA
 		
-		$update = Zend_Db_Table::getDefaultAdapter();		
-		$update->update($this->_name,$array,"pessoa_id = '".$this->getPessoaId()."'");
-		
-		$pessoa = new Pessoa();
-		$pessoa->load($this->getPessoaId());
-		$pessoa->update();
-		
-		return $pessoa;
 	}
 	public function load($id = ""){
+		$this->_name = 'pessoa_fisica';
 		$object = parent::fetchRow("pessoa_id = '".$id."'");
 		if($object){
+			parent::load($id);
+			
 			$this->setPessoaId($object->pessoa_id);
 			$this->setCpf($object->cpf);
 			$this->setDataNascimento($object->data_nascimento);

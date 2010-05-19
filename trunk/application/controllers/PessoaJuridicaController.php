@@ -68,6 +68,11 @@ class PessoaJuridicaController extends Zend_Controller_Action{
 			$view->output("index.tpl");
 		}elseif(isset($post->pessoa_id)){
 			// SALVA E ATUALIZA REGISTRO
+			
+			$pessoa_juridica->setNome($funcao->to_sql($post->nome));
+			$pessoa_juridica->setEmail($funcao->to_sql($post->email));
+			$pessoa_juridica->setSite($funcao->to_sql($post->site));
+					
 			$pessoa_juridica->setCnpj($funcao->to_sql($post->cnpj));
 			$pessoa_juridica->setNomeFantasia($funcao->to_sql($post->nome_fantasia));
 			$pessoa_juridica->setInscricaoEstadual($funcao->to_sql($post->inscricao_estadual));

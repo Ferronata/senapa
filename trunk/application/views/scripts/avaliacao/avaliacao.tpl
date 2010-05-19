@@ -9,8 +9,8 @@
 	<div class="body">
 		<div class="innerBody">
 			<form id="form" name="form" method="post" action="javascript: enviarForm('/senapa/avaliacao/Avaliacao', 'form', 'save');" onsubmit="return(runAction(this))">
-				<h1>Avaliacao</h1>
-				<sub>Gerencimento - Avaliacao</sub>
+				<h1>Avaliação</h1>
+				<sub>Gerencimento - Avaliação</sub>
 				<div class="content">
 					<input type="hidden" id="id" name="id" value="{$avaliacao->getId()}" />
 					<div class="line">
@@ -71,24 +71,6 @@
 						<label class="label" for="status">status</label>
 						<div class="innerLine">
 							<input type="checkbox" class="input" id="status" name="status"  value="1" {if $avaliacao->getStatus()}checked="checked"{/if} />
-						</div>
-					</div>
-					<div class="line">
-						<label class="label required" for="date_create">date_create</label>
-						<div class="innerLine">
-							<input type="text" class="key input normal" id="date_create" name="date_create" onkeypress="mascara(this,dataHora)" maxlength="19" value="{html_data values=$avaliacao->getDateCreate()}" />
-						</div>
-					</div>
-					<div class="line">
-						<label class="label" for="date_update">date_update</label>
-						<div class="innerLine">
-							<input type="text" class="input normal" id="date_update" name="date_update" onkeypress="mascara(this,dataHora)" maxlength="19" value="{html_data values=$avaliacao->getDateUpdate()}" />
-						</div>
-					</div>
-					<div class="line">
-						<label class="label" for="date_delete">date_delete</label>
-						<div class="innerLine">
-							<input type="text" class="input normal" id="date_delete" name="date_delete" onkeypress="mascara(this,dataHora)" maxlength="19" value="{html_data values=$avaliacao->getDateDelete()}" />
 						</div>
 					</div>
 				</div>

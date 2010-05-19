@@ -74,7 +74,7 @@ class DisciplinaController extends Zend_Controller_Action{
 				// CREATE
 
 				if($disciplina->insert())
-					$retorno = array('msg' => 'ok', 'display' => htmlentities('Disciplina inserido com sucesso'), 'url' => '?');
+					$retorno = array('msg' => 'ok', 'display' => htmlentities('Disciplina inserido com sucesso'), 'url' => 'disciplina');
 				else
 					$retorno = array('msg' => 'error', 'display' => htmlentities('Erro ao inserir Disciplina'));
 

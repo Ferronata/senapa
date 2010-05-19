@@ -8,16 +8,17 @@
 <center>
 	<div class="body">
 		<div class="innerBody">
-			<form id="form" name="form" method="post" action="javascript: enviarForm('/senapa/pessoajuridica/PessoaJuridica', 'form', 'save');" onsubmit="return(runAction(this))">
-				<h1>PessoaJuridica</h1>
-				<sub>Gerencimento - PessoaJuridica</sub>
-				<div class="content">
-					<div class="line">
-						<label class="label required" for="pessoa_id">pessoa_id</label>
-						<div class="innerLine">
-							<input type="text" class="key input pequeno" id="pessoa_id" name="pessoa_id" onkeypress="mascara(this,soNumeros)" maxlength="10" value="{$pessoa_juridica->getPessoaId()}" />
-						</div>
-					</div>
+			<!-- --><form id="form" name="form" method="post" action="javascript: enviarForm('/senapa/pessoajuridica/PessoaJuridica', 'form', 'save');" onsubmit="return(runAction(this))"> <!-- -->
+			<!-- <form id="form" name="form" method="post" action="/senapa/pessoajuridica/PessoaJuridica" onsubmit="return(runAction(this))">-->
+				<h1>Instituição</h1>
+				<sub>Gerencimento - Instituição</sub>
+				
+				<div id="abas" class="divAba">{html_aba value='Dados Gerais' forid='aba1' classe=selected}{html_aba value='Instituição' forid='aba2'}</div>
+				
+				<div id="aba1">{include file="pessoajuridica/pessoa.tpl"}</div>
+				
+				<div id="aba2" class="content" style="display: none;">
+					<input type="hidden" id="pessoa_id" name="pessoa_id" value="{$pessoa_juridica->getPessoaId()}" />
 					<div class="line">
 						<label class="label required" for="cnpj">cnpj</label>
 						<div class="innerLine">

@@ -66,15 +66,12 @@ class AvaliacaoSituacaoController extends Zend_Controller_Action{
 			// SALVA E ATUALIZA REGISTRO
 			$avaliacao_situacao->setNome($funcao->to_sql($post->nome));
 			$avaliacao_situacao->setStatus($funcao->to_sql($post->status));
-			$avaliacao_situacao->setDateCreate($funcao->to_sql($post->date_create));
-			$avaliacao_situacao->setDateUpdate($funcao->to_sql($post->date_update));
-			$avaliacao_situacao->setDateDelete($funcao->to_sql($post->date_delete));
 
 			if(empty($post->id)){
 				// CREATE
 
 				if($avaliacao_situacao->insert())
-					$retorno = array('msg' => 'ok', 'display' => htmlentities('AvaliacaoSituacao inserido com sucesso'), 'url' => '?');
+					$retorno = array('msg' => 'ok', 'display' => htmlentities('AvaliacaoSituacao inserido com sucesso'), 'url' => 'avaliacaosituacao');
 				else
 					$retorno = array('msg' => 'error', 'display' => htmlentities('Erro ao inserir AvaliacaoSituacao'));
 

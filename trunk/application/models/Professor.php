@@ -17,10 +17,16 @@ class Professor extends PessoaEscola {
 	private $areaAtuacao;
 
 	public function getPessoaEscolaPessoaFisicaPessoaId(){return $this->pessoaEscolaPessoaFisicaPessoaId;}
-	public function setPessoaEscolaPessoaFisicaPessoaId($var){$this->pessoaEscolaPessoaFisicaPessoaId = $var;}
+	public function setPessoaEscolaPessoaFisicaPessoaId($var){
+		$this->pessoaEscolaPessoaFisicaPessoaId = $var;
+		$this->setPessoaFisicaPessoaId($var);
+	}
 
 	public function getPessoaEscolaMatricula(){return $this->pessoaEscolaMatricula;}
-	public function setPessoaEscolaMatricula($var){$this->pessoaEscolaMatricula = $var;}
+	public function setPessoaEscolaMatricula($var){
+		$this->pessoaEscolaMatricula = $var;
+		$this->setMatricula($var);
+	}
 
 	public function getFormacao(){return $this->formacao;}
 	public function setFormacao($var){$this->formacao = $var;}
@@ -29,16 +35,30 @@ class Professor extends PessoaEscola {
 	public function setAreaAtuacao($var){$this->areaAtuacao = $var;}
 
 	public function insert(){
-		$array = array
-			(
-			'pessoa_escola_pessoa_fisica_pessoa_id' => $this->getPessoaEscolaPessoaFisicaPessoaId(),
-			'pessoa_escola_matricula' => $this->getPessoaEscolaMatricula(),
-			'formacao' => $this->getFormacao(),
-			'area_atuacao' => $this->getAreaAtuacao()
-			);
-		return parent::insert($array);
+		$id = parent::insert(); // INSERE UMA NOVA PESSOA NO BANCO
+		
+		$this->_name = "professor"; // INFORMA AO OBJETO QUE A TABELA RELACIONADA VOLTA A SER PESSOA ESCOLA
+		$pProfessor = NULL;
+		
+		if($id){ // EM CASO DE SUCESSO INSERE A PESSOA ESCOLA
+			$pProfessor = $this->getAdapter();
+			$this->setPessoaEscolaPessoaFisicaPessoaId($id);
+			
+			$array = array
+				(
+				'pessoa_escola_pessoa_fisica_pessoa_id' => $this->getPessoaEscolaPessoaFisicaPessoaId(),
+				'pessoa_escola_matricula' => $this->getPessoaEscolaMatricula(),
+				'formacao' => $this->getFormacao(),
+				'area_atuacao' => $this->getAreaAtuacao()
+				);
+			$pProfessor = $pProfessor->insert($this->_name ,$array);
+		}
+		return $pProfessor;
 	}
 	public function update(){
+		parent::update(); // ATUALIZA OS DADOS
+		
+		$this->_name = 'professor';
 		$array = array
 			(
 			'pessoa_escola_pessoa_fisica_pessoa_id' => $this->getPessoaEscolaPessoaFisicaPessoaId(),
@@ -46,19 +66,25 @@ class Professor extends PessoaEscola {
 			'formacao' => $this->getFormacao(),
 			'area_atuacao' => $this->getAreaAtuacao()
 			);
-		return parent::update($array,"id = '".$this->getId()."'");
+		$pProfessor = $this->getAdapter();
+			
+		return $pProfessor->update($this->_name,$array,"pessoa_escola_pessoa_fisica_pessoa_id = '".$this->getPessoaEscolaPessoaFisicaPessoaId()."'");  // ATUALIZA OS DADOS DE PESSOA FISICA
 	}
 	public function load($id = ""){
-		$object = parent::fetchRow("id = '".$id."'");
+		$this->_name = 'professor';
+		
+		$object = parent::fetchRow("pessoa_escola_matricula = '".$id."'");
 		if($object){
+			parent::load($object->pessoa_escola_pessoa_fisica_pessoa_id);
+			
 			$this->setPessoaEscolaPessoaFisicaPessoaId($object->pessoa_escola_pessoa_fisica_pessoa_id);
 			$this->setPessoaEscolaMatricula($object->pessoa_escola_matricula);
 			$this->setFormacao($object->formacao);
 			$this->setAreaAtuacao($object->area_atuacao);
 		}
-		return parent::fetchRow("id = '".$this->getId()."'");
+		return $object;
 	}
 	public function delete(){
-		return parent::delete("id = '".$this->getId()."'");
+		return parent::delete();
 	}
 }

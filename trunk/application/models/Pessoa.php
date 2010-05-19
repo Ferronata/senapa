@@ -29,6 +29,8 @@ class Pessoa extends DAO {
 	public function setSite($var){$this->site = $var;}
 
 	public function insert(){
+		$this->_name = 'pessoa';
+		
 		$array = array
 			(
 			'nome' => $this->getNome(),
@@ -38,6 +40,8 @@ class Pessoa extends DAO {
 		return parent::insert($array);
 	}
 	public function update(){
+		$this->_name = 'pessoa';
+		
 		$array = array
 			(
 			'nome' => $this->getNome(),
@@ -48,6 +52,8 @@ class Pessoa extends DAO {
 		return parent::update($array,"id = '".$this->getId()."'");
 	}
 	public function load($id = ""){
+		$this->_name = 'pessoa';
+		
 		$object = parent::fetchRow("id = '".$id."'");
 		if($object){
 			$this->setId($object->id);
@@ -61,6 +67,7 @@ class Pessoa extends DAO {
 		return $object;
 	}
 	public function delete(){
+		$this->_name = 'pessoa';
 		return parent::delete("id = '".$this->getId()."'");
 	}
 }
