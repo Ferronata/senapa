@@ -38,7 +38,6 @@ class Pessoa extends DAO {
 		return parent::insert($array);
 	}
 	public function update(){
-		$this->load($this->getId());
 		$array = array
 			(
 			'nome' => $this->getNome(),
