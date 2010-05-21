@@ -29,6 +29,8 @@ define('PROJECT_DIR_NAME',	basename(getcwd()));
 define('PROJECT_ROOT',		SYS_DOCUMENT_ROOT . SYS_BAR . PROJECT_DIR_NAME . SYS_BAR);
 define('BASE_URL',			substr($_SERVER['PHP_SELF'],0,strpos($_SERVER['PHP_SELF'],'/index.php')));
 
+define('MD5_TEXT', "SeNaPa_MD5"); // PALAVRA CHAVE PARA CRIPTOGRAFIA
+
 // Configura o caminho a ser procurado em todos os includes
 $tmp 		= SYS_SEPARATOR_PATH . PROJECT_ROOT;
 $includes 	= array(

@@ -14,6 +14,7 @@ class PessoaFisica extends Pessoa {
 	private $pessoaId;
 	private $cpf;
 	private $dataNascimento;
+	private $papelId;
 
 	public function getPessoaId(){return $this->pessoaId;}
 	public function setPessoaId($var){
@@ -26,6 +27,9 @@ class PessoaFisica extends Pessoa {
 
 	public function getDataNascimento(){return $this->dataNascimento;}
 	public function setDataNascimento($var){$this->dataNascimento = $var;}
+	
+	public function getPapelId(){return $this->papelId;}
+	public function setPapelId($var){$this->papelId = $var;}
 
 	public function insert(){
 		$id = parent::insert(); // INSERE UMA NOVA PESSOA NO BANCO
@@ -39,6 +43,7 @@ class PessoaFisica extends Pessoa {
 			$array = array
 				(
 				'pessoa_id' => $this->getPessoaId(),
+				'papel_id' => $this->getPapelId(),
 				'cpf' => $this->getCpf(),
 				'data_nascimento' => $this->getDataNascimento()
 				);
@@ -53,6 +58,7 @@ class PessoaFisica extends Pessoa {
 		$array = array
 			(
 			'cpf' => $this->getCpf(),
+			'papel_id' => $this->getPapelId(),
 			'data_nascimento' => $this->getDataNascimento()
 			);
 		$pFisica = $this->getAdapter();
@@ -67,6 +73,7 @@ class PessoaFisica extends Pessoa {
 			parent::load($id);
 			
 			$this->setPessoaId($object->pessoa_id);
+			$this->setPapelId($object->papel_id);
 			$this->setCpf($object->cpf);
 			$this->setDataNascimento($object->data_nascimento);
 		}
