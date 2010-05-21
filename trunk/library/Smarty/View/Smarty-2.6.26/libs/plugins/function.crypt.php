@@ -43,8 +43,8 @@ function smarty_function_crypt($params)
 	switch($crypt){
 		case 'md5':
 			if($action == 'decrypt')
-				return $funcao->md5_decrypt($value);
-			return $funcao->md5_encrypt($value);	
+				return $funcao->md5_decrypt($value, MD5_TEXT);
+			return $funcao->md5_encrypt($value, MD5_TEXT);	
 			break;
 		default:
 			return $value;

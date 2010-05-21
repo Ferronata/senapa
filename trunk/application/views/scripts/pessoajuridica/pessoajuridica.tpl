@@ -9,7 +9,6 @@
 	<div class="body">
 		<div class="innerBody">
 			<!-- --><form id="form" name="form" method="post" action="javascript: enviarForm('/senapa/pessoajuridica/PessoaJuridica', 'form', 'save');" onsubmit="return(runAction(this))"> <!-- -->
-			<!-- <form id="form" name="form" method="post" action="/senapa/pessoajuridica/PessoaJuridica" onsubmit="return(runAction(this))">-->
 				<h1>Instituição</h1>
 				<sub>Gerencimento - Instituição</sub>
 				
@@ -22,7 +21,7 @@
 					<div class="line">
 						<label class="label required" for="cnpj">cnpj</label>
 						<div class="innerLine">
-							<input type="text" class="key input normal" id="cnpj" name="cnpj" onkeypress="mascara(this,cnpj)" maxlength="20" value="{$pessoa_juridica->getCnpj()}" />
+							<input type="text" class="key input normal" id="cnpj" name="cnpj" onkeypress="mascara(this,cnpj_mask)" maxlength="18" value="{$pessoa_juridica->getCnpj()}" />
 						</div>
 					</div>
 					<div class="line">

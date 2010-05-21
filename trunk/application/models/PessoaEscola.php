@@ -13,6 +13,7 @@ class PessoaEscola extends PessoaFisica {
 	protected $_name = 'pessoa_escola';
 	private $matricula;
 	private $pessoaFisicaPessoaId;
+	private $senha;
 
 	public function getMatricula(){return $this->matricula;}
 	public function setMatricula($var){$this->matricula = $var;}
@@ -22,6 +23,9 @@ class PessoaEscola extends PessoaFisica {
 		$this->pessoaFisicaPessoaId = $var;
 		$this->setPessoaId($var);
 	}
+	
+	public function getSenha(){return $this->senha;}
+	public function setSenha($var){$this->senha = $var;}
 
 	public function insert(){
 		$id = parent::insert(); // INSERE UMA NOVA PESSOA NO BANCO
@@ -35,7 +39,8 @@ class PessoaEscola extends PessoaFisica {
 			$array = array
 				(
 				'matricula' => $this->getMatricula(),
-				'pessoa_fisica_pessoa_id' => $this->getPessoaFisicaPessoaId()
+				'pessoa_fisica_pessoa_id' => $this->getPessoaFisicaPessoaId(),
+				'senha' => $this->getSenha()
 				);
 			$pEscola->insert($this->_name ,$array);
 		}
@@ -50,7 +55,8 @@ class PessoaEscola extends PessoaFisica {
 		$array = array
 			(
 			'matricula' => $this->getMatricula(),
-			'pessoa_fisica_pessoa_id' => $this->getPessoaFisicaPessoaId()
+			'pessoa_fisica_pessoa_id' => $this->getPessoaFisicaPessoaId(),
+			'senha' => $this->getSenha()
 			);
 		$pEscola = $this->getAdapter();
 			
@@ -64,6 +70,7 @@ class PessoaEscola extends PessoaFisica {
 			
 			$this->setMatricula($object->matricula);
 			$this->setPessoaFisicaPessoaId($object->pessoa_fisica_pessoa_id);
+			$this->setSenha($object->senha);
 		}
 		return $object;
 	}

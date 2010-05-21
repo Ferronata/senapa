@@ -9,7 +9,7 @@
 		<li style="text-decoration: line-through">Disciplina</li>
 		<li style="text-decoration: line-through">Professor</li>
 		
-		<li>Aluno</li>
+		<li style="text-decoration: line-through">Aluno</li>
 		
 	</ul>
 	<h4>Professor</h4>

@@ -11,23 +11,21 @@
 			<form id="form" name="form" method="post" action="javascript: enviarForm('/senapa/aluno/Aluno', 'form', 'save');" onsubmit="return(runAction(this))">
 				<h1>Aluno</h1>
 				<sub>Gerencimento - Aluno</sub>
-				<div class="content">
+				
+				<div id="abas" class="divAba">{html_aba value='Dados Gerais' forid='aba1' classe=selected}{html_aba value='Dados Pessoais' forid='aba2'}{html_aba value='Aluno' forid='aba3'}</div>
+				
+				<div id="aba1">{include file="pessoa/pessoa.tpl"}</div>
+				
+				<div id="aba2" style="display: none;">{include file="pessoafisica/pessoafisica.tpl"}</div>
+				
+				<div id="aba3" class="content" style="display: none;">
+
+					{include file="pessoaescola/pessoaescola.tpl"}
+					
 					<div class="line">
-						<label class="label required" for="pessoa_escola_pessoa_fisica_pessoa_id">pessoa_escola_pessoa_fisica_pessoa_id</label>
+						<label class="label required" for="area_interece">Área de Interece</label>
 						<div class="innerLine">
-							<input type="text" class="key input pequeno" id="pessoa_escola_pessoa_fisica_pessoa_id" name="pessoa_escola_pessoa_fisica_pessoa_id" onkeypress="mascara(this,soNumeros)" maxlength="10" value="{$aluno->getPessoaEscolaPessoaFisicaPessoaId()}" />
-						</div>
-					</div>
-					<div class="line">
-						<label class="label required" for="pessoa_escola_matricula">pessoa_escola_matricula</label>
-						<div class="innerLine">
-							<input type="text" class="key input pequeno" id="pessoa_escola_matricula" name="pessoa_escola_matricula" maxlength="10" value="{$aluno->getPessoaEscolaMatricula()}" />
-						</div>
-					</div>
-					<div class="line">
-						<label class="label required" for="area_interece">area_interece</label>
-						<div class="innerLine">
-							<input type="text" class="key input grande" id="area_interece" name="area_interece" maxlength="250" value="{$aluno->getAreaInterece()}" />
+							<input type="text" class="key input grande" id="area_interece" name="area_interece" maxlength="250" value="{$object->getAreaInterece()}" />
 						</div>
 					</div>
 				</div>
