@@ -104,19 +104,22 @@ function transparent(div,opacity){
 }
 
 function addLoadding(){
-	var div = this.addTagId('blackout');
-	if(!this.goodBrowser())
-		div.style.position= 'absolute';
-	else
-		div.style.position	= 'fixed';
-	div.style.top			= '0px';
-	div.style.left			= '0px';
-	div.style.width			= '100%';
-	div.style.height		= '100%';
-	div.style.color			= '#FFFFFF';
-	div.style.zIndex		= '1000';
-	div.style.background	= '#000000';
-	this.transparent(div,"65");
+	var tmp = $('blackout');
+	if(!tmp){
+		var div = this.addTagId('blackout');
+		if(!this.goodBrowser())
+			div.style.position= 'absolute';
+		else
+			div.style.position	= 'fixed';
+		div.style.top			= '0px';
+		div.style.left			= '0px';
+		div.style.width			= '100%';
+		div.style.height		= '100%';
+		div.style.color			= '#FFFFFF';
+		div.style.zIndex		= '1000';
+		div.style.background	= '#000000';
+		this.transparent(div,"65");
+	}
 	/**/
 	var inner = this.addDivId ('loadding','blackout','<img src=\'/'+project_root+'/public/images/loader.gif\' />');
 	//var inner = this.addDivId ('loadding','blackout');
@@ -135,33 +138,36 @@ function addLoadding(){
 }
 
 function addBlackout(){
-	var div = this.addTagId('blackout');
-	if(!this.goodBrowser())
-		div.style.position= 'absolute';
-	else
-		div.style.position	= 'fixed';
-	div.style.top			= '0px';
-	div.style.left			= '0px';
-	div.style.width			= '100%';
-	div.style.height		= '100%';
-	div.style.color			= '#FFFFFF';
-	div.style.zIndex		= '1000';
-	div.style.background	= '#000000';
-	
-	this.transparent(div,"65");
-	
-	var inner = this.addDivId ('loadding','blackout','');
-	if(!this.goodBrowser())
-		inner.style.position= 'absolute';
-	else
-		inner.style.position= 'fixed';
-	inner.style.top			= '10%';
-	inner.style.left		= '10%';
-	inner.style.width		= '800px';
-	inner.style.height		= '60px';
-	inner.style.color		= '#FFFFFF';
-	inner.style.fontWeight	= '900';
-	inner.style.zIndex		= '1010';
+	var tmp = $('blackout');
+	if(!tmp){
+		var div = this.addTagId('blackout');
+		if(!this.goodBrowser())
+			div.style.position= 'absolute';
+		else
+			div.style.position	= 'fixed';
+		div.style.top			= '0px';
+		div.style.left			= '0px';
+		div.style.width			= '100%';
+		div.style.height		= '100%';
+		div.style.color			= '#FFFFFF';
+		div.style.zIndex		= '1000';
+		div.style.background	= '#000000';
+		
+		this.transparent(div,"65");
+		
+		var inner = this.addDivId ('loadding','blackout','');
+		if(!this.goodBrowser())
+			inner.style.position= 'absolute';
+		else
+			inner.style.position= 'fixed';
+		inner.style.top			= '10%';
+		inner.style.left		= '10%';
+		inner.style.width		= '800px';
+		inner.style.height		= '60px';
+		inner.style.color		= '#FFFFFF';
+		inner.style.fontWeight	= '900';
+		inner.style.zIndex		= '1010';
+	}
 }
 
 function removeLoadding(){
