@@ -61,8 +61,8 @@ class PessoaEscola extends PessoaFisica {
 			$disc = new PessoaEscolaDisciplina();
 			foreach($this->getDisciplinas()->getDisciplinas() as $disciplina){
 				$disc->setDisciplinaId($disciplina->getId());
-				$disc->setPessoaEscolaMatricula($this->getPessoaEscolaMatricula());
-				$disc->setPessoaEscolaPessoaFisicaPessoaId($this->getPessoaEscolaPessoaFisicaPessoaId());
+				$disc->setPessoaEscolaMatricula($this->getMatricula());
+				$disc->setPessoaEscolaPessoaFisicaPessoaId($this->getPessoaFisicaPessoaId());
 				
 				$disc->insert();
 			}
