@@ -46,6 +46,10 @@ class AlunoController extends Zend_Controller_Action{
 		$display_datagrid = array();
 
 		if(isset($get->action)){
+			$disciplina 	= new Disciplina();
+			$disciplinas 	= $disciplina->fetchAll("`date_delete` IS NULL","nome");
+			$view->assign("disciplinas",$disciplinas);
+					
 			switch($get->action){
 				case 'edit':
 					$aluno->load($get->pessoa_escola_matricula);
@@ -58,6 +62,7 @@ class AlunoController extends Zend_Controller_Action{
 					die();
 			}
 			$view->assign("object",$aluno);
+			$view->assign("listaDisciplina",$aluno->getDisciplinas());
 
 			$view->assign("header","html/default/header.tpl");
 			$view->assign("body","aluno/aluno.tpl");
@@ -79,6 +84,15 @@ class AlunoController extends Zend_Controller_Action{
 			$aluno->setSenha($funcao->md5_encrypt($post->senha,MD5_TEXT));
 			
 			$aluno->setAreaInterece($funcao->to_sql($post->area_interece));
+			
+			if(isset($post->lista_disciplina)){
+				foreach($post->lista_disciplina as $linha){
+					$disciplina = new Disciplina();
+					$disciplina->load($linha);
+					
+					$aluno->getDisciplinas()->addDisciplina($disciplina);
+				}
+			}
 
 			if(empty($post->pessoa_escola_pessoa_fisica_pessoa_id)){
 				// CREATE

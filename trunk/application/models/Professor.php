@@ -33,7 +33,7 @@ class Professor extends PessoaEscola {
 
 	public function getAreaAtuacao(){return $this->areaAtuacao;}
 	public function setAreaAtuacao($var){$this->areaAtuacao = $var;}
-
+	
 	public function insert(){
 		$id = parent::insert(); // INSERE UMA NOVA PESSOA NO BANCO
 		
@@ -66,8 +66,9 @@ class Professor extends PessoaEscola {
 			'formacao' => $this->getFormacao(),
 			'area_atuacao' => $this->getAreaAtuacao()
 			);
-		$pProfessor = $this->getAdapter();
 			
+		$pProfessor = $this->getAdapter();
+		
 		return $pProfessor->update($this->_name,$array,"pessoa_escola_pessoa_fisica_pessoa_id = '".$this->getPessoaEscolaPessoaFisicaPessoaId()."'");  // ATUALIZA OS DADOS DE PESSOA FISICA
 	}
 	public function load($id = ""){

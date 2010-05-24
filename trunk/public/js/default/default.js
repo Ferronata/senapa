@@ -969,13 +969,15 @@ function addComponent(tag,lista){
 		
 		for(i = 0; i<lista.length; i++){
 			var value = lista[i].value;
+			var txt = value;
 			if(lista[i].innerHTML.indexOf('<option') >= 0){
-				value = lista[i].options[lista[i].selectedIndex].text;
+				txt = lista[i].options[lista[i].selectedIndex].text;
 				lista[i].selectedIndex = 0;
 			}
+			
 			var td = document.createElement("td");
-			td.innerHTML  = '<input type="hidden" name="lista'+lista[i].name+'[]" value="'+value+'" />';
-			td.innerHTML += value;
+			td.innerHTML  = '<input type="hidden" name="lista_'+lista[i].name+'[]" value="'+value+'" />';
+			td.innerHTML += txt;
 			option.appendChild(td);
 			lista[i].value = "";
 		}

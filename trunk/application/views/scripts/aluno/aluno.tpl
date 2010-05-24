@@ -12,7 +12,7 @@
 				<h1>Aluno</h1>
 				<sub>Gerencimento - Aluno</sub>
 				
-				<div id="abas" class="divAba">{html_aba value='Dados Gerais' forid='aba1' classe=selected}{html_aba value='Dados Pessoais' forid='aba2'}{html_aba value='Aluno' forid='aba3'}</div>
+				<div id="abas" class="divAba">{html_aba value='Dados Gerais' forid='aba1' classe=selected}{html_aba value='Dados Pessoais' forid='aba2'}{html_aba value='Aluno' forid='aba3'}{html_aba value='Disciplinas' forid='aba4'}</div>
 				
 				<div id="aba1">{include file="pessoa/pessoa.tpl"}</div>
 				
@@ -29,6 +29,9 @@
 						</div>
 					</div>
 				</div>
+				
+				<div id="aba4" style="display: none;">{include file="disciplina/disciplina_pessoa_fisica.tpl"}</div>
+				
 				<div class="controle">
 					<input type="submit" class="button save" value="Salvar" />
 					<input type="button" class="button back" value="Sair" onclick="voltarForm();" />

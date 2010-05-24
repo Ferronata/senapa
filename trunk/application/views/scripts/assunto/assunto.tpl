@@ -11,33 +11,21 @@
 			<form id="form" name="form" method="post" action="javascript: enviarForm('/senapa/assunto/Assunto', 'form', 'save');" onsubmit="return(runAction(this))">
 				<h1>Assunto</h1>
 				<sub>Gerencimento - Assunto</sub>
-				<div class="content">
-					<input type="hidden" id="id" name="id" value="{$assunto->getId()}" />
+				
+				<div id="abas" class="divAba">{html_aba value='Dados Gerais' forid='aba1' classe=selected}{html_aba value='Disciplinas' forid='aba2'}</div>
+				
+				<div id="aba1" class="content">
+					<input type="hidden" id="id" name="id" value="{$object->getId()}" />
 					<div class="line">
-						<label class="label required" for="nome">nome</label>
+						<label class="label required" for="nome">Assunto</label>
 						<div class="innerLine">
-							<input type="text" class="key input medio" id="nome" name="nome" maxlength="200" value="{$assunto->getNome()}" />
-						</div>
-					</div>
-					<div class="line">
-						<label class="label required" for="date_create">date_create</label>
-						<div class="innerLine">
-							<input type="text" class="key input normal" id="date_create" name="date_create" onkeypress="mascara(this,dataHora)" maxlength="19" value="{html_data values=$assunto->getDateCreate()}" />
-						</div>
-					</div>
-					<div class="line">
-						<label class="label" for="date_update">date_update</label>
-						<div class="innerLine">
-							<input type="text" class="input normal" id="date_update" name="date_update" onkeypress="mascara(this,dataHora)" maxlength="19" value="{html_data values=$assunto->getDateUpdate()}" />
-						</div>
-					</div>
-					<div class="line">
-						<label class="label" for="date_delete">date_delete</label>
-						<div class="innerLine">
-							<input type="text" class="input normal" id="date_delete" name="date_delete" onkeypress="mascara(this,dataHora)" maxlength="19" value="{html_data values=$assunto->getDateDelete()}" />
+							<input type="text" class="key input medio" id="nome" name="nome" maxlength="200" value="{$object->getNome()}" />
 						</div>
 					</div>
 				</div>
+				
+				<div id="aba2" style="display: none;">{include file="disciplina/disciplina_pessoa_fisica.tpl"}</div>
+				
 				<div class="controle">
 					<input type="submit" class="button save" value="Salvar" />
 					<input type="button" class="button back" value="Sair" onclick="voltarForm();" />

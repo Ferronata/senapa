@@ -16,9 +16,9 @@ class AdminController extends Zend_Controller_Action{
 		$datagrid = new Datagrid($table, $where, $display);
 		$view->assign("datagrid",$datagrid);
 
-		$view->assign("body","html/admin/datagrid.tpl");
-		$view->assign("header","html/admin/header.tpl");
-		$view->assign("footer","html/admin/footer.tpl");
+		$view->assign("body","html/default/datagrid.tpl");
+		$view->assign("header","html/default/header.tpl");
+		$view->assign("footer","html/default/footer.tpl");
 		$view->output("index.tpl");
 	}
 	public function acesso($view){
@@ -100,9 +100,9 @@ class AdminController extends Zend_Controller_Action{
 		
 		
 		$view->assign("categorias",$array);		
- 		$view->assign("header","html/admin/header.tpl");
+ 		$view->assign("header","html/default/header.tpl");
 		$view->assign("body","admin/index.tpl");
-		$view->assign("footer","html/admin/footer.tpl");
+		$view->assign("footer","html/default/footer.tpl");
 		$view->output("index.tpl");
 	}
 }
