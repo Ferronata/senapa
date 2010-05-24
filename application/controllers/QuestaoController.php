@@ -67,15 +67,12 @@ class QuestaoController extends Zend_Controller_Action{
 			$questao->setDescricao($funcao->to_sql($post->descricao));
 			$questao->setResposta($funcao->to_sql($post->resposta));
 			$questao->setDescricaoResposta($funcao->to_sql($post->descricao_resposta));
-			$questao->setDateCreate($funcao->to_sql($post->date_create));
-			$questao->setDateUpdate($funcao->to_sql($post->date_update));
-			$questao->setDateDelete($funcao->to_sql($post->date_delete));
 
 			if(empty($post->id)){
 				// CREATE
 
 				if($questao->insert())
-					$retorno = array('msg' => 'ok', 'display' => htmlentities('Questao inserido com sucesso'), 'url' => '?');
+					$retorno = array('msg' => 'ok', 'display' => htmlentities('Questao inserido com sucesso'), 'url' => 'questao');
 				else
 					$retorno = array('msg' => 'error', 'display' => htmlentities('Erro ao inserir Questao'));
 

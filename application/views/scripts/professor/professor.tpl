@@ -8,11 +8,11 @@
 <center>
 	<div class="body">
 		<div class="innerBody">
-			<form id="form" name="form" method="post" action="javascript: enviarForm('/senapa/professor/Professor', 'form', 'save');" onsubmit="return(runAction(this))">
+		<form id="form" name="form" method="post" action="javascript: enviarForm('/senapa/professor/Professor', 'form', 'save');" onsubmit="return(runAction(this))">
 				<h1>Professor</h1>
 				<sub>Gerencimento - Professor</sub>
 				
-				<div id="abas" class="divAba">{html_aba value='Dados Gerais' forid='aba1' classe=selected}{html_aba value='Dados Pessoais' forid='aba2'}{html_aba value='Professor' forid='aba3'}</div>
+				<div id="abas" class="divAba">{html_aba value='Dados Gerais' forid='aba1' classe=selected}{html_aba value='Dados Pessoais' forid='aba2'}{html_aba value='Professor' forid='aba3'}{html_aba value='Disciplinas' forid='aba4'}</div>
 				
 				<div id="aba1">{include file="pessoa/pessoa.tpl"}</div>
 				
@@ -35,6 +35,9 @@
 						</div>
 					</div>
 				</div>
+				
+				<div id="aba4" style="display: none;">{include file="disciplina/disciplina_pessoa_fisica.tpl"}</div>
+				
 				<div class="controle">
 					<input type="submit" class="button save" value="Salvar" />
 					<input type="button" class="button back" value="Sair" onclick="voltarForm();" />

@@ -38,7 +38,7 @@ class ProfessorController extends Zend_Controller_Action{
 		$this->acesso($view);
 
 		$professor = new Professor();
-
+		
 		$post 	= Zend_Registry::get('post');
 		$get 	= Zend_Registry::get('get');
 
@@ -46,6 +46,10 @@ class ProfessorController extends Zend_Controller_Action{
 		$display_datagrid = array();
 		
 		if(isset($get->action)){
+			$disciplina 	= new Disciplina();
+			$disciplinas 	= $disciplina->fetchAll("`date_delete` IS NULL","nome");
+			$view->assign("disciplinas",$disciplinas);
+			
 			switch($get->action){
 				case 'edit':
 					$professor->load($get->pessoa_escola_matricula);
@@ -58,6 +62,7 @@ class ProfessorController extends Zend_Controller_Action{
 					die();
 			}
 			$view->assign("object",$professor);
+			$view->assign("listaDisciplina",$professor->getDisciplinas());
 
 			$view->assign("header","html/default/header.tpl");
 			$view->assign("body","professor/professor.tpl");
@@ -80,6 +85,15 @@ class ProfessorController extends Zend_Controller_Action{
 
 			$professor->setFormacao($funcao->to_sql($post->formacao));
 			$professor->setAreaAtuacao($funcao->to_sql($post->area_atuacao));
+			
+			if(isset($post->lista_disciplina)){
+				foreach($post->lista_disciplina as $linha){
+					$disciplina = new Disciplina();
+					$disciplina->load($linha);
+					
+					$professor->getDisciplinas()->addDisciplina($disciplina);
+				}
+			}
 
 			if(empty($post->pessoa_escola_pessoa_fisica_pessoa_id)){
 				// CREATE

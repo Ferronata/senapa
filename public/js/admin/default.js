@@ -957,6 +957,7 @@ function listRenderBack(e, a){
 		}
 	}
 }
+/*
 
 
 function addComponent(tag,lista){
@@ -992,6 +993,44 @@ function addComponent(tag,lista){
 			tag.tBody.appendChild(option);
 	}	
 }
+*/
+
+function addComponent(tag,lista){
+	if(tag && lista){
+		var str = "";
+		
+		var option = document.createElement("tr");
+		option.innerHTML = str;
+		option.setAttribute('class','lineComponent');
+		
+		for(i = 0; i<lista.length; i++){
+			var value = lista[i].value;
+			var txt = value;
+			if(lista[i].innerHTML.indexOf('<option') >= 0){
+				txt = lista[i].options[lista[i].selectedIndex].text;
+				lista[i].selectedIndex = 0;
+			}
+			
+			var td = document.createElement("td");
+			td.innerHTML  = '<input type="hidden" name="lista_'+lista[i].name+'[]" value="'+value+'" />';
+			td.innerHTML += txt;
+			option.appendChild(td);
+			lista[i].value = "";
+		}
+		var td = document.createElement("td");
+		td.innerHTML = '<input type="button" class="bt_remove" onclick="removeComponent(this)" value="remover" />';
+		option.appendChild(td);
+		
+		
+		if(!tag.tBody){
+			var tbody = document.createElement("tbody");
+			tbody.appendChild(option);
+			tag.appendChild(tbody);
+		}else
+			tag.tBody.appendChild(option);
+	}	
+}
+
 function removeComponent(tag){
 	if(tag){
 		var node = tag.parentNode.parentNode.parentNode;

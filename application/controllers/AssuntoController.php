@@ -45,7 +45,12 @@ class AssuntoController extends Zend_Controller_Action{
 		$funcao 	= new FuncoesProjeto();
 		$display_datagrid = array();
 
-		if(isset($get->action)){			switch($get->action){
+		if(isset($get->action)){
+			$disciplina 	= new Disciplina();
+			$disciplinas 	= $disciplina->fetchAll("`date_delete` IS NULL","nome");
+			$view->assign("disciplinas",$disciplinas);
+			
+			switch($get->action){
 				case 'edit':
 					$assunto->load($get->id);
 					break;
@@ -56,7 +61,8 @@ class AssuntoController extends Zend_Controller_Action{
 					$this->_redirect("assunto/assunto");
 					die();
 			}
-			$view->assign("assunto",$assunto);
+			$view->assign("object",$assunto);
+			$view->assign("listaDisciplina",$assunto->getDisciplinas());
 
 			$view->assign("header","html/default/header.tpl");
 			$view->assign("body","assunto/assunto.tpl");
@@ -65,15 +71,21 @@ class AssuntoController extends Zend_Controller_Action{
 		}elseif(isset($post->id)){
 			// SALVA E ATUALIZA REGISTRO
 			$assunto->setNome($funcao->to_sql($post->nome));
-			$assunto->setDateCreate($funcao->to_sql($post->date_create));
-			$assunto->setDateUpdate($funcao->to_sql($post->date_update));
-			$assunto->setDateDelete($funcao->to_sql($post->date_delete));
+			
+			if(isset($post->lista_disciplina)){
+				foreach($post->lista_disciplina as $linha){
+					$disciplina = new Disciplina();
+					$disciplina->load($linha);
+					
+					$assunto->getDisciplinas()->addDisciplina($disciplina);
+				}
+			}
 
 			if(empty($post->id)){
 				// CREATE
 
 				if($assunto->insert())
-					$retorno = array('msg' => 'ok', 'display' => htmlentities('Assunto inserido com sucesso'), 'url' => '?');
+					$retorno = array('msg' => 'ok', 'display' => htmlentities('Assunto inserido com sucesso'), 'url' => 'assunto');
 				else
 					$retorno = array('msg' => 'error', 'display' => htmlentities('Erro ao inserir Assunto'));
 
