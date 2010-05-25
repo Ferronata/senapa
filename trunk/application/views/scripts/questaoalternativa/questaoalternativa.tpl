@@ -29,8 +29,8 @@
 							<tbody>
 								{foreach item=item from=$alternativas->getAlternativas()}
 								    <tr>
-								    	<td class="left"><input type="hidden" name="lista_alternativa_descricao[]" value="{$item->getId()}" />{$item->getDescricao()}</td>
-								    	<td><input type="radio" name="lista_radio" {if $item->getId() == $questao->getResposta()} checked="checked" {/if} value="{$item->getDescricao()}" /></td>
+								    	<td class="left"><input type="hidden" name="lista_alternativa_descricao[]" value="{$item->getDescricao()}" />{$item->getDescricao()}</td>
+								    	<td><input type="radio" name="lista_radio" {if $item->getId() == $object->getResposta()} checked="checked" {/if} value="{$item->getDescricao()}" /></td>
 								    	<td><input type="button" class="bt_remove" onclick="removeComponent(this)" value="remover" /></td>
 								    </tr>
 								{/foreach}

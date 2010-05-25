@@ -15,7 +15,7 @@
 				<div id="abas" class="divAba">{html_aba value='Questão' forid='aba1' classe=selected}{html_aba value='Alternativas' forid='aba2'}</div>
 				
 				<div id="aba1" class="content">
-					<input type="hidden" id="id" name="id" value="{$questao->getId()}" />
+					<input type="hidden" id="id" name="id" value="{$object->getId()}" />
 					
 					{include file='disciplina/disciplina_assunto.tpl'}
 					
@@ -24,13 +24,13 @@
 					<div class="line">
 						<label class="label required" for="descricao">Descrição</label>
 						<div class="innerLine">
-							<textarea class="key input normal" id="descricao" name="descricao">{$questao->getDescricao()}</textarea>
+							<textarea class="key input normal" id="descricao" name="descricao">{$object->getDescricao()}</textarea>
 						</div>
 					</div>
 					<div class="line">
 						<label class="label required" for="descricao_resposta">Explicação da Resposta</label>
 						<div class="innerLine">
-							<textarea class="key input normal" id="descricao_resposta" name="descricao_resposta">{$questao->getDescricaoResposta()}</textarea>
+							<textarea class="key input normal" id="descricao_resposta" name="descricao_resposta">{$object->getDescricaoResposta()}</textarea>
 						</div>
 					</div>
 				</div>
