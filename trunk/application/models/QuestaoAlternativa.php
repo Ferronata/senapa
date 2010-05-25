@@ -52,7 +52,7 @@ class QuestaoAlternativa extends DAO {
 			$this->setDateUpdate($object->date_update);
 			$this->setDateDelete($object->date_delete);
 		}
-		return parent::fetchRow("id = '".$this->getId()."'");
+		return $object;
 	}
 	public function delete(){
 		return parent::delete("id = '".$this->getId()."'");

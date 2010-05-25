@@ -15,6 +15,9 @@
 header('Content-type: text/html; charset=ISO-8859-1');
 
 include_once("library/Project/config.php");
+include("debuglib.php");
+
+//show_vars();
 
 $applicationName = basename(getcwd());
 

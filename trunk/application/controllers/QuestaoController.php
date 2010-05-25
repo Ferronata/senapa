@@ -38,6 +38,7 @@ class QuestaoController extends Zend_Controller_Action{
 		$this->acesso($view);
 
 		$questao = new Questao();
+		$nivelQuestao 	= new NivelQuestao();
 
 		$post 	= Zend_Registry::get('post');
 		$get 	= Zend_Registry::get('get');
@@ -45,9 +46,20 @@ class QuestaoController extends Zend_Controller_Action{
 		$funcao 	= new FuncoesProjeto();
 		$display_datagrid = array();
 
-		if(isset($get->action)){			switch($get->action){
+		if(isset($get->action)){
+			$disciplina 	= new Disciplina();
+			$disciplinas 	= $disciplina->fetchAll("`date_delete` IS NULL","nome");
+			$view->assign("disciplinas",$disciplinas);
+						
+			$assuntoQuestao = new AssuntoQuestao();
+			
+			switch($get->action){
 				case 'edit':
 					$questao->load($get->id);
+					$nivelQuestao->lastRegister($questao->getId());
+					$alternativas = $questao->getAlternativas();
+					$view->assign("alternativas",$alternativas);
+					
 					break;
 				case 'delete':
 					$questao->load($get->id);
@@ -57,6 +69,8 @@ class QuestaoController extends Zend_Controller_Action{
 					die();
 			}
 			$view->assign("questao",$questao);
+			$view->assign("nivel_questao",$nivelQuestao);
+			$view->assign("nivel_questao",$nivelQuestao);
 
 			$view->assign("header","html/default/header.tpl");
 			$view->assign("body","questao/questao.tpl");
@@ -65,8 +79,33 @@ class QuestaoController extends Zend_Controller_Action{
 		}elseif(isset($post->id)){
 			// SALVA E ATUALIZA REGISTRO
 			$questao->setDescricao($funcao->to_sql($post->descricao));
-			$questao->setResposta($funcao->to_sql($post->resposta));
 			$questao->setDescricaoResposta($funcao->to_sql($post->descricao_resposta));
+			
+			$assuntoQuestao = new AssuntoQuestao();
+			$assuntoQuestao->setAssuntoId($post->Assunto);
+			
+			$questao->setAssuntoQuestao($assuntoQuestao);
+			
+			$questao->setAlternativas(new ListaAlternativa());
+			
+			if(!empty($post->nivel)){
+				$nivelQuestao->setNivel($post->nivel);
+				$nivelQuestao->setDataNivelamento(date("Y-m-d"));
+				
+				$questao->setNivelQuestao($nivelQuestao);
+			}
+			if(isset($post->lista_alternativa_descricao)){
+				$lista = $post->lista_alternativa_descricao;
+				$questao->setResposta($funcao->to_sql($post->lista_radio));
+				
+				$listaAlternativa = new ListaAlternativa();
+				foreach($lista as $linha){
+					$alternativa = new QuestaoAlternativa();
+					$alternativa->setDescricao($linha);
+					
+					$questao->getAlternativas()->addAlternativa($alternativa);
+				}
+			}
 
 			if(empty($post->id)){
 				// CREATE

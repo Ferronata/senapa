@@ -16,6 +16,11 @@
 				
 				<div id="aba1" class="content">
 					<input type="hidden" id="id" name="id" value="{$questao->getId()}" />
+					
+					{include file='disciplina/disciplina_assunto.tpl'}
+					
+					{include file='nivelquestao/nivelquestao.tpl'}
+					
 					<div class="line">
 						<label class="label required" for="descricao">Descrição</label>
 						<div class="innerLine">

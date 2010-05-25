@@ -1,6 +1,6 @@
 <?php
 /**
- * Modelo da classe PessoaEscola
+ * Modelo da classe ListaDisciplina
  * Data de Cricação - 17/05/2010
  * @author Leonardo Popik e João Marcos => Classgen 1.0
  * @package senapa

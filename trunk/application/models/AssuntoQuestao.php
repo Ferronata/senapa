@@ -27,7 +27,6 @@ class AssuntoQuestao extends DefaultObject {
 	public function insert(){
 		$array = array
 			(
-			'id' => $this->getId(),
 			'questao_id' => $this->getQuestaoId(),
 			'assunto_id' => $this->getAssuntoId()
 			);
@@ -49,9 +48,15 @@ class AssuntoQuestao extends DefaultObject {
 			$this->setQuestaoId($object->questao_id);
 			$this->setAssuntoId($object->assunto_id);
 		}
-		return parent::fetchRow("id = '".$this->getId()."'");
+		return $object;
 	}
 	public function delete(){
 		return parent::delete("id = '".$this->getId()."'");
+	}
+	public function load2Questao($questao_id){
+		$object = parent::fetchRow("`questao_id` = '".$questao_id."'");
+		if($object)
+			return $this->load($object->id);
+		return NULL;
 	}
 }
