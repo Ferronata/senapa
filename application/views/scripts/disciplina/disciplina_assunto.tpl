@@ -16,7 +16,7 @@
 				<select id="Assunto" name=Assunto class="key input medio">
 					<option>Selecione</option>
 					{foreach item=item from=$assuntos}
-						<option value="{$item.id}" {if $item.id == $assunto->id}selected="selected"{/if}>{$item.nome}</option>
+						<option value="{$item.id}" {if $item.id == $assuntoQuestao->getAssuntoId()}selected="selected"{/if}>{$item.nome}</option>
 					{/foreach}
 				</select>
 			</div>

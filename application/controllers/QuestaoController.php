@@ -38,7 +38,6 @@ class QuestaoController extends Zend_Controller_Action{
 		$this->acesso($view);
 
 		$questao = new Questao();
-		$nivelQuestao 	= new NivelQuestao();
 
 		$post 	= Zend_Registry::get('post');
 		$get 	= Zend_Registry::get('get');
@@ -51,15 +50,9 @@ class QuestaoController extends Zend_Controller_Action{
 			$disciplinas 	= $disciplina->fetchAll("`date_delete` IS NULL","nome");
 			$view->assign("disciplinas",$disciplinas);
 						
-			$assuntoQuestao = new AssuntoQuestao();
-			
 			switch($get->action){
 				case 'edit':
 					$questao->load($get->id);
-					$nivelQuestao->lastRegister($questao->getId());
-					$alternativas = $questao->getAlternativas();
-					$view->assign("alternativas",$alternativas);
-					
 					break;
 				case 'delete':
 					$questao->load($get->id);
@@ -68,9 +61,12 @@ class QuestaoController extends Zend_Controller_Action{
 					$this->_redirect("questao/questao");
 					die();
 			}
-			$view->assign("questao",$questao);
-			$view->assign("nivel_questao",$nivelQuestao);
-			$view->assign("nivel_questao",$nivelQuestao);
+			$alternativas = $questao->getAlternativas();
+			$view->assign("alternativas",$alternativas);
+			$view->assign("assuntoQuestao",$questao->getAssuntoQuestao());
+			$view->assign("nivelQuestao",$questao->getNivelQuestao());
+					
+			$view->assign("object",$questao);
 
 			$view->assign("header","html/default/header.tpl");
 			$view->assign("body","questao/questao.tpl");

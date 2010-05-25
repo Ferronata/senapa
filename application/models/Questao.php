@@ -36,6 +36,8 @@ class Questao extends DAO {
 	public function setDescricaoResposta($var){$this->descricaoResposta = $var;}
 	
 	public function getAlternativas(){
+		if(empty($this->alternativas))
+			$this->setAlternativas(new ListaAlternativa());
 		return $this->alternativas;
 	}
 	public function setAlternativas($var){
@@ -167,6 +169,15 @@ class Questao extends DAO {
 				
 				$this->getAlternativas()->addAlternativa($alternativas);
 			}
+			
+			$assuntoQuestao = new AssuntoQuestao();
+			$assuntoQuestao->load2Questao($object->id);
+			$this->setAssuntoQuestao($assuntoQuestao);
+			
+			$nivelQuestao = new NivelQuestao();
+			$nivelQuestao->lastRegister($object->id);
+			
+			$this->setNivelQuestao($nivelQuestao);
 		}
 		return $object;
 	}
