@@ -166,6 +166,60 @@ public function init(){
 		$view->output("function/index.tpl");
 	}
 	
+	public function renderdisciplinaassuntoAction(){
+		$view 		= Zend_Registry::get("view");
+		$session 	= Zend_Registry::get("session");
+		$post 		= Zend_Registry::get("post");
+		$get 		= Zend_Registry::get("get");
+
+		$funcao = new FuncoesProjeto();
+		/*
+		if(!empty($post->Object)){
+			$return = array(array("html" => "Nenhum Registro", "value" => 0));
+			try{
+				
+				$relation_name 	= strtolower($post->RelationName);
+				$relation_value = (int)$post->RelationValue;
+				
+				$order = (!empty($post->Order))?$post->Order:"nome";
+				$params	= (isset($post->Params))?strtolower($post->Params):"nome";
+				
+				$object = new $post->Object ();
+				$status = "";
+				
+				$object = $object->fetchAll("`".$relation_name."_id` = '".$relation_value."'",$order);
+				
+				if(sizeof($object))
+					$return = array(array("html" => "Selecione", "value" => 0));
+				foreach($object as $key => $values)
+					$return[] = array("html" => $values->$params, "value" => $values->id);						
+				
+				die($funcao->array2json($return));
+				
+			}catch(Exception $e){die($funcao->array2json($return));}
+		}
+		*/
+		if(!empty($post->RelationValue)){
+			try{
+				
+				$relation_value = (int)$post->RelationValue;
+				
+				$object = new Assunto();
+				$object = $object->fetchAll("`date_delete` IS NULL AND `id` IN (SELECT `assunto_id` FROM `disciplina_assunto` WHERE `disciplina_id` = '".$relation_value."')","nome");
+
+				$return = array(array("html" => "Selecione", "value" => 0));
+				try{
+					foreach($object as $key => $values)
+						$return[] = array("html" => $values->nome, "value" => $values->id);
+				}catch(Exception $erro){}
+				die($funcao->array2json($return));
+				
+			}catch(Exception $e){die($funcao->array2json(array('msg' => 'erro', 'display' => htmlentities('Problemas na renderização'))));}
+		}
+		
+		$view->output("function/index.tpl");
+	}
+	
 	public function listrenderAction(){
 		$view 		= Zend_Registry::get("view");
 		$session 	= Zend_Registry::get("session");

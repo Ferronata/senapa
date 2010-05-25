@@ -56,9 +56,17 @@ class NivelQuestao extends DefaultObject {
 			$this->setNivel($object->nivel);
 			$this->setDataNivelamento($object->data_nivelamento);
 		}
-		return parent::fetchRow("id = '".$this->getId()."'");
+		return $object;
 	}
 	public function delete(){
 		return parent::delete("id = '".$this->getId()."'");
+	}
+	public function lastRegister($questao_id){
+		$object = parent::fetchRow("`questao_id` = '".$questao_id."'","data_nivelamento DESC");
+		if($object){
+			$this->setId($object->id);
+			return $this->load($this->getId());
+		}
+		return NULL;
 	}
 }

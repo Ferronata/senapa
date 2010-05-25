@@ -890,6 +890,67 @@ function rerenderObjectBack(e, a){
 	}
 }
 
+function rerenderDiscAssunto(tag,lista){
+	var page 	= "/"+project_root+"/function/renderDisciplinaAssunto";
+	
+	this.miniLoad(tag.parentNode,'miniload');
+	
+	myname = new Array();
+	tagname	= tag;
+	
+	for(i = 0; i<lista.length; i++){
+	
+		myname[i] = lista[i].name;
+		
+		var params 	= "RelationValue=" + tag.value;
+
+		new Ajax.Request(
+				page, 
+				{
+					evalScripts:true,
+					parameters: params, 
+					metod: 'POST', 
+					onComplete:rerenderDiscAssuntoBack,				
+					encoding: 'ISO-8859-1'
+				}
+			);
+	}
+}
+
+function rerenderDiscAssuntoBack(e, a){
+	
+	this.removeMiniLoad(tagname.parentNode,'miniload');
+	
+	res = eval('(' + e.responseText + ')');
+	
+	if(res['msg'])
+		this.addMensage('err', res['display']);
+	else{
+		var object = $(myname[0]);
+		object.disabled = false;
+		var aux	= 0;
+		
+		for(i = object.length-1; i>=0; i--)
+			object.remove(i);
+
+		for(i = 0; i<res.length;i++){
+			var option = document.createElement("option");
+			option.innerHTML = res[i]['html'];
+			if(res[i]['value']>0)
+				option.setAttribute('value',res[i]['value']);
+			
+			object.appendChild(option);
+		}
+		
+		for(j = 1; j<myname.length; j++){
+			for(i = myname.length-1; i>=1; i--)
+				$(myname[j]).remove(i);
+			$(myname[j]).disabled = true;
+		}
+	}
+}
+
+
 function listRender(tag,lista){
 	var page 	= "/"+project_root+"/function/listRender";
 	
@@ -964,7 +1025,54 @@ function listRenderBack(e, a){
 	}
 }
 
-
+function addComponentRadio(tag,lista){
+	if(tag && lista){
+		var str = "";
+		
+		var option = document.createElement("tr");
+		option.innerHTML = str;
+		option.setAttribute('class','lineComponent');
+		
+		var flag = false;
+		
+		for(i = 0; i<lista.length; i++){
+			var value = this.trim(lista[i].value);
+			var txt = value;
+			if(txt){
+				flag = true;
+				if(lista[i].innerHTML.indexOf('<option') >= 0){
+					txt = lista[i].options[lista[i].selectedIndex].text;
+					lista[i].selectedIndex = 0;
+				}
+				
+				var td = document.createElement("td");
+				td.setAttribute('class','left');
+				td.innerHTML  = '<input type="hidden" name="lista_'+lista[i].name+'[]" value="'+value+'" />';
+				td.innerHTML += txt;
+				option.appendChild(td);
+				
+				var td2 = document.createElement("td");
+				td2.innerHTML  = '<input type="radio" name="lista_radio" value="'+value+'" />';
+				option.appendChild(td2);
+				
+				lista[i].value = "";
+			}
+		}
+		if(flag){
+			var td = document.createElement("td");
+			td.innerHTML = '<input type="button" class="bt_remove" onclick="removeComponent(this)" value="remover" />';
+			option.appendChild(td);
+			
+			
+			if(!tag.tBody){
+				var tbody = document.createElement("tbody");
+				tbody.appendChild(option);
+				tag.appendChild(tbody);
+			}else
+				tag.tBody.appendChild(option);
+		}
+	}	
+}
 function addComponent(tag,lista){
 	if(tag && lista){
 		var str = "";
