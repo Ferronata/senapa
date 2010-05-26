@@ -11,6 +11,7 @@ require_once 'DAO.php';
 require_once 'ListaAlternativa.php';
 require_once 'AssuntoQuestao.php';
 require_once 'NivelQuestao.php';
+require_once 'Disciplina.php';
 
 class Questao extends DAO {
 	protected $_name = 'questao';
@@ -22,6 +23,7 @@ class Questao extends DAO {
 	private $alternativas;
 	private $assuntoQuestao;
 	private $nivelQuestao;
+	private $disciplina;
 
 	public function getId(){return $this->id;}
 	public function setId($var){$this->id = $var;}
@@ -41,28 +43,40 @@ class Questao extends DAO {
 		return $this->alternativas;
 	}
 	public function setAlternativas($var){
+		if(empty($var))
+			$var = new ListaAlternativa();
 		$this->alternativas = $var;
 	}
 	
 	public function getAssuntoQuestao(){
-		if(!$this->assuntoQuestao)
+		if(empty($this->assuntoQuestao))
 			$this->setAssuntoQuestao(new AssuntoQuestao());
 		return $this->assuntoQuestao;
 	}
 	public function setAssuntoQuestao($var){
-		if(!$var)
+		if(empty($var))
 			$var = new AssuntoQuestao();
 		$this->assuntoQuestao = $var;
 	}
 	public function getNivelQuestao(){
-		if(!$this->nivelQuestao)
+		if(empty($this->nivelQuestao))
 			$this->setNivelQuestao(new NivelQuestao());
 		return $this->nivelQuestao;
 	}
 	public function setNivelQuestao($var){
-		if(!$var)
+		if(empty($var))
 			$var = new NivelQuestao();
 		$this->nivelQuestao = $var;
+	}
+	public function getDisciplina(){
+		if(empty($this->disciplina))
+			$this->setDisciplina(new Disciplina());
+		return $this->disciplina;
+	}
+	public function setDisciplina($var){
+		if(empty($var))
+			$var = new Disciplina();
+		$this->disciplina = $var;
 	}
 
 	public function insert(){
@@ -131,17 +145,17 @@ class Questao extends DAO {
 		}
 		$assuntoQuestao = $tmp->fetchRow("SELECT * FROM `assunto_questao` WHERE `questao_id` = '".$this->getId()."'");
 		$this->getAssuntoQuestao()->setQuestaoId($this->getId());
-		print_r($assuntoQuestao);
 		if($assuntoQuestao['id']){
-			$this->setId($assuntoQuestao['id']);
+			$this->setId($assuntoQuestao['questao_id']);
 			$this->getAssuntoQuestao()->update();
 		}else
 			$this->getAssuntoQuestao()->insert();
 		
 		$nivelQuestao = new NivelQuestao();
 		$nivelQuestao->lastRegister($this->getId());
+	//	print $this->getId()." - ".$nivelQuestao->getNivel()." => ".$this->getNivelQuestao()->getNivel();
 		
-		if($nivelQuestao->getNivel() && $nivelQuestao->getNivel() != $this->getNivelQuestao()->getNivel()){
+		if($nivelQuestao->getNivel() != $this->getNivelQuestao()->getNivel()){
 			$this->getNivelQuestao()->setQuestaoId($this->getId());
 			$this->getNivelQuestao()->insert();
 		}
@@ -173,6 +187,11 @@ class Questao extends DAO {
 			$assuntoQuestao = new AssuntoQuestao();
 			$assuntoQuestao->load2Questao($object->id);
 			$this->setAssuntoQuestao($assuntoQuestao);
+			
+			$disciplinaAssunto = new DisciplinaAssunto();
+			$disciplinaAssunto = $disciplinaAssunto->fetchRow("`assunto_id` = '".$this->getAssuntoQuestao()->getAssuntoId()."'");
+			
+			$this->getDisciplina()->load($disciplinaAssunto->disciplina_id);
 			
 			$nivelQuestao = new NivelQuestao();
 			$nivelQuestao->lastRegister($object->id);

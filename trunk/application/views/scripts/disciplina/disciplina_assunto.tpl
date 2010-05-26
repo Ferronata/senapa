@@ -5,7 +5,7 @@
 				<select id="Disciplina" name=Disciplina class="key input medio" onchange="rerenderDiscAssunto(this,[{'Assunto'}])">
 					<option>Selecione</option>
 					{foreach item=item from=$disciplinas}
-						<option value="{$item.id}" {if $item.id == $disciplina->id}selected="selected"{/if}>{$item.nome}</option>
+						<option value="{$item.id}" {if $item.id == $disciplina->getId()}selected="selected"{/if}>{$item.nome}</option>
 					{/foreach}
 				</select>
 			</div>

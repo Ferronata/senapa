@@ -53,6 +53,15 @@ class QuestaoController extends Zend_Controller_Action{
 			switch($get->action){
 				case 'edit':
 					$questao->load($get->id);
+					
+					$tmpAssunto = new Assunto();
+					$tmpAssunto->load($questao->getAssuntoQuestao()->getAssuntoId());
+					
+					$assuntos = $tmpAssunto->fetchAll("`date_delete` IS NULL AND `id` IN (SELECT `assunto_id` FROM `disciplina_assunto` WHERE `disciplina_id` = '".$questao->getDisciplina()->getId()."')","nome");
+					
+					$view->assign("disciplina",$questao->getDisciplina());
+					$view->assign("assuntos",$assuntos);
+					
 					break;
 				case 'delete':
 					$questao->load($get->id);
@@ -61,6 +70,7 @@ class QuestaoController extends Zend_Controller_Action{
 					$this->_redirect("questao/questao");
 					die();
 			}
+			
 			$alternativas = $questao->getAlternativas();
 			$view->assign("alternativas",$alternativas);
 			$view->assign("assuntoQuestao",$questao->getAssuntoQuestao());
@@ -73,52 +83,52 @@ class QuestaoController extends Zend_Controller_Action{
 			$view->assign("footer","html/default/footer.tpl");
 			$view->output("index.tpl");
 		}elseif(isset($post->id)){
-			// SALVA E ATUALIZA REGISTRO
-			$questao->setDescricao($funcao->to_sql($post->descricao));
-			$questao->setDescricaoResposta($funcao->to_sql($post->descricao_resposta));
-			
-			$assuntoQuestao = new AssuntoQuestao();
-			$assuntoQuestao->setAssuntoId($post->Assunto);
-			
-			$questao->setAssuntoQuestao($assuntoQuestao);
-			
-			$questao->setAlternativas(new ListaAlternativa());
-			
-			if(!empty($post->nivel)){
-				$nivelQuestao->setNivel($post->nivel);
-				$nivelQuestao->setDataNivelamento(date("Y-m-d"));
+			try{
+				// SALVA E ATUALIZA REGISTRO
+				$questao->setDescricao($funcao->to_sql($post->descricao));
+				$questao->setDescricaoResposta($funcao->to_sql($post->descricao_resposta));
 				
-				$questao->setNivelQuestao($nivelQuestao);
-			}
-			if(isset($post->lista_alternativa_descricao)){
-				$lista = $post->lista_alternativa_descricao;
-				$questao->setResposta($funcao->to_sql($post->lista_radio));
+				$assuntoQuestao = new AssuntoQuestao();
+				$assuntoQuestao->setAssuntoId($post->Assunto);
 				
-				$listaAlternativa = new ListaAlternativa();
-				foreach($lista as $linha){
-					$alternativa = new QuestaoAlternativa();
-					$alternativa->setDescricao($linha);
-					
-					$questao->getAlternativas()->addAlternativa($alternativa);
+				$questao->setAssuntoQuestao($assuntoQuestao);
+				
+				$questao->setAlternativas(new ListaAlternativa());
+				
+				if(!empty($post->nivel)){
+					$questao->getNivelQuestao()->setNivel($post->nivel);
+					$questao->getNivelQuestao()->setDataNivelamento(date("Y-m-d H:i:s"));
 				}
-			}
-
-			if(empty($post->id)){
-				// CREATE
-
-				if($questao->insert())
-					$retorno = array('msg' => 'ok', 'display' => htmlentities('Questao inserido com sucesso'), 'url' => 'questao');
-				else
-					$retorno = array('msg' => 'error', 'display' => htmlentities('Erro ao inserir Questao'));
-
-				die($funcao->array2json($retorno));
-			}else{
-				// UPDATE
-				$questao->setId($post->id);
-				$questao->update();
-				$retorno = array('msg' => 'ok', 'display' => htmlentities('Questao modificado com sucesso'));
-				die($funcao->array2json($retorno));
-			}
+				if(isset($post->lista_alternativa_descricao)){
+					$lista = $post->lista_alternativa_descricao;
+					$questao->setResposta($funcao->to_sql($post->lista_radio));
+					
+					$listaAlternativa = new ListaAlternativa();
+					foreach($lista as $linha){
+						$alternativa = new QuestaoAlternativa();
+						$alternativa->setDescricao($linha);
+						
+						$questao->getAlternativas()->addAlternativa($alternativa);
+					}
+				}
+	
+				if(empty($post->id)){
+					// CREATE
+	
+					if($questao->insert())
+						$retorno = array('msg' => 'ok', 'display' => htmlentities('Questao inserido com sucesso'), 'url' => 'questao');
+					else
+						$retorno = array('msg' => 'error', 'display' => htmlentities('Erro ao inserir Questao'));
+	
+					die($funcao->array2json($retorno));
+				}else{
+					// UPDATE
+					$questao->setId($post->id);
+					$questao->update();
+					$retorno = array('msg' => 'ok', 'display' => htmlentities('Questao modificado com sucesso'));
+					die($funcao->array2json($retorno));
+				}
+			}catch(Exception $e){die($funcao->array2json(array('msg' => 'error', 'display' => htmlentities('Erro fatal - INSERT/UPDATE => '.$e))));}
 		}else{
 			// DATAGRID
 			$this->datagrid($view, 'questao',$display_datagrid);

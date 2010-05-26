@@ -8,7 +8,8 @@
 <center>
 	<div class="body">
 		<div class="innerBody">
-			<form id="form" name="form" method="post" action="javascript: enviarForm('/senapa/questao/Questao', 'form', 'save');" onsubmit="return(runAction(this))">
+			<!-- --><form id="form" name="form" method="post" action="javascript: enviarForm('/senapa/questao/Questao', 'form', 'save');" onsubmit="return(runAction(this))"><!-- -->
+			<!-- --<form id="form" name="form" method="post" action="/senapa/questao/Questao" onsubmit="return(runAction(this))"> <!-- -->
 				<h1>Questao</h1>
 				<sub>Gerencimento - Questao</sub>
 				
