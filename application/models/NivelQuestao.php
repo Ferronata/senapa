@@ -62,11 +62,31 @@ class NivelQuestao extends DefaultObject {
 		return parent::delete("id = '".$this->getId()."'");
 	}
 	public function lastRegister($questao_id){
-		$object = parent::fetchRow("`questao_id` = '".$questao_id."'","data_nivelamento DESC");
+		$object = $this->fetchRow("`questao_id` = '".$questao_id."'","data_nivelamento DESC, id");
 		if($object){
 			$this->setId($object->id);
 			return $this->load($this->getId());
 		}
 		return NULL;
+	}
+	public function find($lista = array(),$nivelQuestao){
+		for($i =0; $i<sizeof($lista); $i++)
+			if($lista[$i]->getNivel() == $nivelQuestao->getNivel())
+				return $i;
+		return -1;
+	}
+	public function ordena($lista = array()){
+		for($j =0; $j<sizeof($lista); $j++){
+			$aux = 0;
+			for($i =1; $i<(sizeof($lista)-$j); $i++){
+				if($lista[$aux]->getNivel() > $lista[$i]->getNivel()){
+					$tmp = $lista[$i];
+					$lista[$i] = $lista[$aux];
+					$lista[$aux] = $tmp;
+					$aux = $i;
+				}
+			}
+		}
+		return $lista;
 	}
 }
