@@ -173,32 +173,7 @@ public function init(){
 		$get 		= Zend_Registry::get("get");
 
 		$funcao = new FuncoesProjeto();
-		/*
-		if(!empty($post->Object)){
-			$return = array(array("html" => "Nenhum Registro", "value" => 0));
-			try{
-				
-				$relation_name 	= strtolower($post->RelationName);
-				$relation_value = (int)$post->RelationValue;
-				
-				$order = (!empty($post->Order))?$post->Order:"nome";
-				$params	= (isset($post->Params))?strtolower($post->Params):"nome";
-				
-				$object = new $post->Object ();
-				$status = "";
-				
-				$object = $object->fetchAll("`".$relation_name."_id` = '".$relation_value."'",$order);
-				
-				if(sizeof($object))
-					$return = array(array("html" => "Selecione", "value" => 0));
-				foreach($object as $key => $values)
-					$return[] = array("html" => $values->$params, "value" => $values->id);						
-				
-				die($funcao->array2json($return));
-				
-			}catch(Exception $e){die($funcao->array2json($return));}
-		}
-		*/
+		
 		if(!empty($post->RelationValue)){
 			try{
 				
@@ -219,6 +194,121 @@ public function init(){
 		
 		$view->output("function/index.tpl");
 	}
+	
+	public function rendercheckdisciplinaassuntoAction(){
+		$view 		= Zend_Registry::get("view");
+		$session 	= Zend_Registry::get("session");
+		$post 		= Zend_Registry::get("post");
+		$get 		= Zend_Registry::get("get");
+
+		$funcao = new FuncoesProjeto();
+		
+		if(!empty($post->RelationValue)){
+			try{
+				
+				$relation_value = (int)$post->RelationValue;
+				
+				$object = new Assunto();
+				$object = $object->fetchAll("`date_delete` IS NULL AND `id` IN (SELECT `assunto_id` FROM `disciplina_assunto` WHERE `disciplina_id` = '".$relation_value."')","nome");
+
+				$return = array();
+				try{
+					foreach($object as $key => $values)
+						$return[] = array("html" => $values->nome, "value" => $values->id);
+				}catch(Exception $erro){}
+				die($funcao->array2json($return));
+				
+			}catch(Exception $e){die($funcao->array2json(array('msg' => 'erro', 'display' => htmlentities('Problemas na renderização'))));}
+		}
+		
+		$view->output("function/index.tpl");
+	}
+	
+	// Metodo usado para efetuar a busca por questões para montar avaliação
+	public function findquestionsAction(){
+		$view 		= Zend_Registry::get("view");
+		$session 	= Zend_Registry::get("session");
+		$post 		= Zend_Registry::get("post");
+		$get 		= Zend_Registry::get("get");
+
+		$funcao = new FuncoesProjeto();
+		
+		if(!empty($get->tpPesqusia)){
+			try{
+//				tpPesqusia=1
+//				lista_niveis=5
+//				lista_niveis=6
+//				Disciplina=1
+//				lista_assuntos=1
+//				lista_assuntos=2
+				$tpPesqusia 	= $get->tpPesqusia;
+				$disciplina		= $get->Disciplina;
+				$lista_niveis	= $get->lista_niveis;
+				$lista_assuntos	= $get->lista_assuntos;
+				
+				$object = new DefaultObject();
+				
+				$questoes = new ListaQuestao();
+				
+				switch($tpPesqusia){
+					case $object->getTipoPesquisa('QUESTAO'):
+						$questao = new Questao();
+						$where = 
+						"
+						`date_delete` IS NULL AND 
+						`id` IN (SELECT `questao_id` FROM `assunto_questao` WHERE `assunto_id` IN (".implode($lista_assuntos,",")."))
+						";
+						
+						$lista = $questao->fetchAll($where);
+						
+						foreach($lista as $linha){
+							$tmpQuestao = new Questao();
+							$tmpQuestao->load($linha->id);
+							
+							if($questoes->findNivel($tmpQuestao,$lista_niveis) >= 0 )
+								$questoes->addQuestao($tmpQuestao);
+						}
+						
+						break;
+					case $object->getTipoPesquisa('AVALIACAO'):
+						break;
+				}
+				
+				$str = "";
+				$return = array();
+				try{
+					foreach($questoes->getListaQuestao() as $key => $values){
+						$alternativas = $values->getAlternativas()->getAlternativas();
+						$lista = array();
+						foreach($alternativas as $alternativa){
+							$lista[] = array("id" => $alternativa->getId(), "questao_id" => $alternativa->getQuestaoId(), "descricao" => $alternativa->getDescricao());
+						}
+						$return[] = array("resume" => $values->getDescricao(), "html" => $values->getDescricao(), "resposta" => $values->getResposta(), 
+						"alternativas" => $lista);
+					}
+					
+				}catch(Exception $erro){}
+				die($funcao->array2json($return));
+				
+				/*
+				$relation_value = (int)$get->RelationValue;
+				
+				$object = new Assunto();
+				$object = $object->fetchAll("`date_delete` IS NULL AND `id` IN (SELECT `assunto_id` FROM `disciplina_assunto` WHERE `disciplina_id` = '".$relation_value."')","nome");
+
+				$return = array();
+				try{
+					foreach($object as $key => $values)
+						$return[] = array("html" => $values->nome, "value" => $values->id);
+				}catch(Exception $erro){}
+				die($funcao->array2json($return));
+				*/
+			}catch(Exception $e){die($funcao->array2json(array('msg' => 'erro', 'display' => htmlentities('Problemas na renderização'))));}
+		}
+		
+		$view->output("function/index.tpl");
+	}
+	
 	
 	public function listrenderAction(){
 		$view 		= Zend_Registry::get("view");

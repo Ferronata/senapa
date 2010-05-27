@@ -12,9 +12,9 @@
 				<h1>Avaliação</h1>
 				<sub>Gerencimento - Avaliação</sub>
 				
-				<div id="abas" class="divAba">{html_aba value='Dados Gerais' forid='aba1' classe=selected}{html_aba value='Conteúdo' forid='aba2'}</div>
+				<div id="abas" class="divAba">{html_aba value='Dados Gerais' forid='aba1'}{html_aba value='Conteúdo' forid='aba2' classe=selected}</div>
 				
-				<div id="aba1" class="content">
+				<div id="aba1" class="content" style="display: none">
 					<input type="hidden" id="id" name="id" value="{$object->getId()}" />
 					
 					<div class="line">

@@ -8,7 +8,6 @@
  * @version 1.0
  */
 
-require_once 'Enum.php';
 require_once 'DAO.php';
 
 class Avaliacao extends DAO {
@@ -24,21 +23,6 @@ class Avaliacao extends DAO {
 	private $tempoMaximoProva;
 	private $status;
 
-	private function enums(){
-		$enums = array(
-			"QUESTAO" 		=> 1,
-			"AVALIACAO" 	=> 2
-		);
-		return new DefinedEnum($enums);
-	}
-	public function getTipoPesquisa($enum){
-		$enum = strtoupper($enum);
-		$enums = $this->enums();
-		try{
-			return $enums->$enum;
-		}catch(Exception $e){return NULL;}
-	}
-	
 	public function getId(){return $this->id;}
 	public function setId($var){$this->id = $var;}
 

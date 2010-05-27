@@ -558,3 +558,8 @@ body {
 	color: #333333;
 	text-align: center;
 }
+
+.left{
+	padding:0 2px;
+	text-align: left !important;
+}
