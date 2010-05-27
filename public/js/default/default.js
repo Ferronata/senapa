@@ -951,6 +951,142 @@ function rerenderDiscAssuntoBack(e, a){
 }
 
 
+function rerenderCheckDiscAssunto(tag,table){
+	var page 	= "/"+project_root+"/function/renderCheckDisciplinaAssunto";
+	
+	this.miniLoad(tag.parentNode,'miniload');
+	
+	myname = table;
+	tagname	= tag;
+
+	var params 	= "RelationValue=" + tag.value;
+
+	new Ajax.Request(
+			page, 
+			{
+				evalScripts:true,
+				parameters: params, 
+				metod: 'POST', 
+				onComplete:rerenderCheckDiscAssuntoBack,				
+				encoding: 'ISO-8859-1'
+			}
+		);
+}
+
+function rerenderCheckDiscAssuntoBack(e, a){
+	
+	this.removeMiniLoad(tagname.parentNode,'miniload');
+	
+	res = eval('(' + e.responseText + ')');
+	
+	if(res['msg'])
+		this.addMensage('err', res['display']);
+	else{
+		var object = myname;
+		
+		var lista = object.getElementsByTagName('tBody');
+		
+		for(i=0;i<lista.length;i++){
+			tmp = lista[i].parentNode;
+			tmp.removeChild(lista[i]);
+		}
+		tBody = document.createElement("tbody");
+		object.appendChild(tBody);
+
+		for(i = 0; i<res.length;i++){
+			
+			var tr = document.createElement("tr");
+			tr.setAttribute("class", "lineComponent");
+			
+			var td = document.createElement("td");
+			td.setAttribute('class','center tdCheckRadio');
+			
+			var checkbox = document.createElement("input");
+			checkbox.setAttribute("type", "checkbox");
+			checkbox.setAttribute("name", "lista_assuntos[]");
+			checkbox.setAttribute('value',res[i]['value']);
+			
+			td.appendChild(checkbox);
+			tr.appendChild(td);
+			
+			td = document.createElement("td");
+			td.setAttribute('class','left');
+			td.innerHTML = res[i]['html'];
+			
+			tr.appendChild(td);			
+			
+			tBody.appendChild(tr);
+		}
+	}
+}
+
+function findQuestions(form, tag){
+	var page 	= "/"+project_root+"/function/findQuestions";
+	
+	this.miniLoad(tag.parentNode,'miniload');
+	
+	var params 	= form.serialize();
+
+	new Ajax.Request(
+			page, 
+			{
+				evalScripts:true,
+				parameters: params, 
+				metod: 'POST', 
+				onComplete:findQuestionsBack,				
+				encoding: 'ISO-8859-1'
+			}
+		);
+}
+
+function findQuestionsBack(e, a){
+	
+	this.removeMiniLoad(tagname.parentNode,'miniload');
+	
+	res = eval('(' + e.responseText + ')');
+	
+	if(res['msg'])
+		this.addMensage('err', res['display']);
+	else{
+		var object = myname;
+		
+		var lista = object.getElementsByTagName('tBody');
+		
+		for(i=0;i<lista.length;i++){
+			tmp = lista[i].parentNode;
+			tmp.removeChild(lista[i]);
+		}
+		tBody = document.createElement("tbody");
+		object.appendChild(tBody);
+
+		for(i = 0; i<res.length;i++){
+			
+			var tr = document.createElement("tr");
+			tr.setAttribute("class", "lineComponent");
+			
+			var td = document.createElement("td");
+			td.setAttribute('class','center tdCheckRadio');
+			
+			var checkbox = document.createElement("input");
+			checkbox.setAttribute("type", "checkbox");
+			checkbox.setAttribute("name", "lista_assuntos");
+			checkbox.setAttribute('value',res[i]['value']);
+			
+			td.appendChild(checkbox);
+			tr.appendChild(td);
+			
+			td = document.createElement("td");
+			td.setAttribute('class','left');
+			td.innerHTML = res[i]['html'];
+			
+			tr.appendChild(td);			
+			
+			tBody.appendChild(tr);
+		}
+	}
+}
+
+
 function listRender(tag,lista){
 	var page 	= "/"+project_root+"/function/listRender";
 	
