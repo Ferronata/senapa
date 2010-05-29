@@ -1020,13 +1020,16 @@ function rerenderCheckDiscAssuntoBack(e, a){
 	}
 }
 
-function findQuestions(form, tag){
+function findQuestions(tag,table){
 	var page 	= "/"+project_root+"/function/findQuestions";
 	
-	this.miniLoad(tag.parentNode,'miniload');
+	listaQuestao = $('listaQuestoes');
+	this.miniLoad(listaQuestao.parentNode,'miniload');
 	
-	var params 	= form.serialize();
-
+	myname = listaQuestao;
+	tagname	= listaQuestao;
+	
+	var params 	= tag.serialize();
 	new Ajax.Request(
 			page, 
 			{
@@ -1042,7 +1045,7 @@ function findQuestions(form, tag){
 function findQuestionsBack(e, a){
 	
 	this.removeMiniLoad(tagname.parentNode,'miniload');
-	
+		
 	res = eval('(' + e.responseText + ')');
 	
 	if(res['msg'])
@@ -1060,27 +1063,54 @@ function findQuestionsBack(e, a){
 		object.appendChild(tBody);
 
 		for(i = 0; i<res.length;i++){
-			
+
 			var tr = document.createElement("tr");
 			tr.setAttribute("class", "lineComponent");
-			
+
 			var td = document.createElement("td");
 			td.setAttribute('class','center tdCheckRadio');
-			
+
 			var checkbox = document.createElement("input");
 			checkbox.setAttribute("type", "checkbox");
 			checkbox.setAttribute("name", "lista_assuntos");
-			checkbox.setAttribute('value',res[i]['value']);
-			
+			checkbox.setAttribute('value',res[i]['id']);
+
 			td.appendChild(checkbox);
 			tr.appendChild(td);
-			
+
 			td = document.createElement("td");
 			td.setAttribute('class','left');
-			td.innerHTML = res[i]['html'];
+			td.innerHTML = "";			
+			tr.appendChild(td);		
+
+			var alternativas = res[i]['alternativas'];
+			var str = "<h1 class=\\'h1Questoes\\'>"+res[i]['html']+"</h1><hr />";
+			str += "<h2 class=\\'h2Questoes\\'>Alternativas</h2>";
+			if(!alternativas.length)
+				str += "<span class=\\'semAlternativas\\'>Não possui alternativas cadastradas</span>";
+			else{
+				str += "<ul class=\\'popupAlternativas\\'>";
+				for(var j=0;j<alternativas.length;j++){
+					if(alternativas[j]['id'] == res[i]['resposta'])
+						str += "<li class=\\'popupAlternativaResposta\\'>"+alternativas[j]['descricao']+"</li>";
+					else
+						str += '<li>'+alternativas[j]['descricao']+'</li>';
+				}
+			}
 			
-			tr.appendChild(td);			
+			str += '</ul>';
 			
+			str += '<hr \>';
+			str += "<h2 class=\\'h2Questoes\\'>Descricao da Resposta</h2>";
+			str += "<span class=\\'descricaoResposta\\'>"+res[i]['descricao_resposta']+"</span>";
+				
+			var popup = 'onmouseover=\"return overlib(\''+str+'\',STICKY,WIDTH,400,CLOSETEXT,\'X\',CAPTION,\'Detalhes\',SNAPX,5,SNAPY,5);\" onmouseout=\"nd();\"';
+
+			td = document.createElement("td");
+			td.setAttribute('class','left');
+			td.innerHTML = '<span class="questions" '+popup+'>'+res[i]['resume']+'</span>';			
+			tr.appendChild(td);
+
 			tBody.appendChild(tr);
 		}
 	}

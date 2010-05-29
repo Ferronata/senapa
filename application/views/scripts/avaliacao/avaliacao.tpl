@@ -4,7 +4,36 @@
  * @author Leonardo Popik e João Marcos=> Classgen 1.0
  * @version 1.0
  *}
+{literal}
+<style type="text/css">
+.h1Questoes, .h2Questoes{
+	color: #666666 !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	font-weight: 900;
+}
+.h1Questoes{font-size: 14px;}
+.h2Questoes{font-size: 12px;}
+.popupAlternativas{
+	margin: 0 0 0 30px !important;
+	padding: 0 2px !important;
+}
+.popupAlternativas li{
+	color: #999999 !important;
+	list-style: lower-alpha;
+}
+.popupAlternativaResposta{
+	color: #ffffff;
+	font-weight: 900;
+	text-decoration: underline;
+}
+.descricaoResposta, .semAlternativas{
+	padding: 0 10px !important;
+	color: #999999;
+}
 
+</style>
+{/literal}
 <center>
 	<div class="body">
 		<div class="innerBody">
@@ -12,9 +41,9 @@
 				<h1>Avaliação</h1>
 				<sub>Gerencimento - Avaliação</sub>
 				
-				<div id="abas" class="divAba">{html_aba value='Dados Gerais' forid='aba1'}{html_aba value='Conteúdo' forid='aba2' classe=selected}</div>
+				<div id="abas" class="divAba">{html_aba value='Dados Gerais' forid='aba1' classe=selected}{html_aba value='Conteúdo' forid='aba2'}</div>
 				
-				<div id="aba1" class="content" style="display: none">
+				<div id="aba1" class="content">
 					<input type="hidden" id="id" name="id" value="{$object->getId()}" />
 					
 					<div class="line">
@@ -66,7 +95,7 @@
 						</div>
 					</div>
 				</div>
-				<div id="aba2">{include file='disciplina/disciplina_avaliacao.tpl'}</div>
+				<div id="aba2" style="display: none;">{include file='disciplina/disciplina_avaliacao.tpl'}</div>
 				<div class="controle">
 					<input type="submit" class="button save" value="Salvar" />
 					<input type="button" class="button back" value="Sair" onclick="voltarForm();" />
