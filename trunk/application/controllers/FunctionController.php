@@ -233,7 +233,7 @@ public function init(){
 
 		$funcao = new FuncoesProjeto();
 		
-		if(!empty($get->tpPesqusia)){
+		if(!empty($post->tpPesqusia)){
 			try{
 //				tpPesqusia=1
 //				lista_niveis=5
@@ -241,10 +241,10 @@ public function init(){
 //				Disciplina=1
 //				lista_assuntos=1
 //				lista_assuntos=2
-				$tpPesqusia 	= $get->tpPesqusia;
-				$disciplina		= $get->Disciplina;
-				$lista_niveis	= $get->lista_niveis;
-				$lista_assuntos	= $get->lista_assuntos;
+				$tpPesqusia 	= $post->tpPesqusia;
+				$disciplina		= $post->Disciplina;
+				$lista_niveis	= $post->lista_niveis;
+				$lista_assuntos	= $post->lista_assuntos;
 				
 				$object = new DefaultObject();
 				
@@ -283,28 +283,16 @@ public function init(){
 						foreach($alternativas as $alternativa){
 							$lista[] = array("id" => $alternativa->getId(), "questao_id" => $alternativa->getQuestaoId(), "descricao" => $alternativa->getDescricao());
 						}
-						$return[] = array("resume" => $values->getDescricao(), "html" => $values->getDescricao(), "resposta" => $values->getResposta(), 
-						"alternativas" => $lista);
+						$return[] = array("id" => $values->getId(),"resume" => $values->getDescricao(), "html" => $values->getDescricao(), "resposta" => $values->getResposta(), "descricao_resposta" => $values->getDescricaoResposta(), "alternativas" => $lista);
+//						$return[] = array("id" => $values->getId(),"resume" => $values->getDescricao(), "html" => $values->getDescricao(), "resposta" => $values->getResposta());
 					}
 					
 				}catch(Exception $erro){}
 				die($funcao->array2json($return));
 				
-				/*
-				$relation_value = (int)$get->RelationValue;
-				
-				$object = new Assunto();
-				$object = $object->fetchAll("`date_delete` IS NULL AND `id` IN (SELECT `assunto_id` FROM `disciplina_assunto` WHERE `disciplina_id` = '".$relation_value."')","nome");
-
-				$return = array();
-				try{
-					foreach($object as $key => $values)
-						$return[] = array("html" => $values->nome, "value" => $values->id);
-				}catch(Exception $erro){}
-				die($funcao->array2json($return));
-				*/
 			}catch(Exception $e){die($funcao->array2json(array('msg' => 'erro', 'display' => htmlentities('Problemas na renderização'))));}
-		}
+		}else
+			die($funcao->array2json(array('msg' => 'erro', 'display' => htmlentities('Problemas na renderização'))));
 		
 		$view->output("function/index.tpl");
 	}

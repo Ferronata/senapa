@@ -51,9 +51,9 @@
 			<p />
 			
 			<hr />
-			{* {popup sticky=false closetext="X" caption="Detalhes" text="Assuntos" snapx=5 snapy=5} *}
+			{* {popup sticky=false closetext="X" caption="Detalhes" text="Assuntos" padx=5 padx=5} *}
 			<div class="divDatagridObjects">
-				<table class="datagridObjects" id="questoes">
+				<table class="datagridObjects" id="listaQuestoes">
 					<thead>
 						<tr class="gridTitle">
 							<td style="width: 18px;">&nbsp;</td>
