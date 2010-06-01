@@ -98,8 +98,15 @@ class AdminController extends Zend_Controller_Action{
 				array('nome' => 'Aluno','data' 			=> $dataAluno)
 			);		
 		
+		$pessoa_fisica = new PessoaFisica();
+		$pessoa_fisica->setNome("Super Adminsitrador");
 		
+		$saudacao = (date("H")<12)?"Bom dia ":(date("H")<18)?"Boa tarde ":"Boa noite ";
+		$saudacao .= $pessoa_fisica->getNome();
+			
 		$view->assign("categorias",$array);		
+		$view->assign("pessoa_fisica",$pessoa_fisica);
+		$view->assign("saudacao",$saudacao);
  		$view->assign("header","html/default/header.tpl");
 		$view->assign("body","admin/index.tpl");
 		$view->assign("footer","html/default/footer.tpl");

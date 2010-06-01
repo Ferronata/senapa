@@ -1,6 +1,13 @@
 <div class="border">
 	<div id="top">
 		<div id="logo">SGA - Sistema Especialista de Nivelamento e Auxílio ao Processo Avaliativo</div>
+		<div id="topMenu">
+			<ul>
+				<li class="liHome"><span><a href="?" title="Página inicial">Home</a></span></li>
+				<li class="liUser"><span><a href="#" title="Dados pessoais">{$pessoa_fisica->getNome()}</a></span></li>
+				<li class="liExit"><span><a href="#" title="Sair do sistema">Sair</a></span></li>
+			</ul>
+		</div>
 	</div>
 	<div id="middle">
 		<table class="table_menu" cellpadding="0" cellspacing="0" >
@@ -33,16 +40,10 @@
 						{/foreach}
 					</div>
 				</td>
-				<!-- 
-				<td class="td_work">
-					<div id="work">
-						Work
-					</div>
-				</td>
-				 -->
 				 <td class="td_work">
 				 	<div id="work">
-				 		<!-- <iframe id="myWork" name="myWork" src="http://www.google.com.br" height="*" marginheight="0" scrolling="no" frameborder="0"></iframe> -->
+				 		<h1>{$saudacao}</h1>
+				 		<hr />
 				 	</div>
 				 </td>
 			</tr>

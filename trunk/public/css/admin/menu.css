@@ -132,7 +132,43 @@
 /*
  * TOP MENU
  */
-/**/
+
+#topMenu{
+	float: right;
+	width: 45%;
+}
+#topMenu ul{
+	margin: 0;
+	padding: 0;
+	margin-top: 70px;
+	float: right;
+	list-style: none;
+}
+#topMenu ul a{
+	color: #333333;
+	text-decoration: none;
+}
+#topMenu ul a:hover{
+	color: #999999;
+}
+#topMenu ul li{
+	padding: 0;
+	padding-left: 26px;
+	padding-right: 10px;
+	
+	height: 26px;
+	float: left;
+	display: inline;
+}
+#topMenu ul li span{
+	float: left;
+	margin: 3px 0;
+}
+#topMenu ul li.liHome{background: url("../../images/home_26.png") left center no-repeat;}
+#topMenu ul li.liUser{background: url("../../images/user_26.png") left center no-repeat;}
+#topMenu ul li.liExit{background: url("../../images/exit_26.png") left center no-repeat;}
+ 
+/**
 #topmenu{
 	float:right;
 	margin:0;
