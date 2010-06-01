@@ -91,5 +91,15 @@ class IndexController extends Zend_Controller_Action
     	$view->assign("footer","html/footer.tpl");
     	$view->output("index.tpl");
     }
+	public function loginAction(){
+		$view 		= Zend_Registry::get("view");
+		$session 	= Zend_Registry::get("session");
+		$funcao 	= new FuncoesProjeto();
+		
+		$view->assign("header","html/default/header.tpl");
+		$view->assign("body","html/default/login.tpl");
+		$view->assign("footer","html/default/footer.tpl");
+		$view->output("index.tpl");
+	}
 }
 
