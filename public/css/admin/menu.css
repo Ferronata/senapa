@@ -164,28 +164,6 @@
 	float: left;
 	margin: 3px 0;
 }
-#topMenu ul li.liHome{background: url("../../images/home_26.png") left center no-repeat;}
-#topMenu ul li.liUser{background: url("../../images/user_26.png") left center no-repeat;}
-#topMenu ul li.liExit{background: url("../../images/exit_26.png") left center no-repeat;}
- 
-/**
-#topmenu{
-	float:right;
-	margin:0;
-	padding:0 10px;
-}
-#topmenu .title-menu{
-	display:none;
-}
-
-#topmenu .content_menu ul.sub-menu{
-	margin:0;
-	padding:0;
-	list-style:none;
-}
-#topmenu .content_menu ul.sub-menu li{
-	margin:0;
-	padding:0 0 0 10px;
-	display:inline;
-}
-/**/
+#topMenu ul li.liHome{padding-left:30px; background: url("../../images/admin/menu/home_26.png") left center no-repeat;}
+#topMenu ul li.liUser{background: url("../../images/admin/menu/user_26.png") left center no-repeat;}
+#topMenu ul li.liExit{background: url("../../images/admin/menu/exit_26.png") left center no-repeat;}
