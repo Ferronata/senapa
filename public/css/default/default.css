@@ -85,6 +85,11 @@ body {
  	background: url(../../images/logo.png) no-repeat;
  	float: left;
 }
+#topRight{
+	float: right;
+	width: 45%;
+}
+
 #middle{
 	min-height:400px;
 }

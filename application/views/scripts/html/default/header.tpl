@@ -7,8 +7,8 @@
 <link rel="shortcut icon" href="{php}print BASE_URL;{/php}/public/images/favicon.ico">
 
 <link rel="stylesheet" type="text/css" href="{php}print BASE_URL;{/php}/public/js/lib/jqModal/css/default.css" />
-<link rel="stylesheet" type="text/css" href="{php}print BASE_URL;{/php}/public/css/admin/default.css" />
-<link rel="stylesheet" type="text/css" href="{php}print BASE_URL;{/php}/public/css/admin/menu.css" />
+<link rel="stylesheet" type="text/css" href="{php}print BASE_URL;{/php}/public/css/default/default.css" />
+<link rel="stylesheet" type="text/css" href="{php}print BASE_URL;{/php}/public/css/default/menu.css" />
 
 <script type="text/javascript" src="{php}print BASE_URL;{/php}/public/js/lib/overlib-4.2.1/overlib.js" charset="ISO-8859-1"></script>
 <script type="text/javascript" src="{php}print BASE_URL;{/php}/public/js/lib/prototype-1.6.0.3.js" charset="ISO-8859-1"></script>
