@@ -132,10 +132,13 @@
 /*
  * TOP MENU
  */
+#topTimer{
+	background: red;
+	display: block;
+}
 
 #topMenu{
-	float: right;
-	width: 45%;
+	
 }
 #topMenu ul{
 	margin: 0;
