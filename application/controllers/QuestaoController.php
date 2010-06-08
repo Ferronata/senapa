@@ -48,7 +48,7 @@ class QuestaoController extends Zend_Controller_Action{
 		if(isset($get->action)){
 			$disciplina 	= new Disciplina();
 			$disciplinas 	= $disciplina->fetchAll("`date_delete` IS NULL","nome");
-			$view->assign("disciplinas",$disciplinas);
+			$view->assign("disciplinas",$disciplinas);		
 						
 			switch($get->action){
 				case 'edit':
@@ -59,7 +59,6 @@ class QuestaoController extends Zend_Controller_Action{
 					
 					$assuntos = $tmpAssunto->fetchAll("`date_delete` IS NULL AND `id` IN (SELECT `assunto_id` FROM `disciplina_assunto` WHERE `disciplina_id` = '".$questao->getDisciplina()->getId()."')","nome");
 					
-					$view->assign("disciplina",$questao->getDisciplina());
 					$view->assign("assuntos",$assuntos);
 					
 					break;
@@ -72,6 +71,8 @@ class QuestaoController extends Zend_Controller_Action{
 			}
 			
 			$alternativas = $questao->getAlternativas();
+			
+			$view->assign("disciplina",$questao->getDisciplina());
 			$view->assign("alternativas",$alternativas);
 			$view->assign("assuntoQuestao",$questao->getAssuntoQuestao());
 			$view->assign("nivelQuestao",$questao->getNivelQuestao());
