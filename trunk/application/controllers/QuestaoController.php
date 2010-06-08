@@ -11,16 +11,6 @@ class QuestaoController extends Zend_Controller_Action{
 	public function init(){
 		include_once("Project/include.php");
 	}
-	public function datagrid($view, $table, $display = array()){
-		//Exemplo => $datagrid = new Datagrid('com_endereco', array('id'=>'ID', 'logradouro'=>'Rua'));
-		$datagrid = new Datagrid($table,$display);
-		$view->assign("datagrid",$datagrid);
-
-		$view->assign("body","html/default/datagrid.tpl");
-		$view->assign("header","html/default/header.tpl");
-		$view->assign("footer","html/default/footer.tpl");
-		$view->output("index.tpl");
-	}
 	public function acesso($view){
 		$funcao = new FuncoesProjeto();
 		if(!$funcao->acesso()){
@@ -132,7 +122,14 @@ class QuestaoController extends Zend_Controller_Action{
 			}catch(Exception $e){die($funcao->array2json(array('msg' => 'error', 'display' => htmlentities('Erro fatal - INSERT/UPDATE => '.$e))));}
 		}else{
 			// DATAGRID
-			$this->datagrid($view, 'questao',$display_datagrid);
+			$display_datagrid = array(
+				'descricao'			=>	'Questão', 
+				'resposta'	=>	'Resposta',
+				'descricao_resposta'	=>	'Explicação da Resposta'
+			);
+			$where = "`date_delete` IS NULL";
+			
+			$funcao->datagrid($view, 'questao',$display_datagrid,"","Gerenciamento de Questão");
 		}
 	}
 }

@@ -46,6 +46,30 @@
 				<div id="aba1" class="content">
 					<input type="hidden" id="id" name="id" value="{$object->getId()}" />
 					
+					{if $usuario->getPapelId() == $usuario->ENUM('P_S_ADMIN') || $usuario->getPapelId() == $usuario->ENUM('P_ADMIN')}
+					<div class="line">
+						<label class="label" for="professor">Professor</label>
+						<div class="innerLine">
+							<select id="professor" name=professor class="input medio">
+								<option>Selecione um professor</option>
+								{foreach item=item from=$professores}
+									<option value="{$item->getId()}" {if $professor->getId() == $item->getId()} selected="selected" {/if}>{$item->getNome()}</option>
+								{/foreach}
+							</select>
+						</div>
+					</div>
+					{elseif $usuario->getPapelId() == $usuario->ENUM('P_PROFESSOR')}
+						<div class="line">
+							<label class="label" for="professor">Professor</label>
+							<div class="innerLine">
+								<input type="hidden" id="professor" name="professor" value="{$usuario->getId()}">
+								<input type="text" class="input medio" disabled="disabled" value="{$usuario->getNome()}">
+							</div>
+						</div>
+					{else}
+						erro
+					{/if}
+					
 					<div class="line">
 						<label class="label required" for="nome">nome</label>
 						<div class="innerLine">

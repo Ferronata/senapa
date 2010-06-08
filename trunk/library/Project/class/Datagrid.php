@@ -3,13 +3,15 @@ class Datagrid{
 	private $table;
 	private $key;
 	private $object_name;
-	public $columns;
+	public 	$columns;
 	private $length;
 	private $data;
 	private $where;
+	private $title;
 	
-	public function __construct($table, $where = "", $columns = array()){
+	public function __construct($table, $where = "", $columns = array(), $title = ""){
 		$this->table 	= $table;
+		$this->set_title($title);
 		$this->columns 	= $columns;
 		$this->set_where($where);
 		$this->object_name = $this->default_name($table);
@@ -43,7 +45,7 @@ class Datagrid{
 		}
 		$vars = "*";
 		if(sizeof($this->columns)){
-			$vars = " ";
+			$vars = $this->get_key().",";
 			$colunas = array();
 			foreach($this->columns as $key => $column){
 				$vars .= "`".$key."`,";
@@ -111,11 +113,16 @@ class Datagrid{
 		
 		$controller = "
 		<div class=\"dg_controller\">
-			<ul class=\"db_controller_ul\">
+			<ul class=\"dg_controller_ul\">
 				<li><a class=\"li_a_insert\" href=\"javascript: openPage('".strtolower($this->get_object_name())."','get', 'action=insert');\" title=\"Novo Registro\"><span>Novo</span></a></li>
 				<li><a class=\"li_a_find\" href=\"javascript: alert('Em Desenvolvimento')\" title=\"Pesquisar Registro\"><span>Buscar</span></a></li>
 				<li><a class=\"li_a_refresh\" href=\"javascript: openPage('".strtolower($this->get_object_name())."');\" title=\"Recarregar Tabela\"><span>Recarregar</span></a></li>
 			</ul>
+		";
+		if($this->get_title())
+			$controller .= "<span class=\"dg_controller_title\">".$this->get_title()."</span>";
+		$controller .=
+		"
 		</div>
 		";
 		$str = "
@@ -162,4 +169,7 @@ class Datagrid{
 
 	public function get_where(){return $this->where;}
 	public function set_where($var){$this->where = $var;}
+	
+	public function get_title(){return $this->title;}
+	public function set_title($var){$this->title = $var;}
 }

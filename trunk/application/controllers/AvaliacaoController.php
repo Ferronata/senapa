@@ -11,16 +11,7 @@ class AvaliacaoController extends Zend_Controller_Action{
 	public function init(){
 		include_once("Project/include.php");
 	}
-	public function datagrid($view, $table, $display = array()){
-		//Exemplo => $datagrid = new Datagrid('com_endereco', array('id'=>'ID', 'logradouro'=>'Rua'));
-		$datagrid = new Datagrid($table,$display);
-		$view->assign("datagrid",$datagrid);
-
-		$view->assign("body","html/default/datagrid.tpl");
-		$view->assign("header","html/default/header.tpl");
-		$view->assign("footer","html/default/footer.tpl");
-		$view->output("index.tpl");
-	}
+	
 	public function acesso($view){
 		$funcao = new FuncoesProjeto();
 		if(!$funcao->acesso()){
@@ -33,10 +24,14 @@ class AvaliacaoController extends Zend_Controller_Action{
 		$this->AvaliacaoAction();
 	}
 	public function avaliacaoAction(){
-		$view = Zend_Registry::get('view');
-
+		$view 		= Zend_Registry::get('view');
+		$session 	= Zend_Registry::get('session');
+		
 		$this->acesso($view);
-
+		
+		$usuario = $session->usuario;
+		$view->assign("usuario",$usuario);
+		
 		$avaliacao = new Avaliacao();
 
 		$post 	= Zend_Registry::get('post');
@@ -55,6 +50,18 @@ class AvaliacaoController extends Zend_Controller_Action{
 			$result = $db->fetchAll($select);
 			
 			$niveis = array();
+			
+			$pessoa_fisica = new PessoaFisica();
+			$qr = "papel_id = '".$pessoa_fisica->ENUM('P_PROFESSOR')."' AND `pessoa_id` IN (SELECT `id` FROM pessoa WHERE `date_delete` IS NULL)";
+			$tmp = $pessoa_fisica->fetchAll($qr);
+			$professores = array();
+
+			foreach($tmp as $linha){
+				$pessoa_fisica = new PessoaEscola();
+				$pessoa_fisica->load($linha->pessoa_id);
+				$professores[] = $pessoa_fisica;
+			}
+			$view->assign("professores",$professores);	
 			
 			foreach($result as $linha){
 				$tmp = new NivelQuestao();
@@ -115,6 +122,7 @@ class AvaliacaoController extends Zend_Controller_Action{
 			}
 			$view->assign("object",$avaliacao);
 
+			$view->assign("professor",$avaliacao->getProfessor());
 			$view->assign("disciplina",$disciplina);
 			$view->assign("assuntos",$assuntos);
 			$view->assign("listaQuestao",$avaliacao->getListaQuestoes());
@@ -144,6 +152,14 @@ class AvaliacaoController extends Zend_Controller_Action{
 						$avaliacao->getListaQuestoes()->addQuestao($questao);
 					}
 				}
+				
+				$pessoa_escola = new PessoaEscola();
+				$pessoa_escola->load($post->professor);
+				
+				$professor = new Professor();
+				$professor->load($pessoa_escola->getMatricula());
+				
+				$avaliacao->setProfessor($professor);
 	
 				if(empty($post->id)){
 					// CREATE
@@ -164,7 +180,19 @@ class AvaliacaoController extends Zend_Controller_Action{
 			}catch(Exception $e){die($funcao->array2json(array('msg' => 'error', 'display' => htmlentities('Erro fatal - INSERT/UPDATE => '.$e))));}
 		}else{
 			// DATAGRID
-			$this->datagrid($view, 'avaliacao',$display_datagrid);
+			$display_datagrid = array(
+				//'id'			=>	'ID',
+				'nome'			=>	'Nome', 
+				'data_inicio'	=>	'Data de Disponibilização',
+				'hora_iniccio'	=>	'Hora de Início',
+				'data_fim'		=>	'Data de Encerramento',
+				'hora_fim'		=>	'Hora de Fim',
+				'tempo_minimo_prova'	=>	'Tempo Mínimo',
+				'tempo_maximo_prova'	=>	'Tempo Máximo',
+				'status'		=>	'Status'
+			);
+			$where = "`date_delete` IS NULL";
+			$funcao->datagrid($view,'avaliacao',$display_datagrid,$where,"Gerencimento de Avaliação");
 		}
 	}
 }

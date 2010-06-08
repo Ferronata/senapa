@@ -25,6 +25,8 @@ class Avaliacao extends DAO {
 	private $status;
 	
 	private $listaQuestoes;
+	private $professor;
+	private $professorAvaliacao;
 
 	public function getId(){return $this->id;}
 	public function setId($var){$this->id = $var;}
@@ -66,9 +68,31 @@ class Avaliacao extends DAO {
 			$var = new ListaQuestao();
 		$this->listaQuestoes = $var;
 	}
+	
+	public function getProfessor(){
+		if(empty($this->professor))
+			$this->setProfessor(new Professor());
+		return $this->professor;
+	}
+	public function setProfessor($var){
+		if(empty($var))
+			$var = new Professor();
+		$this->professor = $var;
+	}
+	public function getProfessorAvaliacao(){
+		if(empty($this->professorAvaliacao))
+			$this->setProfessorAvaliacao(new ProfessorAvaliacao());
+		return $this->professorAvaliacao;
+	}
+	public function setProfessorAvaliacao($var){
+		if(empty($var))
+			$var = new ProfessorAvaliacao();
+		$this->professorAvaliacao = $var;
+	}
 
 	public function insert(){
-		$this->setAvaliacaoSituacaoId(3);
+		$situacao = $this->ENUM('A_S_VALIDA');
+		$this->setAvaliacaoSituacaoId($situacao['id']);
 		$array = array
 			(
 			'avaliacao_situacao_id' => $this->getAvaliacaoSituacaoId(),
@@ -91,6 +115,14 @@ class Avaliacao extends DAO {
 				
 				$avaliacao_questao->insert();
 			}
+			if($this->getProfessor()->getId()){
+				$professor_avaliacao = new ProfessorAvaliacao();
+				$this->getProfessorAvaliacao()->setAvaliacaoId($id);
+				$this->getProfessorAvaliacao()->setProfessorPessoaEscolaMatricula($this->getProfessor()->getMatricula());
+				$this->getProfessorAvaliacao()->setProfessorPessoaEscolaPessoaFisicaPessoaId($this->getProfessor()->getPessoaEscolaPessoaFisicaPessoaId());
+				
+				$this->getProfessorAvaliacao()->insert();
+			}
 		}
 		
 		return $id;
@@ -98,7 +130,6 @@ class Avaliacao extends DAO {
 	public function update(){
 		$array = array
 			(
-			//'avaliacao_situacao_id' => $this->getAvaliacaoSituacaoId(),
 			'nome' => $this->getNome(),
 			'data_inicio' => $this->getDataInicio(),
 			'hora_iniccio' => $this->getHoraIniccio(),
@@ -111,7 +142,7 @@ class Avaliacao extends DAO {
 		$return = parent::update($array,"id = '".$this->getId()."'");
 		
 		$avaliacao_questao = new AvaliacaoQuestao();
-		$avaliacao_questao->getAdapter()->delete('avaliacao_questao',"avaliacao_id = '".$this->getId()."'");		
+		$avaliacao_questao->getAdapter()->delete('avaliacao_questao',"avaliacao_id = '".$this->getId()."'");
 		
 		foreach($this->getListaQuestoes()->getListaQuestao() as $linha){
 			$id = $avaliacao_questao->getAdapter()->fetchOne("SELECT MAX(id) FROM `avaliacao_questao`");
@@ -121,6 +152,21 @@ class Avaliacao extends DAO {
 			
 			$avaliacao_questao->insert();
 		}
+		
+				
+		if($this->getProfessor()->getId()){		
+			if($this->getProfessor()->getId() != $this->getProfessorAvaliacao()->getProfessorPessoaEscolaPessoaFisicaPessoaId()){
+				if($this->getProfessorAvaliacao()->getProfessorPessoaEscolaPessoaFisicaPessoaId())
+					$this->getProfessorAvaliacao()->delete();
+				
+				$this->getProfessorAvaliacao()->setAvaliacaoId($this->getId());
+				$this->getProfessorAvaliacao()->setProfessorPessoaEscolaMatricula($this->getProfessor()->getMatricula());
+				$this->getProfessorAvaliacao()->setProfessorPessoaEscolaPessoaFisicaPessoaId($this->getProfessor()->getPessoaEscolaPessoaFisicaPessoaId());
+				
+				$this->getProfessorAvaliacao()->insert();
+			}
+		}else if($this->getProfessorAvaliacao()->getProfessorPessoaEscolaPessoaFisicaPessoaId())
+			$this->getProfessorAvaliacao()->delete();
 		
 		return $return;
 	}
@@ -150,10 +196,23 @@ class Avaliacao extends DAO {
 				if($questao)
 					$this->getListaQuestoes()->addQuestao($questao);
 			}
+			
+			$tmp = new ProfessorAvaliacao();
+			$tmp = $tmp->fetchRow("`avaliacao_id` = '".$this->getId()."' AND date_delete IS NULL");
+			
+			if($tmp->id){
+				$this->getProfessorAvaliacao()->load($tmp->id);
+				$this->getProfessor()->load($this->getProfessorAvaliacao()->getProfessorPessoaEscolaMatricula());
+			}
 		}
 		return $object;
 	}
 	public function delete(){
 		return parent::delete("id = '".$this->getId()."'");
+	}
+	public function toString(){
+		$str  = "<span>".$this->getNome()."</span>";
+		$str .= "<span>".$this->getNome()."</span>";
+		return $str;
 	}
 }

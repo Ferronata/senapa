@@ -223,6 +223,89 @@ public function init(){
 		
 		$view->output("function/index.tpl");
 	}
+	public function renderavaliacaoalunoAction(){
+		$view 		= Zend_Registry::get("view");
+		$session 	= Zend_Registry::get("session");
+		$post 		= Zend_Registry::get("post");
+		$get 		= Zend_Registry::get("get");
+
+		$funcao = new FuncoesProjeto();
+		/*
+		if(!empty($post->RelationValue)){
+			try{
+				
+				$relation_value = (int)$post->RelationValue;
+				
+				$object = new Assunto();
+				$object = $object->fetchAll("`date_delete` IS NULL AND `id` IN (SELECT `assunto_id` FROM `disciplina_assunto` WHERE `disciplina_id` = '".$relation_value."')","nome");
+
+				$return = array();
+				try{
+					foreach($object as $key => $values)
+						$return[] = array("html" => $values->nome, "value" => $values->id);
+				}catch(Exception $erro){}
+				die($funcao->array2json($return));
+				
+			}catch(Exception $e){die($funcao->array2json(array('msg' => 'erro', 'display' => htmlentities('Problemas na renderização'))));}
+		}
+		*/
+		if(!empty($get->RelationValue) || !empty($post->RelationValue)){
+			try{
+				if(!empty($get->RelationValue))
+					$id = $get->RelationValue;
+				else
+					$id = $post->RelationValue;
+			
+					
+				$pessoa_escola = new PessoaEscola();
+				$pessoa_escola->load($id);
+				
+				$aluno = new Aluno();
+				$aluno->load($pessoa_escola->getMatricula());
+				
+				$avaliacao = new Avaliacao();
+				$avaliacoes = array();
+				foreach($aluno->getDisciplinas()->getDisciplinas() as $linha){
+					$now 		= date("Y-m-d H:i:s");
+					$situacao = $aluno->ENUM('A_S_ANDAMENTO');
+					
+					$where = 
+					"			
+					CONCAT(`data_inicio`,' ',`hora_iniccio`) <= '".$now."' AND 
+					CONCAT(`data_fim`,' ',`hora_fim`) > '".$now."' AND
+					`status` = TRUE AND 
+					`date_delete` IS NULL AND 
+					`avaliacao_situacao_id` = '".$situacao['id']."' AND 				
+					`id` IN 
+						(
+							SELECT `avaliacao_id` FROM `avaliacao_questao` WHERE `questao_id` IN 
+								(
+									SELECT `questao_id` FROM `assunto_questao` WHERE `assunto_id` IN 
+										(
+											SELECT `assunto_id` FROM `disciplina_assunto` WHERE `disciplina_id` = '".$linha->getId()."'
+										)
+								)
+						)
+					";
+					$tmp = $avaliacao->fetchAll($where,array('data_inicio','hora_iniccio','data_fim','hora_fim'));
+					foreach($tmp as $linhaAvaliacao){
+						$tmpAvaliacao = new Avaliacao();
+						$tmpAvaliacao->load($linhaAvaliacao->id);
+						
+						$avaliacoes[] = $tmpAvaliacao;
+					}
+				}
+				$return = array();
+				/* */
+				foreach($avaliacoes as $linha)
+					$return[] = array("html" => $linha->toString());
+				
+				/* */
+				die($funcao->array2json($return));
+			}catch(Exception $e){die($funcao->array2json(array('msg' => 'erro', 'display' => htmlentities('Problemas na renderização'))));}
+		}
+		$view->output("function/index.tpl");
+	}
 	
 	// Metodo usado para efetuar a busca por questões para montar avaliação
 	public function findquestionsAction(){
