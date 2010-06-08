@@ -1072,7 +1072,7 @@ function findQuestionsBack(e, a){
 
 			var checkbox = document.createElement("input");
 			checkbox.setAttribute("type", "checkbox");
-			checkbox.setAttribute("name", "lista_assuntos");
+			checkbox.setAttribute("name", "lista_questoes[]");
 			checkbox.setAttribute('value',res[i]['id']);
 
 			td.appendChild(checkbox);

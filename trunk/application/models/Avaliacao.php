@@ -9,6 +9,7 @@
  */
 
 require_once 'DAO.php';
+require_once 'ListaQuestao.php';
 
 class Avaliacao extends DAO {
 	protected $_name = 'avaliacao';
@@ -22,6 +23,8 @@ class Avaliacao extends DAO {
 	private $tempoMinimoProva;
 	private $tempoMaximoProva;
 	private $status;
+	
+	private $listaQuestoes;
 
 	public function getId(){return $this->id;}
 	public function setId($var){$this->id = $var;}
@@ -52,6 +55,17 @@ class Avaliacao extends DAO {
 
 	public function getStatus(){return $this->status;}
 	public function setStatus($var){$this->status = $var;}
+	
+	public function getListaQuestoes(){
+		if(empty($this->listaQuestoes))
+			$this->setListaQuestoes(new ListaQuestao());
+		return $this->listaQuestoes;
+	}
+	public function setListaQuestoes($var){
+		if(empty($var))
+			$var = new ListaQuestao();
+		$this->listaQuestoes = $var;
+	}
 
 	public function insert(){
 		$array = array
@@ -67,7 +81,19 @@ class Avaliacao extends DAO {
 			'tempo_maximo_prova' => $this->getTempoMaximoProva(),
 			'status' => $this->getStatus()
 			);
-		return parent::insert($array);
+		$id = parent::insert($array);
+		
+		if($id){
+			$avaliacao_questao = new AvaliacaoQuestao();
+			foreach($this->getListaQuestoes()->getListaQuestao() as $linha){
+				$avaliacao_questao->setQuestaoId($linha->getId());
+				$avaliacao_questao->setAvaliacaoId($id);
+				
+				$avaliacao_questao->insert();
+			}
+		}
+		
+		return $id;
 	}
 	public function update(){
 		$array = array
