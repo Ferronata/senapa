@@ -4,8 +4,8 @@
 						<div style="width: 30%; float:left; border-right: 1px solid #666666;">
 							<label class="label" for="tpPesqusia">Tipo de Pesquisa</label>
 							<select id="tpPesqusia" name="tpPesqusia">
-								<option value="{$object->getTipoPesquisa('QUESTAO')}">Questões</option>
-								<option value="{$object->getTipoPesquisa('AVALIACAO')}">Avaliações</option>
+								<option value="{$object->ENUM('QUESTAO')}">Questões</option>
+								<option value="{$object->ENUM('AVALIACAO')}">Avaliações</option>
 							</select>
 						</div>
 						<div style="width: 68%; float:right;">

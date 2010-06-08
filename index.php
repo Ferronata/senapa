@@ -107,10 +107,6 @@ $db = Zend_Db::factory($config->db->adapter, $config->db->config->toArray());
 Zend_Db_Table_Abstract::setDefaultAdapter($db);
 Zend_Registry::set('db',$db);
 
-//Configura o formato da moeda local
-setlocale(LC_MONETARY,'ptb');
-
-
 // Executa o Controller do projeto
 // Ele que receberá todas as requisições e dispachará para os arquivos correspondentes
 

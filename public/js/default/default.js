@@ -1020,6 +1020,49 @@ function rerenderCheckDiscAssuntoBack(e, a){
 	}
 }
 
+function rerenderAvaliacaoAluno(tag,id){
+	var page 	= "/"+project_root+"/function/renderAvaliacaoAluno";
+	
+	this.miniLoad(tag.parentNode,'miniload');
+	
+	myname = id;
+	tagname	= tag;
+
+	var params 	= "RelationValue=" + tag.value;
+	new Ajax.Request(
+			page, 
+			{
+				evalScripts:true,
+				parameters: params, 
+				metod: 'POST', 
+				onComplete:rerenderAvaliacaoAlunoBack,				
+				encoding: 'ISO-8859-1'
+			}
+		);
+}
+
+function rerenderAvaliacaoAlunoBack(e, a){
+	
+	this.removeMiniLoad(tagname.parentNode,'miniload');
+	
+	res = eval('(' + e.responseText + ')');
+	
+	if(res['msg'])
+		this.addMensage('err', res['display']);
+	else{
+		var object = myname;
+
+		var div = document.createElement("div");
+		for(i = 0; i<res.length;i++){			
+			var innerDiv = document.createElement("div");			
+			innerDiv.innerHTML = res[i]['html'];			
+			div.appendChild(innerDiv);			
+		}
+		
+		object.appendChild(div);
+	}
+}
+
 function findQuestions(tag,table){
 	var page 	= "/"+project_root+"/function/findQuestions";
 	

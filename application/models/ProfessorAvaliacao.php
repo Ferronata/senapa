@@ -35,11 +35,9 @@ class ProfessorAvaliacao extends DAO {
 	public function insert(){
 		$array = array
 			(
-			'id' => $this->getId(),
 			'avaliacao_id' => $this->getAvaliacaoId(),
 			'professor_pessoa_escola_matricula' => $this->getProfessorPessoaEscolaMatricula(),
 			'professor_pessoa_escola_pessoa_fisica_pessoa_id' => $this->getProfessorPessoaEscolaPessoaFisicaPessoaId(),
-			'data_cadastro' => $this->getDataCadastro()
 			);
 		return parent::insert($array);
 	}
@@ -50,7 +48,6 @@ class ProfessorAvaliacao extends DAO {
 			'avaliacao_id' => $this->getAvaliacaoId(),
 			'professor_pessoa_escola_matricula' => $this->getProfessorPessoaEscolaMatricula(),
 			'professor_pessoa_escola_pessoa_fisica_pessoa_id' => $this->getProfessorPessoaEscolaPessoaFisicaPessoaId(),
-			'data_cadastro' => $this->getDataCadastro()
 			);
 		return parent::update($array,"id = '".$this->getId()."'");
 	}
@@ -61,12 +58,11 @@ class ProfessorAvaliacao extends DAO {
 			$this->setAvaliacaoId($object->avaliacao_id);
 			$this->setProfessorPessoaEscolaMatricula($object->professor_pessoa_escola_matricula);
 			$this->setProfessorPessoaEscolaPessoaFisicaPessoaId($object->professor_pessoa_escola_pessoa_fisica_pessoa_id);
-			$this->setDataCadastro($object->data_cadastro);
 			$this->setDateCreate($object->date_create);
 			$this->setDateUpdate($object->date_update);
 			$this->setDateDelete($object->date_delete);
 		}
-		return parent::fetchRow("id = '".$this->getId()."'");
+		return $object;
 	}
 	public function delete(){
 		return parent::delete("id = '".$this->getId()."'");

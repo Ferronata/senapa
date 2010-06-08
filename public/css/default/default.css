@@ -371,18 +371,26 @@ body {
 	padding: 0;
 	
 }
-.db_controller_ul{
+.dg_controller_ul{
 	margin: 0 2%;
 	padding: 0;
-	width: 96%;
-	display: block;
+	width: 46%;
+	float: left;
 	list-style: none;
 }
-.db_controller_ul li{
+.dg_controller_ul li{
 	width: 32px;
 	height: 32px;
 	position: relative;
 	display: inline;
+}
+
+.dg_controller_title{
+	font-size: 25px;
+	font-weight: 900;
+	color: #666666;
+	float: right;
+	padding: 2px 10px;
 }
 
 .li_a_insert, .li_a_find, .li_a_refresh{
@@ -405,7 +413,7 @@ body {
 .li_a_find{background: url("../../images/admin/datagrid/find_32.png") no-repeat;}
 .li_a_refresh{background: url("../../images/admin/datagrid/refresh_32.png") no-repeat;}
 
-.db_controller_ul li a:hover{background-position:-32px 0; color:#666666;}
+.dg_controller_ul li a:hover{background-position:-32px 0; color:#666666;}
 
 /*
  * DATAGRID => HEADER

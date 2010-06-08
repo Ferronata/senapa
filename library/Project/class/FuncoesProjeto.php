@@ -124,4 +124,14 @@ class FuncoesProjeto{
 	    }
 	    return preg_replace('/\\x13\\x00*$/', '', $plain_text);
 	}
+	function datagrid($view, $table, $display = array(), $where = "", $title = ""){
+		//Exemplo => $datagrid = new Datagrid('com_endereco', array('id'=>'ID', 'logradouro'=>'Rua'));
+		$datagrid = new Datagrid($table,$where,$display,$title);
+		$view->assign("datagrid",$datagrid);
+
+		$view->assign("body","html/default/datagrid.tpl");
+		$view->assign("header","html/default/header.tpl");
+		$view->assign("footer","html/default/footer.tpl");
+		$view->output("index.tpl");
+	}
 }

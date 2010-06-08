@@ -45,3 +45,6 @@ foreach ($includes as $include)
 set_include_path(get_include_path().$path);
 
 date_default_timezone_set('America/Sao_Paulo');
+
+//Configura o formato da moeda local
+setlocale(LC_MONETARY,'ptb');

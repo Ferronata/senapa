@@ -11,16 +11,6 @@ class AvaliacaoAlunoController extends Zend_Controller_Action{
 	public function init(){
 		include_once("Project/include.php");
 	}
-	public function datagrid($view, $table, $display = array()){
-		//Exemplo => $datagrid = new Datagrid('com_endereco', array('id'=>'ID', 'logradouro'=>'Rua'));
-		$datagrid = new Datagrid($table,$display);
-		$view->assign("datagrid",$datagrid);
-
-		$view->assign("body","html/default/datagrid.tpl");
-		$view->assign("header","html/default/header.tpl");
-		$view->assign("footer","html/default/footer.tpl");
-		$view->output("index.tpl");
-	}
 	public function acesso($view){
 		$funcao = new FuncoesProjeto();
 		if(!$funcao->acesso()){
@@ -34,6 +24,20 @@ class AvaliacaoAlunoController extends Zend_Controller_Action{
 	}
 	public function avaliacaoalunoAction(){
 		$view = Zend_Registry::get('view');
+		$session = Zend_Registry::get('session');
+		
+		$pessoa_escola = new PessoaEscola();
+
+		// SUPER ADMIN
+		$pessoa_escola->load(1);
+		
+		// PROFESSOR
+		//$pessoa_escola->load(11);
+		
+		// ALUNO
+		//$pessoa_escola->load(12);
+
+		$session->usuario = $pessoa_escola;		
 
 		$this->acesso($view);
 
@@ -44,60 +48,24 @@ class AvaliacaoAlunoController extends Zend_Controller_Action{
 
 		$funcao 	= new FuncoesProjeto();
 		$display_datagrid = array();
-
-		if(isset($get->action)){
-			$avaliacao 	= new Avaliacao();
-			$avaliacao 	= $avaliacao->fetchAll('1','nome');
-			$view->assign("avaliacao",$avaliacao);
-
-			$aluno 	= new Aluno();
-			$aluno 	= $aluno->fetchAll('1','');
-			$view->assign("aluno",$aluno);
-			switch($get->action){
-				case 'edit':
-					$avaliacao_aluno->load($get->id);
-					break;
-				case 'delete':
-					$avaliacao_aluno->load($get->id);
-					$avaliacao_aluno->delete();
-
-					$this->_redirect("avaliacaoaluno/avaliacaoaluno");
-					die();
-			}
-			$view->assign("avaliacao_aluno",$avaliacao_aluno);
-
-			$view->assign("header","html/default/header.tpl");
-			$view->assign("body","avaliacaoaluno/avaliacaoaluno.tpl");
-			$view->assign("footer","html/default/footer.tpl");
-			$view->output("index.tpl");
-		}elseif(isset($post->id)){
-			// SALVA E ATUALIZA REGISTRO
-			$avaliacao_aluno->setAlunoPessoaEscolaMatricula($funcao->to_sql($post->aluno_pessoa_escola_matricula));
-			$avaliacao_aluno->setAlunoPessoaEscolaPessoaFisicaPessoaId($funcao->to_sql($post->aluno_pessoa_escola_pessoa_fisica_pessoa_id));
-			$avaliacao_aluno->setAvaliacaoId($funcao->to_sql($post->avaliacao_id));
-			$avaliacao_aluno->setDataInicio($funcao->to_sql($post->data_inicio));
-			$avaliacao_aluno->setHoraInicio($funcao->to_sql($post->hora_inicio));
-			$avaliacao_aluno->setHoraFim($funcao->to_sql($post->hora_fim));
-
-			if(empty($post->id)){
-				// CREATE
-
-				if($avaliacao_aluno->insert())
-					$retorno = array('msg' => 'ok', 'display' => htmlentities('AvaliacaoAluno inserido com sucesso'), 'url' => '?');
-				else
-					$retorno = array('msg' => 'error', 'display' => htmlentities('Erro ao inserir AvaliacaoAluno'));
-
-				die($funcao->array2json($retorno));
-			}else{
-				// UPDATE
-				$avaliacao_aluno->setId($post->id);
-				$avaliacao_aluno->update();
-				$retorno = array('msg' => 'ok', 'display' => htmlentities('AvaliacaoAluno modificado com sucesso'));
-				die($funcao->array2json($retorno));
-			}
-		}else{
-			// DATAGRID
-			$this->datagrid($view, 'avaliacao_aluno',$display_datagrid);
+		
+		$aluno = new Aluno();
+		$tmp = $aluno->fetchAll("`pessoa_escola_pessoa_fisica_pessoa_id` IN (SELECT `id` FROM `pessoa` WHERE `date_delete` IS NULL)");
+		
+		$alunos = array();
+		foreach($tmp as $linha){
+			$tmpAluno = new Aluno();
+			$tmpAluno->load($linha->pessoa_escola_matricula);
+			$alunos[] = $tmpAluno;
 		}
+		$view->assign("alunos",$alunos);
+		
+		$usuario = $session->usuario;
+		$view->assign("usuario",$usuario);
+
+		$view->assign("header","html/default/header.tpl");
+		$view->assign("body","avaliacaoaluno/index.tpl");
+		$view->assign("footer","html/default/footer.tpl");
+		$view->output("index.tpl");
 	}
 }

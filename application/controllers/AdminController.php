@@ -81,8 +81,8 @@ class AdminController extends Zend_Controller_Action{
 			// ALUNO
 		$menuAlunoAdmin = array
 			(
-			array('nome' => 'Avaliações','url' 	=> 'javascript: openPage(\'assunto\');'),
-			array('nome' => 'Histórico','url' 	=> 'javascript: openPage(\'questao\');')
+			array('nome' => 'Avaliações','url' 	=> 'javascript: openPage(\'avaliacaoAluno\');'),
+			array('nome' => 'Histórico','url' 	=> 'javascript: openPage(\'historicoAluno\');')
 			);
 			
 		$dataAluno = array
@@ -98,14 +98,21 @@ class AdminController extends Zend_Controller_Action{
 				array('nome' => 'Aluno','data' 			=> $dataAluno)
 			);		
 		
-		$pessoa_fisica = new PessoaFisica();
-		$pessoa_fisica->setNome("Super Adminsitrador");
+		$pessoa_escola = new PessoaEscola();
+
+		// SUPER ADMIN
+		$pessoa_escola->load(1);
+		
+		// PROFESSOR
+		//$pessoa_escola->load(11);
+
+		$session->usuario = $pessoa_escola;
 		
 		$saudacao = (date("H")<12)?"Bom dia ":(date("H")<18)?"Boa tarde ":"Boa noite ";
-		$saudacao .= $pessoa_fisica->getNome();
+		$saudacao .= $pessoa_escola->getNome();
 			
 		$view->assign("categorias",$array);		
-		$view->assign("pessoa_fisica",$pessoa_fisica);
+		$view->assign("pessoa_fisica",$pessoa_escola);
 		$view->assign("saudacao",$saudacao);
  		$view->assign("header","html/default/header.tpl");
 		$view->assign("body","admin/index.tpl");

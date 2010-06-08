@@ -14,12 +14,20 @@ class DefaultObject extends Zend_Db_Table{
 	
 	private function enums(){
 		$enums = array(
-			"QUESTAO" 		=> 1,
-			"AVALIACAO" 	=> 2
+			"QUESTAO" 		=> 1, // tipo de busca por questão
+			"AVALIACAO" 	=> 2, // tipo de busca por avaliacao
+			"P_S_ADMIN"		=> 1, //Perfil Super admin
+			"P_ADMIN"		=> 2, //Perfil admin
+			"P_PROFESSOR"	=> 3, //Perfil professor
+			"P_ALUNO"		=> 4, //Perfil aluno
+			"A_S_VALIDA"	=> array('id'=>1,'texto' => 'Válida'), //Avaliação válida
+			"A_S_INVALIDA"	=> array('id'=>2,'texto' => 'Inválida'), //Avaliação inválida
+			"A_S_ANDAMENTO"	=> array('id'=>3,'texto' => 'Em Andamento') //Avaliação em andamento
 		);
 		return new DefinedEnum($enums);
 	}
-	public function getTipoPesquisa($enum){
+	
+	public function ENUM($enum){
 		$enum = strtoupper($enum);
 		$enums = $this->enums();
 		try{

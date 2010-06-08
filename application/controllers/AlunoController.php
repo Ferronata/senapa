@@ -11,16 +11,6 @@ class AlunoController extends Zend_Controller_Action{
 	public function init(){
 		include_once("Project/include.php");
 	}
-	public function datagrid($view, $table, $display = array()){
-		//Exemplo => $datagrid = new Datagrid('com_endereco', array('id'=>'ID', 'logradouro'=>'Rua'));
-		$datagrid = new Datagrid($table,$display);
-		$view->assign("datagrid",$datagrid);
-
-		$view->assign("body","html/default/datagrid.tpl");
-		$view->assign("header","html/default/header.tpl");
-		$view->assign("footer","html/default/footer.tpl");
-		$view->output("index.tpl");
-	}
 	public function acesso($view){
 		$funcao = new FuncoesProjeto();
 		if(!$funcao->acesso()){
@@ -112,7 +102,7 @@ class AlunoController extends Zend_Controller_Action{
 			}
 		}else{
 			// DATAGRID
-			$this->datagrid($view, 'aluno',$display_datagrid);
+			$funcao->datagrid($view, 'aluno',$display_datagrid,"","Gerenciamento de Aluno");
 		}
 	}
 }
