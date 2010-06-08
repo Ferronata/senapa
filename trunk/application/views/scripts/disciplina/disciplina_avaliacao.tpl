@@ -11,7 +11,7 @@
 						<div style="width: 68%; float:right;">
 							<label class="label">Nível</label>
 						{foreach item=item from=$niveis}
-							<label><input type="checkbox" name="lista_niveis[]" value="{$item->getNivel()}" />{$item->getNivel()}</label>
+							<label><input type="checkbox" name="lista_niveis[]" {if $item->isExiste()} checked="checked" {/if} value="{$item->getNivel()}" />{$item->getNivel()}</label>
 						{/foreach}
 						</div>
 					</div>
@@ -23,7 +23,7 @@
 						<select id="Disciplina" name=Disciplina class="key input medio" onchange="rerenderCheckDiscAssunto(this,$('values'))">
 							<option>Selecione</option>
 							{foreach item=item from=$disciplinas}
-								<option value="{$item.id}">{$item.nome}</option>
+								<option value="{$item.id}" {if $disciplina->getId() == $item.id} selected="selected" {/if}>{$item.nome}</option>
 							{/foreach}
 						</select>
 					</div>
@@ -37,7 +37,14 @@
 								<td class="left">Assuntos</td>
 							</tr>
 						</thead>
-											
+						<tbody>
+							{foreach item=item from=$assuntos}
+							    <tr>
+							    	<td style="width: 18px;"><input type="checkbox" name="lista_assuntos[]" value="{$item->getId()}" {if $item->isExiste()} checked="checked" {/if} /></td>
+							    	<td class="left">{$item->getNome()}</td>
+							    </tr>
+							{/foreach}
+						</tbody>					
 					</table>
 				</div>
 				<hr />
@@ -50,6 +57,26 @@
 			<p />
 			<p />
 			
+			<div class="divDatagridObjectsCadastro">
+				<table class="datagridObjects" id="listaQuestoesCadastro">
+					<thead>
+						<tr class="gridTitle">
+							<td style="width: 18px;">&nbsp;</td>
+							<td class="left">Questões Cadastradas</td>
+						</tr>
+					</thead>
+					<tbody>
+						{foreach item=item from=$listaQuestao->getListaQuestao()}
+							{assign var=str value=$item->toString()}
+						    <tr>
+						    	<td style="width: 18px;"><input type="checkbox" name="lista_questoes[]" value="{$item->getId()}" checked="checked" /></td>
+						    	<td class="left"><span {popup sticky=false closetext="X" caption="Detalhes" text="$str" width=400 padx=5 padx=5}>{$item->getDescricao()}</span></td>
+						    </tr>
+						{/foreach}
+					</tbody>
+				</table>
+			</div>
+			
 			<hr />
 			{* {popup sticky=false closetext="X" caption="Detalhes" text="Assuntos" padx=5 padx=5} *}
 			<div class="divDatagridObjects">
@@ -58,10 +85,9 @@
 						<tr class="gridTitle">
 							<td style="width: 18px;">&nbsp;</td>
 							<td style="width: 18px;">&nbsp;</td>
-							<td class="left">Questões</td>
+							<td class="left">Questões Disponíveis</td>
 						</tr>
 					</thead>
-										
 				</table>
 			</div>
 			

@@ -68,9 +68,9 @@ class Avaliacao extends DAO {
 	}
 
 	public function insert(){
+		$this->setAvaliacaoSituacaoId(3);
 		$array = array
 			(
-			'id' => $this->getId(),
 			'avaliacao_situacao_id' => $this->getAvaliacaoSituacaoId(),
 			'nome' => $this->getNome(),
 			'data_inicio' => $this->getDataInicio(),
@@ -98,8 +98,7 @@ class Avaliacao extends DAO {
 	public function update(){
 		$array = array
 			(
-			'id' => $this->getId(),
-			'avaliacao_situacao_id' => $this->getAvaliacaoSituacaoId(),
+			//'avaliacao_situacao_id' => $this->getAvaliacaoSituacaoId(),
 			'nome' => $this->getNome(),
 			'data_inicio' => $this->getDataInicio(),
 			'hora_iniccio' => $this->getHoraIniccio(),
@@ -109,7 +108,21 @@ class Avaliacao extends DAO {
 			'tempo_maximo_prova' => $this->getTempoMaximoProva(),
 			'status' => $this->getStatus()
 			);
-		return parent::update($array,"id = '".$this->getId()."'");
+		$return = parent::update($array,"id = '".$this->getId()."'");
+		
+		$avaliacao_questao = new AvaliacaoQuestao();
+		$avaliacao_questao->getAdapter()->delete('avaliacao_questao',"avaliacao_id = '".$this->getId()."'");		
+		
+		foreach($this->getListaQuestoes()->getListaQuestao() as $linha){
+			$id = $avaliacao_questao->getAdapter()->fetchOne("SELECT MAX(id) FROM `avaliacao_questao`");
+			$avaliacao_questao->setId((++$id));
+			$avaliacao_questao->setQuestaoId($linha->getId());
+			$avaliacao_questao->setAvaliacaoId($this->getId());
+			
+			$avaliacao_questao->insert();
+		}
+		
+		return $return;
 	}
 	public function load($id = ""){
 		$object = parent::fetchRow("id = '".$id."'");
@@ -127,8 +140,18 @@ class Avaliacao extends DAO {
 			$this->setDateCreate($object->date_create);
 			$this->setDateUpdate($object->date_update);
 			$this->setDateDelete($object->date_delete);
+			
+			$lista = new AvaliacaoQuestao();
+			$lista = $lista->fetchAll("avaliacao_id = '".$this->getId()."'");
+			
+			foreach($lista as $linha){
+				$questao = new Questao();
+				$questao->load($linha->id);
+				if($questao)
+					$this->getListaQuestoes()->addQuestao($questao);
+			}
 		}
-		return parent::fetchRow("id = '".$this->getId()."'");
+		return $object;
 	}
 	public function delete(){
 		return parent::delete("id = '".$this->getId()."'");
