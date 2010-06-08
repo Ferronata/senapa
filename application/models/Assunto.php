@@ -14,12 +14,16 @@ class Assunto extends DAO {
 	private $id;
 	private $nome;
 	private $disciplinas;
+	private $existe;
 
 	public function getId(){return $this->id;}
 	public function setId($var){$this->id = $var;}
 
 	public function getNome(){return $this->nome;}
 	public function setNome($var){$this->nome = $var;}
+	
+	public function isExiste(){return $this->existe;}
+	public function setExiste($var){$this->existe = $var;}
 	
 	public function getDisciplinas(){
 		if(empty($this->disciplinas))
@@ -101,5 +105,11 @@ class Assunto extends DAO {
 	}
 	public function delete(){
 		return parent::delete("id = '".$this->getId()."'");
+	}
+	public function find($lista = array(),$assunto){
+		for($i =0; $i<sizeof($lista); $i++)
+			if($lista[$i]->getId() == $assunto->getId())
+				return $i;
+		return -1;
 	}
 }

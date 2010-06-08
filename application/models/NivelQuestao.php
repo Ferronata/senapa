@@ -27,6 +27,9 @@ class NivelQuestao extends DefaultObject {
 
 	public function getDataNivelamento(){return $this->dataNivelamento;}
 	public function setDataNivelamento($var){$this->dataNivelamento = $var;}
+	
+	public function isExiste(){return $this->existe;}
+	public function setExiste($var){$this->existe = $var;}
 
 	public function insert(){
 		$array = array
@@ -74,6 +77,11 @@ class NivelQuestao extends DefaultObject {
 			if($lista[$i]->getNivel() == $nivelQuestao->getNivel())
 				return $i;
 		return -1;
+	}
+	public function existe($lista = array(),$nivelQuestao){
+		if($this->find($lista,$nivelQuestao)>=0)
+			return true;
+		return false;
 	}
 	public function ordena($lista = array()){
 		for($j =0; $j<sizeof($lista); $j++){

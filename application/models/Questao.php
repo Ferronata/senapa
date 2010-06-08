@@ -203,4 +203,28 @@ class Questao extends DAO {
 	public function delete(){
 		return parent::delete("id = '".$this->getId()."'");
 	}
+	
+	public function toString(){
+		$alternativas = $this->getAlternativas()->getAlternativas();
+		$str = "<h1 class='h1Questoes'>".$this->getDescricao()."</h1><hr />";
+		$str .= "<h2 class='h2Questoes'>Alternativas</h2>";
+		if(empty($alternativas))
+			$str .= "<span class='semAlternativas'>Não possui alternativas cadastradas</span>";
+		else{
+			$str .= "<ul class='popupAlternativas'>";
+			foreach($alternativas as $linha){
+				if($linha->getId() == $this->getResposta())
+					$str .= "<li class='popupAlternativaResposta'>".$linha->getDescricao()."</li>";
+				else
+					$str .= '<li>'.$linha->getDescricao().'</li>';
+			}
+		}		
+		$str .= '</ul>';
+		
+		$str .= '<hr \>';
+		$str .= "<h2 class='h2Questoes'>Descricao da Resposta</h2>";
+		$str .= "<span class='descricaoResposta'>".$this->getDescricaoResposta()."</span>";
+
+		return $str;
+	}
 }

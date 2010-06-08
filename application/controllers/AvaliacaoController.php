@@ -67,12 +67,44 @@ class AvaliacaoController extends Zend_Controller_Action{
 			
 			$view->assign("niveis",$niveis);
 			
+			$assuntos = array();
+			
 			$avaliacao_situacao 	= new AvaliacaoSituacao();
 			$avaliacao_situacao 	= $avaliacao_situacao->fetchAll('1','nome');
 			$view->assign("avaliacao_situacao",$avaliacao_situacao);
 			switch($get->action){
 				case 'edit':
 					$avaliacao->load($get->id);
+					
+					$tmp = new NivelQuestao();
+					foreach($avaliacao->getListaQuestoes()->getListaQuestao() as $linha){
+						$tmp->lastRegister($linha->getId());
+						$pos = $tmp->find($niveis,$tmp);
+						if($pos >= 0)
+							$niveis[$pos]->setExiste(true);
+					}
+					
+					if(sizeof($avaliacao->getListaQuestoes()->getListaQuestao())){
+						$tmp = $avaliacao->getListaQuestoes()->getListaQuestao();
+						$disciplina->load($tmp[0]->getId());
+					}
+					
+					$assunto = new Assunto();
+					$lista = $assunto->fetchAll("`id` IN (SELECT `assunto_id` FROM `disciplina_assunto` WHERE `disciplina_id` = '".$disciplina->getId()."')");
+					foreach($lista as $linha){
+						$tmp = new Assunto();
+						$tmp->load($linha->id);
+						$assuntos[] = $tmp;
+					}
+					
+					$lista = $assunto->fetchAll("`id` IN (SELECT `assunto_id` FROM `assunto_questao` WHERE `questao_id` IN (SELECT `questao_id` FROM `avaliacao_questao` WHERE `avaliacao_id` = '".$avaliacao->getId()."' ))");
+					foreach($lista as $linha){
+						$assunto->load($linha->id);
+						$pos = $tmp->find($assuntos,$assunto);
+						if($pos >= 0)
+							$assuntos[$pos]->setExiste(true);
+					}
+					
 					break;
 				case 'delete':
 					$avaliacao->load($get->id);
@@ -83,6 +115,9 @@ class AvaliacaoController extends Zend_Controller_Action{
 			}
 			$view->assign("object",$avaliacao);
 
+			$view->assign("disciplina",$disciplina);
+			$view->assign("assuntos",$assuntos);
+			$view->assign("listaQuestao",$avaliacao->getListaQuestoes());
 			$view->assign("header","html/default/header.tpl");
 			$view->assign("body","avaliacao/avaliacao.tpl");
 			$view->assign("footer","html/default/footer.tpl");
@@ -92,16 +127,13 @@ class AvaliacaoController extends Zend_Controller_Action{
 				// SALVA E ATUALIZA REGISTRO
 				$avaliacao->setAvaliacaoSituacaoId($funcao->to_sql($post->avaliacao_situacao_id));
 				$avaliacao->setNome($funcao->to_sql($post->nome));
-				$avaliacao->setDataInicio($funcao->to_sql($post->data_inicio));
+				$avaliacao->setDataInicio($funcao->to_date($post->data_inicio));
 				$avaliacao->setHoraIniccio($funcao->to_sql($post->hora_iniccio));
-				$avaliacao->setDataFim($funcao->to_sql($post->data_fim));
+				$avaliacao->setDataFim($funcao->to_date($post->data_fim));
 				$avaliacao->setHoraFim($funcao->to_sql($post->hora_fim));
 				$avaliacao->setTempoMinimoProva($funcao->to_sql($post->tempo_minimo_prova));
 				$avaliacao->setTempoMaximoProva($funcao->to_sql($post->tempo_maximo_prova));
 				$avaliacao->setStatus($funcao->to_sql($post->status));
-				$avaliacao->setDateCreate($funcao->to_sql($post->date_create));
-				$avaliacao->setDateUpdate($funcao->to_sql($post->date_update));
-				$avaliacao->setDateDelete($funcao->to_sql($post->date_delete));
 				
 				if($post->lista_questoes){
 					$lista = $post->lista_questoes;
@@ -117,7 +149,7 @@ class AvaliacaoController extends Zend_Controller_Action{
 					// CREATE
 
 					if($avaliacao->insert())
-						$retorno = array('msg' => 'ok', 'display' => htmlentities('Avaliacao inserido com sucesso'), 'url' => '?');
+						$retorno = array('msg' => 'ok', 'display' => htmlentities('Avaliacao inserido com sucesso'), 'url' => 'avaliacao/avaliacao');
 					else
 						$retorno = array('msg' => 'error', 'display' => htmlentities('Erro ao inserir Avaliacao'));
 	
