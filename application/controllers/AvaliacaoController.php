@@ -102,10 +102,20 @@ class AvaliacaoController extends Zend_Controller_Action{
 				$avaliacao->setDateCreate($funcao->to_sql($post->date_create));
 				$avaliacao->setDateUpdate($funcao->to_sql($post->date_update));
 				$avaliacao->setDateDelete($funcao->to_sql($post->date_delete));
+				
+				if($post->lista_questoes){
+					$lista = $post->lista_questoes;
+					foreach($lista as $linha){
+						$questao = new Questao();
+						$questao->load($linha);
+						
+						$avaliacao->getListaQuestoes()->addQuestao($questao);
+					}
+				}
 	
 				if(empty($post->id)){
 					// CREATE
-	
+
 					if($avaliacao->insert())
 						$retorno = array('msg' => 'ok', 'display' => htmlentities('Avaliacao inserido com sucesso'), 'url' => '?');
 					else
