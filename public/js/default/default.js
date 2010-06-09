@@ -645,6 +645,7 @@ function openPage(page,method_,params_){
 					parameters: params,
 					method: method_,
 					encoding: 'ISO-8859-1',
+					//evalScripts: true,
 					evalJS: true
 				}
 			);
@@ -1021,24 +1022,32 @@ function rerenderCheckDiscAssuntoBack(e, a){
 }
 
 function rerenderAvaliacaoAluno(tag,id){
-	var page 	= "/"+project_root+"/function/renderAvaliacaoAluno";
 	
-	this.miniLoad(tag.parentNode,'miniload');
+	var value = "";
+	try{
+		value = eval(tag.value);
+	}catch(Exception){}
 	
-	myname = id;
-	tagname	= tag;
-
-	var params 	= "RelationValue=" + tag.value;
-	new Ajax.Request(
-			page, 
-			{
-				evalScripts:true,
-				parameters: params, 
-				metod: 'POST', 
-				onComplete:rerenderAvaliacaoAlunoBack,				
-				encoding: 'ISO-8859-1'
-			}
-		);
+	if(tag && value){
+		var page 	= "/"+project_root+"/function/renderAvaliacaoAluno";
+		
+		this.miniLoad(tag.parentNode,'miniload');
+		
+		myname = id;
+		tagname	= tag;
+	
+		var params 	= "RelationValue=" + tag.value;
+		new Ajax.Request(
+				page, 
+				{
+					evalScripts:true,
+					parameters: params, 
+					metod: 'POST', 
+					onComplete:rerenderAvaliacaoAlunoBack,				
+					encoding: 'ISO-8859-1'
+				}
+			);
+	}
 }
 
 function rerenderAvaliacaoAlunoBack(e, a){
@@ -1052,11 +1061,28 @@ function rerenderAvaliacaoAlunoBack(e, a){
 	else{
 		var object = myname;
 
+		var child = object.childNodes;
+		for(i = 0; i < child.length; i++)
+			object.removeChild(child[i]);
+		
 		var div = document.createElement("div");
 		for(i = 0; i<res.length;i++){			
 			var innerDiv = document.createElement("div");			
 			innerDiv.innerHTML = res[i]['html'];			
-			div.appendChild(innerDiv);			
+			div.appendChild(innerDiv);
+		}
+		if(!res.length){
+			var str = '	<div class="divAvaliacao">';
+			str += '		<div class="divTitleAvaliacao">';
+			str += '			<div>';
+			str += '				<h1 class="h1Avaliacao">Nenhuma Avaliação Disponível</h1>';
+			str += '			</div>';
+			str += '		</div>';
+			str += '	</div>';
+			
+			var innerDiv = document.createElement("div");			
+			innerDiv.innerHTML = str;			
+			div.appendChild(innerDiv);
 		}
 		
 		object.appendChild(div);
@@ -1299,6 +1325,8 @@ function addComponent(tag,lista){
 			}
 			
 			var td = document.createElement("td");
+			td.setAttribute('class', 'left');
+			
 			td.innerHTML  = '<input type="hidden" name="lista_'+lista[i].name+'[]" value="'+value+'" />';
 			td.innerHTML += txt;
 			option.appendChild(td);

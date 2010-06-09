@@ -635,3 +635,105 @@ body {
 	padding:0 2px;
 	text-align: left !important;
 }
+
+/*
+ * AVALIACAO DO ALUNO	
+ */
+.divAvaliacao{
+	width: 300px;
+	float: left;
+	margin: 0;
+	padding: 0;
+	margin-left: 10px !important;
+	margin-top: 10px !important;
+}
+.divAvaliacao *{
+	font-size: 11px;
+}
+.divAvaliacao table{
+	padding: 0;
+	margin: 0;
+
+	color: #333333;
+	padding: 0 8px;
+	border-top: 1px solid #999999;
+	border-bottom: 1px solid #CCCCCC;
+	border-left: 1px solid #999999;
+	border-right: 1px solid #CCCCCC;
+	
+	background: #FCFCFC;
+	
+	/* FIREFOX */
+   	-moz-border-radius: 6px;
+   	
+   	/* SAFIRA E CHROME */
+   	-webkit-border-radius: 6px;
+   	
+   	/* CSS3 */
+   	border-radius: 6px;
+   	
+   	/* LINUX */
+   	-khtml-border-radius: 6px;
+}
+.divTitleAvaliacao{
+	
+	width: 282px;
+	padding: 0;
+	margin: 0;
+	
+	text-align: center;
+	color: #333333;
+	padding: 0 8px;
+	border-top: 1px solid #999999;
+	border-bottom: 1px solid #CCCCCC;
+	border-left: 1px solid #999999;
+	border-right: 1px solid #CCCCCC;
+	
+	background: url("../../images/admin/titleAvaliacao.png") repeat-x;
+	
+	/* FIREFOX */
+   	-moz-border-radius: 6px;
+   	
+   	/* SAFIRA E CHROME */
+   	-webkit-border-radius: 6px;
+   	
+   	/* CSS3 */
+   	border-radius: 6px;
+   	
+   	/* LINUX */
+   	-khtml-border-radius: 6px;
+}
+.divTitleAvaliacao div{
+	width: 96%;
+	padding: 0 2%;
+}
+.h1Avaliacao, .h2Avaliacao{
+	margin: 0;
+	padding: 0;
+	font-weight: 900;
+}
+.h1Avaliacao{
+	font-size: 14px !important;	
+}
+.h2Avaliacao{
+	font-size: 12px !important;
+}
+
+.tdLabel{
+	font-weight: 900;
+	color: #666666;
+}
+.avaliacaoController{
+	background: #F0F0F0;
+	border-top: 1px solid #999999;
+	border-right: 1px solid #CCCCCC;
+}
+.iniciarAvaliacao{
+	float: right;
+	width: 32px;
+	height: 32px;
+	background: url("../../images/admin/iniciarAvaliacao.png") center center no-repeat;
+	cursor: pointer;
+	overflow: hidden;
+	text-indent: 100px;
+}

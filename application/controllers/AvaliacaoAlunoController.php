@@ -25,7 +25,7 @@ class AvaliacaoAlunoController extends Zend_Controller_Action{
 	public function avaliacaoalunoAction(){
 		$view = Zend_Registry::get('view');
 		$session = Zend_Registry::get('session');
-		
+/*		
 		$pessoa_escola = new PessoaEscola();
 
 		// SUPER ADMIN
@@ -37,7 +37,10 @@ class AvaliacaoAlunoController extends Zend_Controller_Action{
 		// ALUNO
 		//$pessoa_escola->load(12);
 
-		$session->usuario = $pessoa_escola;		
+		$session->usuario = $pessoa_escola;	
+*/
+		$usuario = $session->usuario;
+		$view->assign("usuario",$usuario);
 
 		$this->acesso($view);
 
@@ -60,8 +63,13 @@ class AvaliacaoAlunoController extends Zend_Controller_Action{
 		}
 		$view->assign("alunos",$alunos);
 		
-		$usuario = $session->usuario;
-		$view->assign("usuario",$usuario);
+		if($usuario->getPapelId() == $usuario->ENUM('P_ALUNO')){
+			$aluno = new Aluno();
+			$aluno->load($usuario->getMatricula());
+			
+			$avaliacoes = $aluno->getAvaliacoes();
+			$view->assign("avaliacoes",$avaliacoes);
+		}
 
 		$view->assign("header","html/default/header.tpl");
 		$view->assign("body","avaliacaoaluno/index.tpl");

@@ -8,9 +8,9 @@
 					<input type="hidden" id="pessoa_escola_pessoa_fisica_pessoa_id" name="pessoa_escola_pessoa_fisica_pessoa_id" value="{$object->getPessoaId()}" />
 
 					<div class="line">
-						<label class="label required" for="pessoa_escola_matricula">Matrícula</label>
+						<label class="label" for="pessoa_escola_matricula">Matrícula</label>
 						<div class="innerLine">
-							<input type="text" class="key input pequeno" id="pessoa_escola_matricula" name="pessoa_escola_matricula" maxlength="10" value="{$object->getMatricula()}" />
+							<input type="text" disabled="disabled" class="input pequeno" id="pessoa_escola_matricula" name="pessoa_escola_matricula" value="{$object->getMatricula()}" />
 						</div>
 					</div>
 					<div class="line">
