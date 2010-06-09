@@ -1,4 +1,4 @@
-	<div class="line">
+	<div class="line" style="margin-left: 10px;">
 		<label class="label" for="Aluno">Aluno</label>
 		<div class="innerLine">
 			<select id="Aluno" name=Aluno class="input medio" onchange="rerenderAvaliacaoAluno(this,$('avaliacoes'))">
@@ -10,4 +10,5 @@
 		</div>
 	</div>
 	<div id="avaliacoes">
+		
 	</div>

@@ -79,4 +79,41 @@ class Aluno extends PessoaEscola {
 	public function delete(){
 		return parent::delete();
 	}
+	public function getAvaliacoes(){
+		$avaliacoes = array();
+		if($this->getId()){
+			$avaliacao = new Avaliacao();
+			foreach($this->getDisciplinas()->getDisciplinas() as $linha){
+				$now 		= date("Y-m-d H:i:s");
+				$situacao = $this->ENUM('A_S_ANDAMENTO');
+				
+				$where = 
+				"			
+				CONCAT(`data_inicio`,' ',`hora_iniccio`) <= '".$now."' AND 
+				CONCAT(`data_fim`,' ',`hora_fim`) > '".$now."' AND
+				`status` = TRUE AND 
+				`date_delete` IS NULL AND 
+				`avaliacao_situacao_id` = '".$situacao['id']."' AND 				
+				`id` IN 
+					(
+						SELECT `avaliacao_id` FROM `avaliacao_questao` WHERE `questao_id` IN 
+							(
+								SELECT `questao_id` FROM `assunto_questao` WHERE `assunto_id` IN 
+									(
+										SELECT `assunto_id` FROM `disciplina_assunto` WHERE `disciplina_id` = '".$linha->getId()."'
+									)
+							)
+					)
+				";
+				$tmp = $avaliacao->fetchAll($where,array('data_inicio','hora_iniccio','data_fim','hora_fim'));
+				foreach($tmp as $linhaAvaliacao){
+					$tmpAvaliacao = new Avaliacao();
+					$tmpAvaliacao->load($linhaAvaliacao->id);
+					
+					$avaliacoes[] = $tmpAvaliacao;
+				}
+			}
+		}
+		return $avaliacoes;
+	}
 }

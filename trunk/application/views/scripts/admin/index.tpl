@@ -8,7 +8,7 @@
 			<div id="topMenu">
 				<ul>
 					<li class="liHome"><span><a href="?" title="Página inicial">Home</a></span></li>
-					<li class="liUser"><span><a href="#" title="Dados pessoais">{$pessoa_fisica->getNome()}</a></span></li>
+					<li class="liUser"><span><a href="javascript: openPage('pessoaEscola');" title="Dados pessoais">{$pessoa_fisica->getNome()}</a></span></li>
 					<li class="liExit"><span><a href="#" title="Sair do sistema">Sair</a></span></li>
 				</ul>
 			</div>

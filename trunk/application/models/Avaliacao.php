@@ -211,8 +211,52 @@ class Avaliacao extends DAO {
 		return parent::delete("id = '".$this->getId()."'");
 	}
 	public function toString(){
-		$str  = "<span>".$this->getNome()."</span>";
-		$str .= "<span>".$this->getNome()."</span>";
+		$funcao = new FuncoesProjeto();
+		
+		$disciplinas = $this->getListaQuestoes()->getListaQuestao();
+		
+		$str   = '<div class="divAvaliacao">';
+		$str  .= '	<div class="divTitleAvaliacao">';
+		$str  .= '		<div>';
+		$str  .= '			<h1 class="h1Avaliacao">Disciplina - '.((sizeof($disciplinas))?$disciplinas[0]->getDisciplina()->getNome():"Não cadastrada").'</h1>';
+		$str  .= '			<h2 class="h2Avaliacao">'.$this->getNome().'</h2>';
+		$str  .= '		</div>';
+		$str  .= '	</div>';
+		$str  .= '	<table border="0" width="100%">';
+		$str  .= '		<tr>';
+		$str  .= '			<td class="tdLabel">Disponibilização:</td>';
+		$str  .= '			<td>'.$funcao->to_date($this->getDataInicio(),false).' a partir de '.$this->getHoraIniccio().' horas</td>';
+		$str  .= '		</tr>';
+		$str  .= '		<tr>';
+		$str  .= '			<td class="tdLabel">Finalização:</td>';
+		$str  .= '			<td>'.$funcao->to_date($this->getDataFim(),false).' às '.$this->getHoraFim().' horas</td>';
+		$str  .= '	</tr>';
+		$str  .= '		<tr>';
+		$str  .= '			<td class="tdLabel">Duração Mínima:</td>';
+		$str  .= '			<td>'.$this->getTempoMinimoProva().' hora(s)</td>';
+		$str  .= '		</tr>';
+		$str  .= '		<tr>';
+		$str  .= '			<td class="tdLabel">Duração Máxima:</td>';
+		$str  .= '			<td>'.$this->getTempoMaximoProva().' hora(s)</td>';
+		$str  .= '		</tr>';
+		$str  .= '		<tr>';
+		$str  .= '			<td class="tdLabel">Nº Questões:</td>';
+		$str  .= '			<td>'.sizeof($this->getListaQuestoes()->getListaQuestao()).'</td>';
+		$str  .= '		</tr>';
+		
+		$session = Zend_Registry::get('session');
+		if(isset($session->usuario)){
+			$usuario = $session->usuario;
+			if($usuario->getPapelId() == $usuario->ENUM('P_ALUNO')){
+				$str  .= '		<tr class="dg_footer">';
+				$str  .= '			<td colspan="2" class="avaliacaoController"><a href="#" class="iniciarAvaliacao" title="Iniciar Avaliação">Iniciar</a></td>';
+				$str  .= '		</tr>';
+			}
+		}
+		
+		$str  .= '	</table>';
+		$str  .= '</div>';
+		
 		return $str;
 	}
 }
