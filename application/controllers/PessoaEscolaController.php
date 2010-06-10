@@ -34,10 +34,25 @@ class PessoaEscolaController extends Zend_Controller_Action{
 
 		$funcao 	= new FuncoesProjeto();
 		
-		$usuario = $session->usuario;
 		$pessoa_escola = new PessoaEscola();
+		$usuario = $session->usuario;
 		$pessoa_escola->load($usuario->getPessoaId());
 		
+		if(isset($post->pessoa_escola_pessoa_fisica_pessoa_id)){
+			try{
+				// SALVA E ATUALIZA REGISTRO
+				$pessoa_escola->setEmail($funcao->to_sql($post->email));
+				$pessoa_escola->setSite($funcao->to_sql($post->site));
+				$pessoa_escola->setSenha($funcao->md5_encrypt($post->senha,MD5_TEXT));
+	
+				$pessoa_escola->update();
+				
+				$session->usuario = $pessoa_escola;
+				
+				$retorno = array('msg' => 'ok', 'display' => htmlentities('PessoaFisica modificado com sucesso'));
+				die($funcao->array2json($retorno));
+			}catch(Exception $e){die($funcao->array2json(array('msg' => 'error', 'display' => htmlentities('Erro fatal - UPDATE => '.$e))));}
+		}
 		
 		$view->assign("object",$pessoa_escola);
 		$view->assign("listaDisciplina",$pessoa_escola->getDisciplinas());
