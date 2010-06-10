@@ -645,7 +645,6 @@ function openPage(page,method_,params_){
 					parameters: params,
 					method: method_,
 					encoding: 'ISO-8859-1',
-					//evalScripts: true,
 					evalJS: true
 				}
 			);
@@ -675,10 +674,10 @@ function enviarForm(page, form_id, bt_id){
 					addLoadding();
 				},			
 				onComplete:enviarFormBack,				
-				encoding: 'ISO-8859-1'/*,
+				encoding: 'ISO-8859-1',
 	            onCreate: function(response) {
 					response.transport.overrideMimeType("text/html;charset=ISO-8859-1");
-				}*/
+				}
 			}
 		);
 }
@@ -1260,13 +1259,21 @@ function listRenderBack(e, a){
 	}
 }
 
-function addComponentRadio(tag,lista){
+function addComponentRadio(tag,lista,contador){
 	if(tag && lista){
 		var str = "";
 		
 		var option = document.createElement("tr");
 		option.innerHTML = str;
 		option.setAttribute('class','lineComponent');
+		
+		var contadorId = 0;
+		try{
+			contadorId = eval(contador.value);
+			contadorId = contadorId-1;
+		}catch(Exception){ contadorId = -1;}
+		
+		contador.value = contadorId;
 		
 		var flag = false;
 		
@@ -1287,7 +1294,7 @@ function addComponentRadio(tag,lista){
 				option.appendChild(td);
 				
 				var td2 = document.createElement("td");
-				td2.innerHTML  = '<input type="radio" name="lista_radio" value="'+value+'" />';
+				td2.innerHTML  = '<input type="radio" name="lista_radio" value="'+contadorId+'" />';
 				option.appendChild(td2);
 				
 				lista[i].value = "";
@@ -1295,7 +1302,7 @@ function addComponentRadio(tag,lista){
 		}
 		if(flag){
 			var td = document.createElement("td");
-			td.innerHTML = '<input type="button" class="bt_remove" onclick="removeComponent(this)" value="remover" />';
+			td.innerHTML = '<input type="button" class="bt_remove" onclick="removeCheckboxComponent(this)" value="remover" />';
 			option.appendChild(td);
 			
 			
@@ -1350,6 +1357,15 @@ function removeComponent(tag){
 		var node = tag.parentNode.parentNode.parentNode;
 		if(node)
 			node.deleteRow(0);
+	}
+}
+function removeCheckboxComponent(tag){
+	if(tag){
+		var tr = tag.parentNode.parentNode;
+		var node = tag.parentNode.parentNode.parentNode;
+				
+		if(node)
+			node.removeChild(tr);
 	}
 }
 

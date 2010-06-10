@@ -14,6 +14,7 @@ class QuestaoAlternativa extends DAO {
 	private $id;
 	private $questaoId;
 	private $descricao;
+	private $resposta;
 
 	public function getId(){return $this->id;}
 	public function setId($var){$this->id = $var;}
@@ -23,11 +24,17 @@ class QuestaoAlternativa extends DAO {
 
 	public function getDescricao(){return $this->descricao;}
 	public function setDescricao($var){$this->descricao = $var;}
+	
+	public function isResposta(){
+		if(empty($this->resposta))
+			$this->setResposta(false);
+		return $this->resposta;
+	}
+	public function setResposta($var){$this->resposta = $var;}
 
 	public function insert(){
 		$array = array
 			(
-			'id' => $this->getId(),
 			'questao_id' => $this->getQuestaoId(),
 			'descricao' => $this->getDescricao()
 			);
@@ -56,5 +63,9 @@ class QuestaoAlternativa extends DAO {
 	}
 	public function delete(){
 		return parent::delete("id = '".$this->getId()."'");
+	}
+	public function toString(){
+		$str = "id:".$this->getId()." - descricao:".$this->getDescricao()." - R:".$this->isResposta();
+		return $str;
 	}
 }

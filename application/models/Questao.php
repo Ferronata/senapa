@@ -80,7 +80,6 @@ class Questao extends DAO {
 	}
 
 	public function insert(){
-		$resp = $this->getResposta();
 		$this->setResposta(0);
 		$array = array
 			(
@@ -97,7 +96,7 @@ class Questao extends DAO {
 			foreach($this->getAlternativas()->getAlternativas() as $linha){
 				$linha->setQuestaoId($this->getId());
 				$id = $linha->insert();
-				if($id){
+				if($id && $linha->isResposta()){
 					$this->setResposta($id);
 					$db = $this->getAdapter();
 					$db->update($this->_name,array('resposta' => $this->getResposta()),"`id` = '".$return."'");
@@ -116,9 +115,6 @@ class Questao extends DAO {
 		return $return;
 	}
 	public function update(){
-		$resp = $this->getResposta();
-		$this->setResposta(0);
-		
 		$array = array
 			(
 			'id' => $this->getId(),
@@ -128,21 +124,30 @@ class Questao extends DAO {
 			);
 		$return = parent::update($array,"id = '".$this->getId()."'");
 
-		$tmp 	= $this->getAdapter();		
-		$tmp->delete("questao_alternativa","`questao_id` = '".$this->getId()."'");
 		
+		
+		$ids = " ";
 		foreach($this->getAlternativas()->getAlternativas() as $linha){
-			$id = $tmp->fetchOne("SELECT MAX(`id`) FROM `questao_alternativa`");
-
-			$linha->setId(($id+1));
-			$linha->setQuestaoId($this->getId());
-			$id = $linha->insert();
-			if($id && $linha->getDescricao() == $resp){
-				$this->setResposta($id);
-						
-				$tmp->update($this->_name,array('resposta' => $this->getResposta()),"id = '".$this->getId()."'");
-			}	
+			// update
+			if($linha->getId()){
+				$ids .= $linha->getId().",";
+			}else{//insert
+				$linha->setQuestaoId($this->getId());
+				$id = $linha->insert();
+				if($id){
+					$linha->setId($id);
+					$ids .= $linha->getId().",";
+					if($linha->isResposta()){
+						$this->setResposta($id);
+						$this->getAdapter()->update($this->_name,array('resposta' => $this->getResposta()),"id = '".$this->getId()."'");
+					}
+				}
+			}
 		}
+		$ids = trim(substr($ids,0,-1));
+		$tmp 	= $this->getAdapter();
+		$tmp->delete("questao_alternativa","`id` NOT IN (".$ids.") AND `questao_id` = '".$this->getId()."'");
+		
 		$assuntoQuestao = $tmp->fetchRow("SELECT * FROM `assunto_questao` WHERE `questao_id` = '".$this->getId()."'");
 		$this->getAssuntoQuestao()->setQuestaoId($this->getId());
 		if($assuntoQuestao['id']){
