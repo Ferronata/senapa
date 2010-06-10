@@ -143,7 +143,7 @@ class QuestaoController extends Zend_Controller_Action{
 			);
 			$where = "`date_delete` IS NULL";
 			
-			$funcao->datagrid($view, 'questao',$display_datagrid,"","Gerenciamento de Questão");
+			$funcao->datagrid($view, 'questao',$display_datagrid,$where,"Gerenciamento de Questão");
 		}
 	}
 }
