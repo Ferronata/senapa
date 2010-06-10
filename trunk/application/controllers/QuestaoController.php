@@ -90,14 +90,28 @@ class QuestaoController extends Zend_Controller_Action{
 					$questao->getNivelQuestao()->setNivel($post->nivel);
 					$questao->getNivelQuestao()->setDataNivelamento(date("Y-m-d H:i:s"));
 				}
-				if(isset($post->lista_alternativa_descricao)){
-					$lista = $post->lista_alternativa_descricao;
-					$questao->setResposta($funcao->to_sql($post->lista_radio));
+				if(isset($post->lista_alternativa_id)){
+					$lista = $post->lista_alternativa_id;
 					
-					$listaAlternativa = new ListaAlternativa();
+					$questao->setResposta(0);
+					if($post->lista_radio>=0)
+						$questao->setResposta($post->lista_radio);
+						
 					foreach($lista as $linha){
 						$alternativa = new QuestaoAlternativa();
+						$alternativa->load($linha);
+						
+						$questao->getAlternativas()->addAlternativa($alternativa);
+					}
+				}
+				if(isset($post->lista_alternativa_descricao)){
+					$lista = $post->lista_alternativa_descricao;
+					$resp = ($post->lista_radio<0)?($post->lista_radio*(-1)):""; 
+					foreach($lista as $key => $linha){
+						$alternativa = new QuestaoAlternativa();
 						$alternativa->setDescricao($linha);
+						if(($key+1) == $resp)
+							$alternativa->setResposta(true);
 						
 						$questao->getAlternativas()->addAlternativa($alternativa);
 					}
