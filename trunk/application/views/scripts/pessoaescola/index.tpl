@@ -27,7 +27,6 @@
 				{/if}
 				<div class="controle">
 					<input type="submit" class="button save" value="Salvar" />
-					<input type="button" class="button back" value="Sair" onclick="location.href='?';" />
 				</div>
 			</form>
 		</div>

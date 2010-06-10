@@ -15,6 +15,10 @@
 <script type="text/javascript" src="{php}print BASE_URL;{/php}/public/js/lib/jquery-1.3.2.min.js" charset="ISO-8859-1"></script>
 <script type="text/javascript" src="{php}print BASE_URL;{/php}/public/js/lib/jqModal/jqModal.js" charset="ISO-8859-1"></script>
 
+<script type="text/javascript" src="{php}print BASE_URL;{/php}/public/js/lib/ckeditor/lang/_languages.js"></script>
+<script type="text/javascript" src="{php}print BASE_URL;{/php}/public/js/lib/ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="{php}print BASE_URL;{/php}/public/js/editor.js"></script>
+
 <script type="text/javascript" src="{php}print BASE_URL;{/php}/public/js/default/Objeto.js" charset="ISO-8859-1"></script>
 <script type="text/javascript" src="{php}print BASE_URL;{/php}/public/js/default/default.js" charset="ISO-8859-1"></script>
 

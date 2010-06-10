@@ -636,6 +636,7 @@ function openPage(page,method_,params_){
 				'work',
 				url, 
 				{
+					evalScripts:true,
 					onLoading: function(response){
 						addLoadding();
 					},
@@ -674,10 +675,12 @@ function enviarForm(page, form_id, bt_id){
 					addLoadding();
 				},			
 				onComplete:enviarFormBack,				
-				encoding: 'ISO-8859-1',
+				encoding: 'ISO-8859-1'
+				/*
 	            onCreate: function(response) {
 					response.transport.overrideMimeType("text/html;charset=ISO-8859-1");
 				}
+				*/
 			}
 		);
 }
@@ -1289,7 +1292,14 @@ function addComponentRadio(tag,lista,contador){
 				
 				var td = document.createElement("td");
 				td.setAttribute('class','left');
-				td.innerHTML  = '<input type="hidden" name="lista_'+lista[i].name+'[]" value="'+value+'" />';
+
+				var input = document.createElement("input");
+				input.setAttribute('type','hidden');
+				input.setAttribute('name','lista_'+lista[i].name+'[]');
+				input.setAttribute('value',value);
+				
+				//td.innerHTML  = '<input type="hidden" name="lista_'+lista[i].name+'[]" value="'+value+'" />';
+				td.appendChild(input);
 				td.innerHTML += txt;
 				option.appendChild(td);
 				
