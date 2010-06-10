@@ -21,7 +21,7 @@
  */
 var root_path = '/senapa/public/js/lib/ckeditor/';
 function createEditor( id, languageCode, op, w, h){
-	var width_pane 	= '99%';
+	var width_pane 	= '98%';
 	var height_pane	= '200px';
 	
 	if(w)
@@ -140,6 +140,26 @@ function createEditor( id, languageCode, op, w, h){
 					[	
 
 						['Undo','Redo','-','Bold','Italic','Underline','-','Subscript','Superscript'],
+						['NumberedList','BulletedList'],
+						['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+						['Link','Unlink'],
+						['Maximize']
+					]
+						
+				}
+			);
+			break;
+		case 'basic_text_html':
+			CKEDITOR.replace( id,
+				{
+					width			: width_pane+'',
+					height			: height_pane+'',
+					extraPlugins 	: 'uicolor',
+					language 		: languageCode,
+					toolbar 		: 
+					[	
+
+						['Source','Undo','Redo','-','Bold','Italic','Underline','-','Subscript','Superscript'],
 						['NumberedList','BulletedList'],
 						['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
 						['Link','Unlink'],

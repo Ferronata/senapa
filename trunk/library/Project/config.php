@@ -48,3 +48,5 @@ date_default_timezone_set('America/Sao_Paulo');
 
 //Configura o formato da moeda local
 setlocale(LC_MONETARY,'ptb');
+
+ini_set('max_execution_time','120');

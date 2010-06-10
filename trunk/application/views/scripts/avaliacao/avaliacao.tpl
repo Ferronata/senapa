@@ -4,36 +4,7 @@
  * @author Leonardo Popik e João Marcos=> Classgen 1.0
  * @version 1.0
  *}
-{literal}
-<style type="text/css">
-.h1Questoes, .h2Questoes{
-	color: #666666 !important;
-	margin: 0 !important;
-	padding: 0 !important;
-	font-weight: 900;
-}
-.h1Questoes{font-size: 14px;}
-.h2Questoes{font-size: 12px;}
-.popupAlternativas{
-	margin: 0 0 0 30px !important;
-	padding: 0 2px !important;
-}
-.popupAlternativas li{
-	color: #999999 !important;
-	list-style: lower-alpha;
-}
-.popupAlternativaResposta{
-	color: #ffffff;
-	font-weight: 900;
-	text-decoration: underline;
-}
-.descricaoResposta, .semAlternativas{
-	padding: 0 10px !important;
-	color: #999999;
-}
 
-</style>
-{/literal}
 <center>
 	<div class="body">
 		<div class="innerBody">

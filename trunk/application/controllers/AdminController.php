@@ -43,9 +43,21 @@ class AdminController extends Zend_Controller_Action{
 		//$pessoa_escola->load(11);
 		
 		// ALUNO
-		//$pessoa_escola->load(12);
+		$pessoa_escola->load(12);
 
 		$session->usuario = $pessoa_escola;
+		
+		// S_ADMIN
+		$menuSAdmInst = array
+			(
+			array('nome' => 'Feedback Questions','url' => 'javascript: openPage(\'feedbackAvaliacao\');')
+			);
+			
+		$dataSAdmin = array
+			(
+			array('nome' => 'Instituição','data' 	=> $menuSAdmInst)
+			);
+		// FIM S_ADMIN
 		
 		// ADMIN
 		$menuAdmInst = array
@@ -106,6 +118,14 @@ class AdminController extends Zend_Controller_Action{
 		$array = array();
 		switch($pessoa_escola->getPapelId()){
 			case $pessoa_escola->ENUM('P_S_ADMIN'):
+				$array = array
+					(
+						array('nome' => 'S Administrativo','data' => $dataSAdmin),
+						array('nome' => 'Administrativo','data' => $dataAdmin),
+						array('nome' => 'Professor','data' 		=> $dataProf),
+						array('nome' => 'Aluno','data' 			=> $dataAluno)
+					);
+				break;
 			case $pessoa_escola->ENUM('P_ADMIN'):
 				$array = array
 					(
