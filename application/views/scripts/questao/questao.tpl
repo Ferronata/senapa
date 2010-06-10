@@ -23,15 +23,15 @@
 					{include file='nivelquestao/nivelquestao.tpl'}
 					
 					<div class="line">
-						<label class="label required" for="descricao">Descrição</label>
+						<label class="label" for="descricao">Descrição</label>
 						<div class="innerLine">
-							<textarea class="key input normal" id="descricao" name="descricao">{$object->getDescricao()}</textarea>
+							<textarea class="input normal" id="descricao" name="descricao">{$object->getDescricao()}</textarea>
 						</div>
 					</div>
 					<div class="line">
-						<label class="label required" for="descricao_resposta">Explicação da Resposta</label>
+						<label class="label" for="descricao_resposta">Explicação da Resposta</label>
 						<div class="innerLine">
-							<textarea class="key input normal" id="descricao_resposta" name="descricao_resposta">{$object->getDescricaoResposta()}</textarea>
+							<textarea class="input normal" id="descricao_resposta" name="descricao_resposta">{$object->getDescricaoResposta()}</textarea>
 						</div>
 					</div>
 				</div>
@@ -47,3 +47,9 @@
 		</div>
 	</div>
 </center>
+{literal}
+<script type="text/javascript">
+	createEditorPanel('default','descricao');
+	createEditorPanel('default','descricao_resposta');
+</script>
+{/literal}

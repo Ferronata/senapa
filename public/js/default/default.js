@@ -1262,6 +1262,52 @@ function listRenderBack(e, a){
 	}
 }
 
+function addComponentText(tag,inputComponent,contador){
+	if(tag && inputComponent){
+		var str = "";
+		
+		var option = document.createElement("tr");
+		option.innerHTML = str;
+		option.setAttribute('class','lineComponent');
+		
+		var contadorId = 0;
+		try{
+			contadorId = eval(contador.value);
+			contadorId = contadorId-1;
+		}catch(Exception){ contadorId = -1;}
+		
+		contador.value = contadorId;
+	
+
+		var value = this.trim(inputComponent.value);
+		var txt = value;
+		if(txt){
+							
+			var td = document.createElement("td");
+			td.setAttribute('class','left');
+
+			var input = document.createElement("input");
+			input.setAttribute('type','hidden');
+			input.setAttribute('name','lista_'+inputComponent.id+'[]');
+			input.setAttribute('value',value);
+			
+			td.appendChild(input);
+			td.innerHTML += txt;
+			option.appendChild(td);
+			
+			inputComponent.value = "";
+			
+			var td = document.createElement("td");
+			td.innerHTML = '<input type="button" class="bt_remove" onclick="removeDefaultComponent(this)" value="remover" />';
+			option.appendChild(td);
+			
+			var tbody = document.createElement("tbody");
+			tbody.appendChild(option);
+			tag.appendChild(tbody);
+		}
+	}	
+}
+
 function addComponentRadio(tag,lista,contador){
 	if(tag && lista){
 		var str = "";
@@ -1370,6 +1416,15 @@ function removeComponent(tag){
 	}
 }
 function removeCheckboxComponent(tag){
+	if(tag){
+		var tr = tag.parentNode.parentNode;
+		var node = tag.parentNode.parentNode.parentNode;
+				
+		if(node)
+			node.removeChild(tr);
+	}
+}
+function removeDefaultComponent(tag){
 	if(tag){
 		var tr = tag.parentNode.parentNode;
 		var node = tag.parentNode.parentNode.parentNode;
