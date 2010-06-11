@@ -20,20 +20,15 @@
  * @return string|null
  */
 function smarty_function_sizeof($params){
-	$name = null;
+	$name = array();
 	
 	foreach($params as $key => $value){
 		switch($key){
 			case 'item':
 			case 'value':
-				$$key = $value;
+				$name = $value;
 		}
 	}
-	
-	if(!empty($item))
-		$name = $item;
-	if(!empty($value))
-		$name = $value;
 		
 	if(is_array($name))
 		return sizeof($name);
