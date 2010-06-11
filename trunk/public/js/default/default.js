@@ -709,6 +709,46 @@ function enviarFormBack(e, a){
 			bt.disabled = false;
 	}
 }
+
+function enviarFormAvaliacao(page, form_id){
+	var form	= $(form_id);
+	
+	var params = form.serialize();
+	new Ajax.Request(
+			"/"+project_root+"/alunoavaliacao/"+page, 
+			{
+				evalScripts:true,
+				parameters: params, 
+				metod: 'POST', 
+				onLoading: function(response){
+					addLoadding();
+				},			
+				onComplete:enviarFormAvaliacaoBack,				
+				encoding: 'ISO-8859-1'
+			}
+		);
+}
+function enviarFormAvaliacaoBack(e, a){
+	this.removeLoadding();
+	
+	res = eval('(' + e.responseText + ')');
+
+	/*
+	if(res['url'])
+		this.openPage(res['url']);
+	*/
+
+	if(res['msg'] == 'error'){
+		if(res['display'])
+			this.addMensage('err', res['display']);
+		else
+			this.addMensage('err', 'Não foi possivel executar a operação, por favor verifique os dados!');
+	}
+	
+	if(res['url'])
+		location.href = "/"+project_root+"/alunoavaliacao/"+res['url']+"?action=insert";
+}
+
 function voltarForm(){
 	var str = this.lerCookie('url');
 	if(str)

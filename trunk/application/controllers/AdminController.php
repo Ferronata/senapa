@@ -43,7 +43,7 @@ class AdminController extends Zend_Controller_Action{
 		//$pessoa_escola->load(11);
 		
 		// ALUNO
-		$pessoa_escola->load(12);
+		//$pessoa_escola->load(12);
 
 		$session->usuario = $pessoa_escola;
 		

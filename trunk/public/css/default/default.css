@@ -742,7 +742,53 @@ body {
  * AVALIACAO
  */
 
- 
+.alunoAvaliacaoHeader{
+	border-bottom: 1px solid #666666;
+}
+
+.navegation{
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 40px;
+	display: block;
+}
+.alunoAvaliacaoQuestions, .alunoAvaliacaoTimer{
+	margin: 0;
+	padding: 0;
+	
+	margin-top: 5px;
+	
+	width: 40%;
+	height: 30px;
+	color: #666666;
+	font-style: italic;
+}
+.alunoAvaliacaoQuestions span, .alunoAvaliacaoTimer span{
+	font-weight: 900;
+	color: #333333;
+}
+
+.alunoAvaliacaoQuestions{
+	float: left;
+}
+.alunoAvaliacaoTimer{
+	text-align: right;
+	float: right;
+}
+
+.alunoAvaliacaoFooter{
+	border-top: 1px solid #666666;
+}
+
+.question{
+	
+}
+.reply{
+	margin-top: 10px;
+	background: #F5F5F5 !important;
+}
+
 .h1Questoes, .h2Questoes{
 	color: #666666 !important;
 	margin: 0 !important;
@@ -768,3 +814,49 @@ body {
 	padding: 0 10px !important;
 	color: #999999;
 }
+
+/* CONTROLE DA AVALIACAO */
+
+
+.controller{
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 40px;
+	display: block;
+}
+
+.buttonLeft{
+	float: left;
+	background: #FCFCFC;
+}
+.buttonRight{
+	float: right;
+}
+.buttonLeft, .buttonRight{
+	margin: 0;
+	padding: 0;
+	width: 32px;
+	height: 32px;
+}
+
+.back, .next, .backOff, .nextOff{
+	margin: 0;
+	padding: 0;
+	width: 32px;
+	height: 32px;
+
+	border: none;
+	text-indent: 50px;
+	overflow: hidden;
+	cursor: pointer;
+}
+.backOff, .nextOff{cursor: default !important;}
+
+.back{background: url("../../images/back_32.png") no-repeat;float: left;}
+.next{background: url("../../images/next_32.png") no-repeat;float: right;}
+
+.backOff{background: url("../../images/backOff_32.png") no-repeat;float: left;}
+.nextOff{background: url("../../images/nextOff_32.png") no-repeat;float: right;}
+
+.back:hover, .next:hover{background-position: -32px;}
