@@ -16,8 +16,7 @@ class AvaliacaoAluno extends DefaultObject {
 	private $alunoPessoaEscolaPessoaFisicaPessoaId;
 	private $avaliacaoId;
 	private $dataInicio;
-	private $horaInicio;
-	private $horaFim;
+	private $dataFim;
 
 	public function getId(){return $this->id;}
 	public function setId($var){$this->id = $var;}
@@ -34,35 +33,29 @@ class AvaliacaoAluno extends DefaultObject {
 	public function getDataInicio(){return $this->dataInicio;}
 	public function setDataInicio($var){$this->dataInicio = $var;}
 
-	public function getHoraInicio(){return $this->horaInicio;}
-	public function setHoraInicio($var){$this->horaInicio = $var;}
-
-	public function getHoraFim(){return $this->horaFim;}
-	public function setHoraFim($var){$this->horaFim = $var;}
+	public function getDataFim(){return $this->dataFim;}
+	public function setDataFim($var){$this->dataFim = $var;}
 
 	public function insert(){
 		$array = array
 			(
-			'id' => $this->getId(),
 			'aluno_pessoa_escola_matricula' => $this->getAlunoPessoaEscolaMatricula(),
 			'aluno_pessoa_escola_pessoa_fisica_pessoa_id' => $this->getAlunoPessoaEscolaPessoaFisicaPessoaId(),
 			'avaliacao_id' => $this->getAvaliacaoId(),
-			'data_inicio' => $this->getDataInicio(),
-			'hora_inicio' => $this->getHoraInicio(),
-			'hora_fim' => $this->getHoraFim()
+			'data_inicio' => $this->getDataInicio()
 			);
-		return parent::insert($array);
+			$id = parent::insert($array);
+			$this->setId($id);
+		return $id;
 	}
 	public function update(){
 		$array = array
 			(
-			'id' => $this->getId(),
 			'aluno_pessoa_escola_matricula' => $this->getAlunoPessoaEscolaMatricula(),
 			'aluno_pessoa_escola_pessoa_fisica_pessoa_id' => $this->getAlunoPessoaEscolaPessoaFisicaPessoaId(),
 			'avaliacao_id' => $this->getAvaliacaoId(),
 			'data_inicio' => $this->getDataInicio(),
-			'hora_inicio' => $this->getHoraInicio(),
-			'hora_fim' => $this->getHoraFim()
+			'data_fim' => $this->getDataFim()
 			);
 		return parent::update($array,"id = '".$this->getId()."'");
 	}
@@ -74,12 +67,15 @@ class AvaliacaoAluno extends DefaultObject {
 			$this->setAlunoPessoaEscolaPessoaFisicaPessoaId($object->aluno_pessoa_escola_pessoa_fisica_pessoa_id);
 			$this->setAvaliacaoId($object->avaliacao_id);
 			$this->setDataInicio($object->data_inicio);
-			$this->setHoraInicio($object->hora_inicio);
-			$this->setHoraFim($object->hora_fim);
+			$this->setDataFim($object->data_fim);
 		}
-		return parent::fetchRow("id = '".$this->getId()."'");
+		return $object;
 	}
 	public function delete(){
 		return parent::delete("id = '".$this->getId()."'");
+	}
+	public function toString(){
+		$str = $this->getId()." - M:".$this->getAlunoPessoaEscolaMatricula()." - P:".$this->getAlunoPessoaEscolaPessoaFisicaPessoaId()." - A:".$this->getAvaliacaoId()." - I:".$this->getDataInicio()." - F:".$this->getDataFim();
+		return $str;
 	}
 }

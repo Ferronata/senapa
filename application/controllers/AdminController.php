@@ -11,16 +11,7 @@ class AdminController extends Zend_Controller_Action{
 	public function init(){
 		include_once("Project/include.php");
 	}
-	public function datagrid($view, $table, $display = array(), $where = ""){
-		//Exemplo => $datagrid = new Datagrid('com_endereco', array('id'=>'ID', 'logradouro'=>'Rua'));
-		$datagrid = new Datagrid($table, $where, $display);
-		$view->assign("datagrid",$datagrid);
 
-		$view->assign("body","html/default/datagrid.tpl");
-		$view->assign("header","html/default/header.tpl");
-		$view->assign("footer","html/default/footer.tpl");
-		$view->output("index.tpl");
-	}
 	public function acesso($view){
 		$funcao = new FuncoesProjeto();
 		if(!$funcao->acesso()){
@@ -43,7 +34,7 @@ class AdminController extends Zend_Controller_Action{
 		//$pessoa_escola->load(11);
 		
 		// ALUNO
-		//$pessoa_escola->load(12);
+		$pessoa_escola->load(12);
 
 		$session->usuario = $pessoa_escola;
 		

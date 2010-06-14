@@ -714,8 +714,9 @@ function enviarFormAvaliacao(page, form_id){
 	var form	= $(form_id);
 	
 	var params = form.serialize();
+	params += "&action="+page;
 	new Ajax.Request(
-			"/"+project_root+"/alunoavaliacao/"+page, 
+			"/"+project_root+"/alunoavaliacao", 
 			{
 				evalScripts:true,
 				parameters: params, 
@@ -746,7 +747,7 @@ function enviarFormAvaliacaoBack(e, a){
 	}
 	
 	if(res['url'])
-		location.href = "/"+project_root+"/alunoavaliacao/"+res['url']+"?action=insert";
+		location.href = "/"+project_root+"/"+res['url'];
 }
 
 function voltarForm(){

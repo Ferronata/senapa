@@ -13,32 +13,30 @@ class FeedbackAvaliacaoAluno extends DefaultObject {
 	protected $_name = 'feedback_avaliacao_aluno';
 	private $id;
 	private $feedbackAvaliacaoAlternativaId;
-	private $alunoAvaliacaoId;
+	private $avaliacaoAlunoId;
 
 	public function getId(){return $this->id;}
 	public function setId($var){$this->id = $var;}
 
 	public function getFeedbackAvaliacaoAlternativaId(){return $this->feedbackAvaliacaoAlternativaId;}
 	public function setFeedbackAvaliacaoAlternativaId($var){$this->feedbackAvaliacaoAlternativaId = $var;}
-
-	public function getAlunoAvaliacaoId(){return $this->alunoAvaliacaoId;}
-	public function setAlunoAvaliacaoId($var){$this->alunoAvaliacaoId = $var;}
+	
+	public function getAvaliacaoAlunoId(){return $this->avaliacaoAlunoId;}
+	public function setAvaliacaoAlunoId($var){$this->avaliacaoAlunoId = $var;}
 
 	public function insert(){
 		$array = array
 			(
-			'id' => $this->getId(),
 			'feedback_avaliacao_alternativa_id' => $this->getFeedbackAvaliacaoAlternativaId(),
-			'aluno_avaliacao_id' => $this->getAlunoAvaliacaoId()
+			'avaliacao_aluno_id' => $this->getAvaliacaoAlunoId()
 			);
 		return parent::insert($array);
 	}
 	public function update(){
 		$array = array
 			(
-			'id' => $this->getId(),
 			'feedback_avaliacao_alternativa_id' => $this->getFeedbackAvaliacaoAlternativaId(),
-			'aluno_avaliacao_id' => $this->getAlunoAvaliacaoId()
+			'avaliacao_aluno_id' => $this->getAvaliacaoAlunoId()
 			);
 		return parent::update($array,"id = '".$this->getId()."'");
 	}
@@ -47,11 +45,15 @@ class FeedbackAvaliacaoAluno extends DefaultObject {
 		if($object){
 			$this->setId($object->id);
 			$this->setFeedbackAvaliacaoAlternativaId($object->feedback_avaliacao_alternativa_id);
-			$this->setAlunoAvaliacaoId($object->aluno_avaliacao_id);
+			$this->setAvaliacaoAlunoId($object->avaliacao_aluno_id);
 		}
-		return parent::fetchRow("id = '".$this->getId()."'");
+		return $object;
 	}
 	public function delete(){
 		return parent::delete("id = '".$this->getId()."'");
+	}
+	public function toString(){
+		$str = $this->getFeedbackAvaliacaoAlternativaId()." - ".$this->getAvaliacaoAlunoId();
+		return $str;
 	}
 }

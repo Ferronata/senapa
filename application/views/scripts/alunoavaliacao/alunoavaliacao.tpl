@@ -14,10 +14,14 @@
 		$('form').action = "javascript: enviarFormAvaliacao('back', 'form')";
 		$('form').submit();
 	}
+	function finaliza(){
+		$('form').action = "javascript: enviarFormAvaliacao('finish', 'form')";
+		$('form').submit();
+	}
 </script>
 {/literal}
 	
-{if !$session->inicio}
+{if $session->iniciar}
 	{literal}
 	<script type="text/javascript">
 		function timer(){
@@ -40,8 +44,12 @@
 {/capture}
 
 {capture name=controller}
-	<span class="buttonLeft"><input type="button" {if $session->questaoAtual.numero == 1}disabled="disabled" class="backOff"{else}class="back"{/if} value="Anterior" onclick="anterior()" /></span>
-	<span class="buttonRight"><input type="button" {if $session->questaoAtual.numero == $smarty.capture.size}disabled="disabled" class="nextOff"{else}class="next"{/if} value="Próxima" onclick="proxima()" /></span>
+	<span class="buttonLeft"><input type="button" {if $session->atual.numero == 1}disabled="disabled" class="backOff"{else}class="back"{/if} value="Anterior" onclick="anterior()" /></span>
+	{if $session->atual.numero >= $smarty.capture.size}
+	<span class="buttonRight"><input type="button" class="finish" value="Finalizar" onclick="finaliza()" /></span>
+	{else}
+	<span class="buttonRight"><input type="button" class="next" value="Próxima" onclick="proxima()" /></span>
+	{/if}
 {/capture}
 
 <center>
@@ -51,8 +59,8 @@
 				<div class="alunoAvaliacaoHeader">
 					<h1 class="h1AlunoAvaliacao">{$disciplina->getNome()} - {$avaliacao->getNome()}</h1>
 					<div class="navegation">
-						<span class="alunoAvaliacaoQuestions"><span>Questão:</span> {$session->questaoAtual.numero} / {$smarty.capture.size}</span>
-						<span class="alunoAvaliacaoTimer"><span>Tempo:</span><label id="timer">&nbsp;{$time}</label></span>
+						<span class="alunoAvaliacaoQuestions"><span>Questão:</span> {$session->atual.numero} / {$smarty.capture.size}</span>
+						<span class="alunoAvaliacaoTimer"><span>Tempo:</span><label id="timer">&nbsp;{$session->time}</label></span>
 					</div>
 				</div>
 				<div class="alunoAvaliacaoBody innerBody">
@@ -61,14 +69,14 @@
 					</div>
 					<div id="question">
 						<div class="question content">
-							{$session->questaoAtual.questao->getDescricao()}
+							{$session->atual.questao->getDescricao()}
 						</div>
 						<div class="reply content">
 							<div class="line">
 									<ul class="popupAlternativas">
-										{assign var=alternativas value=$questaoAtual.questao->getAlternativas()}
+										{assign var=alternativas value=$session->atual.questao->getAlternativas()}
 										{foreach item=item from=$alternativas->getAlternativas()}
-										    <li><label><input type="radio" name="resposta" value="{$item->getId()}" />{$item->getDescricao()}</label></li>
+										    <li><label><input type="radio" name="resposta" {if $respostaId == $item->getId()} checked="checked"{/if} value="{$item->getId()}" />{$item->getDescricao()}</label></li>
 										{foreachelse}
 											<li><label>Questão anulada</label></li>
 										{/foreach}

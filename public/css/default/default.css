@@ -797,6 +797,16 @@ body {
 }
 .h1Questoes{font-size: 14px;}
 .h2Questoes{font-size: 12px;}
+
+.popupQuestions{
+	margin: 0 0 0 30px !important;
+	padding: 0 2px !important;
+}
+.popupQuestions li{
+	color: #666666 !important;
+	list-style: upper-roman;
+}
+
 .popupAlternativas{
 	margin: 0 0 0 30px !important;
 	padding: 0 2px !important;
