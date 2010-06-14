@@ -11,15 +11,10 @@ class FeedbackAvaliacaoAlunoController extends Zend_Controller_Action{
 	public function init(){
 		include_once("Project/include.php");
 	}
-	public function datagrid($view, $table, $display = array()){
-		//Exemplo => $datagrid = new Datagrid('com_endereco', array('id'=>'ID', 'logradouro'=>'Rua'));
-		$datagrid = new Datagrid($table,$display);
-		$view->assign("datagrid",$datagrid);
-
-		$view->assign("body","html/default/datagrid.tpl");
-		$view->assign("header","html/default/header.tpl");
-		$view->assign("footer","html/default/footer.tpl");
-		$view->output("index.tpl");
+	public function negado(){
+		$view = Zend_Registry::get('view');
+		$view->output("negado.tpl");
+		die();
 	}
 	public function acesso($view){
 		$funcao = new FuncoesProjeto();
@@ -28,7 +23,6 @@ class FeedbackAvaliacaoAlunoController extends Zend_Controller_Action{
 			die();
 		}
 	}
-
 	public function indexAction(){
 		$this->FeedbackAvaliacaoAlunoAction();
 	}
@@ -44,56 +38,122 @@ class FeedbackAvaliacaoAlunoController extends Zend_Controller_Action{
 
 		$funcao 	= new FuncoesProjeto();
 		$display_datagrid = array();
-
-		if(isset($get->action)){
-			$aluno_avaliacao 	= new AlunoAvaliacao();
-			$aluno_avaliacao 	= $aluno_avaliacao->fetchAll('1','');
-			$view->assign("aluno_avaliacao",$aluno_avaliacao);
-
-			$feedback_avaliacao_alternativa 	= new FeedbackAvaliacaoAlternativa();
-			$feedback_avaliacao_alternativa 	= $feedback_avaliacao_alternativa->fetchAll('1','');
-			$view->assign("feedback_avaliacao_alternativa",$feedback_avaliacao_alternativa);
-			switch($get->action){
-				case 'edit':
-					$feedback_avaliacao_aluno->load($get->id);
-					break;
-				case 'delete':
-					$feedback_avaliacao_aluno->load($get->id);
-					$feedback_avaliacao_aluno->delete();
-
-					$this->_redirect("feedbackavaliacaoaluno/feedbackavaliacaoaluno");
-					die();
-			}
-			$view->assign("feedback_avaliacao_aluno",$feedback_avaliacao_aluno);
-
-			$view->assign("header","html/default/header.tpl");
-			$view->assign("body","feedbackavaliacaoaluno/feedbackavaliacaoaluno.tpl");
-			$view->assign("footer","html/default/footer.tpl");
-			$view->output("index.tpl");
-		}elseif(isset($post->id)){
-			// SALVA E ATUALIZA REGISTRO
-			$feedback_avaliacao_aluno->setFeedbackAvaliacaoAlternativaId($funcao->to_sql($post->feedback_avaliacao_alternativa_id));
-			$feedback_avaliacao_aluno->setAlunoAvaliacaoId($funcao->to_sql($post->aluno_avaliacao_id));
-
-			if(empty($post->id)){
-				// CREATE
-
-				if($feedback_avaliacao_aluno->insert())
-					$retorno = array('msg' => 'ok', 'display' => htmlentities('FeedbackAvaliacaoAluno inserido com sucesso'), 'url' => '?');
-				else
-					$retorno = array('msg' => 'error', 'display' => htmlentities('Erro ao inserir FeedbackAvaliacaoAluno'));
-
-				die($funcao->array2json($retorno));
-			}else{
-				// UPDATE
-				$feedback_avaliacao_aluno->setId($post->id);
-				$feedback_avaliacao_aluno->update();
-				$retorno = array('msg' => 'ok', 'display' => htmlentities('FeedbackAvaliacaoAluno modificado com sucesso'));
-				die($funcao->array2json($retorno));
-			}
-		}else{
-			// DATAGRID
-			$this->datagrid($view, 'feedback_avaliacao_aluno',$display_datagrid);
+		
+		$feedbackAvaliacao = new Feedbackavaliacao();
+		$list = $feedbackAvaliacao->fetchAll("`date_delete` IS NULL");
+		
+		$perguntas = array();
+		
+		foreach($list as $linha){
+			$tmp = new Feedbackavaliacao();
+			$tmp->load($linha->id);
+			$perguntas[] = $tmp;
 		}
+		
+		$view->assign("perguntas",$perguntas);
+		
+		$view->assign("header","html/default/header.tpl");
+		$view->assign("body","feedbackavaliacaoaluno/index.tpl");
+		$view->assign("footer","html/default/footer.tpl");
+		$view->output("index.tpl");
+	}
+	public function respostaAction(){
+		$view 		= Zend_Registry::get('view');
+		$session 	= Zend_Registry::get('session');
+
+		$this->acesso($view);
+
+		$feedback_avaliacao_aluno = new FeedbackAvaliacaoAluno();
+
+		$post 	= Zend_Registry::get('post');
+		$get 	= Zend_Registry::get('get');
+
+		$funcao 	= new FuncoesProjeto();
+		
+		if(empty($post->id))
+			$this->negado();
+		else{
+			try{
+				$ids = $post->id;
+				
+				$id = (int)$session->atual['avaliacaoId'];
+				$avaliacao = new Avaliacao();
+				$avaliacao->load($id);
+						
+				foreach($ids as $linha){
+					$feedbackAvaliacao = new Feedbackavaliacao();
+					$feedbackAvaliacao->load($linha);
+					$tmpPost = "alternativa".$linha;
+					$tmpResp = $post->$tmpPost;
+					if(!empty($tmpResp)){
+						$feedbackAvaliacaoAluno = new FeedbackAvaliacaoAluno();
+						$feedbackAvaliacaoAluno->setFeedbackAvaliacaoAlternativaId($tmpResp);
+						$feedbackAvaliacaoAluno->setAvaliacaoAlunoId($avaliacao->getId());
+						$feedbackAvaliacaoAluno->insert();
+					}
+				}
+				die($funcao->array2json(array('msg' => 'ok', 'display' => htmlentities('Feedback concluído com sucesso'),'url' => '/senapa/feedbackAvaliacaoAluno/resultado')));
+			}catch(Exception $e){die($funcao->array2json(array('msg' => 'error', 'display' => htmlentities('Erro fatal => '.$str.$e))));}
+		}
+	}
+	public function resultadoAction(){
+		$view 		= Zend_Registry::get('view');
+		$session 	= Zend_Registry::get('session');
+
+		$this->acesso($view);
+
+		$feedback_avaliacao_aluno = new FeedbackAvaliacaoAluno();
+
+		$post 	= Zend_Registry::get('post');
+		$get 	= Zend_Registry::get('get');
+
+		$funcao 	= new FuncoesProjeto();
+		
+		$usuario = $session->usuario;		
+		$id = (int)$session->atual['avaliacaoId'];
+		
+		$avaliacao = new Avaliacao();
+		$avaliacao->load($id);
+		$disciplina = new Disciplina();
+		
+		$questoes 	= $avaliacao->getListaQuestoes()->getListaQuestao();
+		
+		if(sizeof($avaliacao->getListaQuestoes()->getListaQuestao())){
+			$tmp = $avaliacao->getListaQuestoes()->getListaQuestao();
+			$disciplina = $tmp[0]->getDisciplina();
+		}
+		
+		$listaQuestao = array();
+		
+		foreach($questoes as $linha){
+			$alunoResolveQuestao = new AlunoResolveQuestao();
+			$tmp = $alunoResolveQuestao->fetchRow("`pessoa_id` = '".$usuario->getPessoaId()."' AND `avaliacao_id` = '".$avaliacao->getId()."' AND `questao_id` = '".$linha->getId()."'");
+			$alunoResolveQuestao->load($tmp->id);
+			
+			$questao_alternativa = new QuestaoAlternativa();
+			$questao_alternativa->load($linha->getResposta());
+			
+			$questaoAlternativaAluno = new QuestaoAlternativa();
+			$questaoAlternativaAluno->load($alunoResolveQuestao->getRespostaId());
+			
+			if($alunoResolveQuestao->getId())
+				$listaQuestao[] = array('questao'=>$linha,'alunoResolveQuestao' => $alunoResolveQuestao,'resposta' => $questao_alternativa->getDescricao(),'respostaAluno' => $questaoAlternativaAluno->getDescricao());
+		}
+		
+		$avaliacaoAluno = new AvaliacaoAluno();
+		$tmp = $avaliacaoAluno->fetchRow("`aluno_pessoa_escola_pessoa_fisica_pessoa_id` = '".$usuario->getPessoaId()."' AND `avaliacao_id` = '".$avaliacao->getId()."'");
+		if($tmp)
+			$avaliacaoAluno->load($tmp->id);
+			
+		$view->assign("avaliacaoAluno",$avaliacaoAluno);
+		$view->assign("usuario",$usuario);
+		$view->assign("avaliacao",$avaliacao);
+		$view->assign("disciplina",$disciplina);
+		$view->assign("listaQuestao",$listaQuestao);
+		
+		$view->assign("header","html/default/header.tpl");
+		$view->assign("body","feedbackavaliacaoaluno/resultado.tpl");
+		$view->assign("footer","html/default/footer.tpl");
+		$view->output("index.tpl");
 	}
 }

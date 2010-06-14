@@ -11,22 +11,15 @@ class AlunoAvaliacaoController extends Zend_Controller_Action{
 	public function init(){
 		include_once("Project/include.php");
 	}
-	public function datagrid($view, $table, $display = array()){
-		//Exemplo => $datagrid = new Datagrid('com_endereco', array('id'=>'ID', 'logradouro'=>'Rua'));
-		$datagrid = new Datagrid($table,$display);
-		$view->assign("datagrid",$datagrid);
-
-		$view->assign("body","html/default/datagrid.tpl");
-		$view->assign("header","html/default/header.tpl");
-		$view->assign("footer","html/default/footer.tpl");
-		$view->output("index.tpl");
+	public function negado(){
+		$view = Zend_Registry::get('view');
+		$view->output("negado.tpl");
+		die();
 	}
 	public function acesso($view){
 		$funcao = new FuncoesProjeto();
-		if(!$funcao->acesso()){
-			$view->output("negado.tpl");
-			die();
-		}
+		if(!$funcao->acesso())
+			$this->negado();
 	}
 
 	public function indexAction(){
@@ -54,82 +47,278 @@ class AlunoAvaliacaoController extends Zend_Controller_Action{
 
 		$funcao 	= new FuncoesProjeto();
 		
-		//$session->avaliacao = NULL;
-		if(empty($session->avaliacao)){
+		$avaliacao 	= new Avaliacao();
+		$disciplina = new Disciplina();
+		$alunoResolveQuestao = new AlunoResolveQuestao();
+		$respostaId = 0;
+		
+		if(!empty($session->atual) && empty($post->action)){
 			
-			$avaliacao = new Avaliacao();
-			$avaliacao->load(1);
+			$id = (int)$session->atual['avaliacaoId'];
+			
+			$avaliacao->load($id);
 
-			$disciplina = new Disciplina();
 			if(sizeof($avaliacao->getListaQuestoes()->getListaQuestao())){
 				$tmp = $avaliacao->getListaQuestoes()->getListaQuestao();
 				$disciplina = $tmp[0]->getDisciplina();
 			}
 			
-			$session->avaliacao 	= $avaliacao;
-			$session->disciplina 	= $disciplina;
+			$aux = $session->atual['numero'];
 			
-			$session->time			= "00:00:00";
+			$questoes 	= $avaliacao->getListaQuestoes()->getListaQuestao();
+			$questao	= $questoes[$aux-1];
 			
-			$session->inicio	 	= true;
-			$session->questaoAtual 	= NULL;
+			$alunoResolveQuestao->load($session->atual['alunoResolveQuestaoId']);
+			$respostaId = $alunoResolveQuestao->getRespostaId();
 			
-			$this->sessionQuestion();
+			$session->atual	= array('numero' => $aux,'avaliacaoId' => $avaliacao->getId(),'questao' => $questao,'alunoResolveQuestaoId' => $alunoResolveQuestao->getId());
+			
+			
+		}elseif(!empty($get->id) && (int)$get->id && empty($post->action)){
+			$id = (int)$get->id;
+			
+			$avaliacao->load($id);
+
+			if(sizeof($avaliacao->getListaQuestoes()->getListaQuestao())){
+				$tmp = $avaliacao->getListaQuestoes()->getListaQuestao();
+				$disciplina = $tmp[0]->getDisciplina();
+			}
+			
+			
+			$avaliacaoAluno = new AvaliacaoAluno();
+			
+			$listAvaliacao 	= $avaliacaoAluno->fetchRow("`aluno_pessoa_escola_pessoa_fisica_pessoa_id` = '".$usuario->getPessoaId()."' AND `avaliacao_id` = '".$avaliacao->getId()."'");
+			
+			$avaliacaoAluno->setAlunoPessoaEscolaPessoaFisicaPessoaId($usuario->getPessoaId());
+			$avaliacaoAluno->setAvaliacaoId($avaliacao->getId());
+						
+			if(!$listAvaliacao){
+				
+				$avaliacaoAluno->setAlunoPessoaEscolaMatricula($usuario->getMatricula());
+				$avaliacaoAluno->setDataInicio(date('Y-m-d H:i:s'));
+				$avaliacaoAluno->insert();
+				$session->avaliacaoAluno = $avaliacaoAluno->getId();		
+				
+				$questoes 	= $avaliacao->getListaQuestoes()->getListaQuestao();
+				$questao	= $questoes[0];
+				
+				$alunoResolveQuestao = $this->createQuestion($avaliacao,$disciplina,$questao);
+				
+				$session->lista = new ListaAlunoResolveQuestao();
+				$session->lista->add($alunoResolveQuestao);
+				
+				$session->atual	 = array('numero' => 1,'avaliacaoId' => $avaliacao->getId(),'questao' => $questao,'alunoResolveQuestaoId' => $alunoResolveQuestao->getId());
+				
+				$session->time			= "00:00:00";
+				$session->iniciar	 	= false;
+			}else{
+				
+				$questoes 	= $avaliacao->getListaQuestoes()->getListaQuestao();
+				$questao	= $questoes[0];
+				
+				
+				$alunoResolveQuestao = new AlunoResolveQuestao();
+				
+				$list = $alunoResolveQuestao->fetchAll("`pessoa_id` = '".$usuario->getPessoaId()."' AND `avaliacao_id` = '".$avaliacao->getId()."'","id");
+				$alunoResolveQuestao->load($list[0]->id);
+				
+				$session->lista = new ListaAlunoResolveQuestao();
+				foreach($list as $linha){
+					$tmp = new AlunoResolveQuestao();
+					$tmp->load($linha->id);
+					$session->lista->add($tmp);
+				}
+							
+				$inicio 	= $list[0]->inicio;
+				$dtIni 		= trim(substr($inicio,0,10));
+				$hrIni 		= trim(substr($inicio,10));
+		
+				$final 		= $list[sizeof($list)-1]->fim;
+				$dtFim 		= trim(substr($final,0,10));
+				$hrFim 		= trim(substr($final,10));
+				
+				$dayIni = mktime(0,0,0,substr($dtIni,5,2),substr($dtIni,8,2),substr($dtIni,0,4));		
+				$dayFim = mktime(0,0,0,substr($dtFim,5,2),substr($dtFim,8,2),substr($dtFim,0,4));
+
+				$day = mktime(0,0,0,substr($dtIni,5,2),substr($dtIni,8,2),substr($dtIni,0,4));
+				$dt1 = mktime(substr($hrIni,0,2),substr($hrIni,3,2),substr($hrIni,6,2),substr($dtIni,5,2),substr($dtIni,8,2),substr($dtIni,0,4));
+				$dt2 = mktime(substr($hrFim,0,2),substr($hrFim,3,2),substr($hrFim,6,2),substr($dtIni,5,2),substr($dtIni,8,2),substr($dtIni,0,4));
+				
+				$tempo = $day+($dt2-$dt1);
+				$tempo = date('H:i:s',$tempo);
+				
+				$session->atual	 = array('numero' => 1,'avaliacaoId' => $avaliacao->getId(),'questao' => $questao,'alunoResolveQuestaoId' => $alunoResolveQuestao->getId());
+				
+				$session->time			= $tempo;
+				$session->iniciar	 	= true;
+			}
+		}elseif(!empty($post->action)){
+			$session->iniciar = true;
+
+			switch($post->action){
+				case 'next':
+					try{
+						$id = (int)$session->atual['avaliacaoId'];
+				
+						$avaliacao->load($id);
+			
+						if(sizeof($avaliacao->getListaQuestoes()->getListaQuestao())){
+							$tmp = $avaliacao->getListaQuestoes()->getListaQuestao();
+							$disciplina = $tmp[0]->getDisciplina();
+						}
+						
+						$aux = $session->atual['numero']+1;
+						
+						$questoes 	= $avaliacao->getListaQuestoes()->getListaQuestao();
+						$questao	= $questoes[$aux-1];
+						
+						$alunoResolveQuestao->load($session->atual['alunoResolveQuestaoId']);
+						if($alunoResolveQuestao->getReinicio()){
+							$now = date('Y-m-d H:i:s');
+							$dif = $now - $alunoResolveQuestao->getReinicio();
+							
+							$tempo = $alunoResolveQuestao->getFim() + $dif;
+							$alunoResolveQuestao->setFim($tempo);
+						}else
+							$alunoResolveQuestao->setFim(date('Y-m-d H:i:s'));
+							
+						$alunoResolveQuestao->setRespostaId($funcao->to_sql($post->resposta));					
+						$alunoResolveQuestao->update();
+						
+						$pos = $session->lista->findByQuestion($questao);
+						if($pos<0){
+							$alunoResolveQuestao = $this->createQuestion($avaliacao,$disciplina,$questao);
+							$session->lista->add($alunoResolveQuestao);
+						}else{
+							$tmp = $session->lista->getListaAlunoResolveQuestao();
+							$alunoResolveQuestao->load($tmp[$pos]->getId());
+							if($alunoResolveQuestao->getFim())
+								$alunoResolveQuestao->setReinicio(date('Y-m-d H:i:s'));
+							$respostaId = $alunoResolveQuestao->getRespostaId();
+						}
+						
+						$session->atual	 = array('numero' => $aux,'avaliacaoId' => $avaliacao->getId(),'questao' => $questao,'alunoResolveQuestaoId' => $alunoResolveQuestao->getId());
+						die($funcao->array2json(array('url' => 'alunoavaliacao')));
+					}catch(Exception $e){die($funcao->array2json(array('msg' => 'error', 'display' => htmlentities('Erro fatal => '.$e))));}
+					break;
+				case 'back':
+					try{
+						$id = (int)$session->atual['avaliacaoId'];
+				
+						$avaliacao->load($id);
+			
+						if(sizeof($avaliacao->getListaQuestoes()->getListaQuestao())){
+							$tmp = $avaliacao->getListaQuestoes()->getListaQuestao();
+							$disciplina = $tmp[0]->getDisciplina();
+						}
+						
+						$aux = $session->atual['numero']-1;
+						
+						$questoes 	= $avaliacao->getListaQuestoes()->getListaQuestao();
+						$questao	= $questoes[$aux-1];
+						
+						$alunoResolveQuestao->load($session->atual['alunoResolveQuestaoId']);
+						if($alunoResolveQuestao->getReinicio()){
+							$now = date('Y-m-d H:i:s');
+							$dif = $now - $alunoResolveQuestao->getReinicio();
+							
+							$tempo = $alunoResolveQuestao->getFim() + $dif;
+							$alunoResolveQuestao->setFim($tempo);
+						}else
+							$alunoResolveQuestao->setFim(date('Y-m-d H:i:s'));
+							
+						$alunoResolveQuestao->setRespostaId($funcao->to_sql($post->resposta));					
+						$alunoResolveQuestao->update();
+						
+						$pos = $session->lista->findByQuestion($questao);
+						if($pos >= 0){
+							$tmp = $session->lista->getListaAlunoResolveQuestao();
+							$alunoResolveQuestao->load($tmp[$pos]->getId());
+							if($alunoResolveQuestao->getFim())
+								$alunoResolveQuestao->setReinicio(date('Y-m-d H:i:s'));
+							$respostaId = $alunoResolveQuestao->getRespostaId();
+						}
+						
+						$session->atual	 = array('numero' => $aux,'avaliacaoId' => $avaliacao->getId(),'questao' => $questao,'alunoResolveQuestaoId' => $alunoResolveQuestao->getId());
+						die($funcao->array2json(array('url' => 'alunoavaliacao')));
+					}catch(Exception $e){die($funcao->array2json(array('msg' => 'error', 'display' => htmlentities('Erro fatal => '.$e))));}
+					break;
+				case 'finish':
+					$str = "";
+					try{
+						$id = (int)$session->atual['avaliacaoId'];
+						
+						$avaliacao = new Avaliacao();
+						$avaliacao->load($id);
+			
+						if(sizeof($avaliacao->getListaQuestoes()->getListaQuestao())){
+							$tmp = $avaliacao->getListaQuestoes()->getListaQuestao();
+							$disciplina = $tmp[0]->getDisciplina();
+						}
+						
+						$aux = $session->atual['numero'];
+						
+						$questoes 	= $avaliacao->getListaQuestoes()->getListaQuestao();
+						$questao	= $questoes[$aux-1];
+						
+						$alunoResolveQuestao = new AlunoResolveQuestao();
+						$alunoResolveQuestao->load($session->atual['alunoResolveQuestaoId']);
+						$alunoResolveQuestao->setFim(date('Y-m-d H:i:s'));
+						$alunoResolveQuestao->setRespostaId($funcao->to_sql($post->resposta));					
+						$alunoResolveQuestao->update();
+						
+						$pos = $session->lista->findByQuestion($questao);
+						if($pos >= 0){
+							$tmp = $session->lista->getListaAlunoResolveQuestao();
+							$alunoResolveQuestao->load($tmp[$pos]->getId());
+							if($alunoResolveQuestao->getFim())
+								$alunoResolveQuestao->setReinicio(date('Y-m-d H:i:s'));
+							$respostaId = $alunoResolveQuestao->getRespostaId();
+						}
+						
+						//$session->atual	 = array('numero' => $aux,'avaliacaoId' => $avaliacao->getId(),'questao' => $questao,'alunoResolveQuestaoId' => $alunoResolveQuestao->getId());
+						
+						$avaliacaoAluno = new AvaliacaoAluno();
+						$avaliacaoAluno->load($session->avaliacaoAluno);
+						$avaliacaoAluno->setDataFim(date('Y-m-d H:i:s'));
+						$avaliacaoAluno->update();
+						
+						die($funcao->array2json(array('url' => 'feedbackAvaliacaoAluno')));
+					}catch(Exception $e){die($funcao->array2json(array('msg' => 'error', 'display' => htmlentities('Erro fatal => '.$str.$e))));}
+					break;
+				default:
+					$view->output("negado.tpl");
+					die();
+					break;
+			}
+		}else{
+			$this->negado();
 		}
 		
 		$view->assign("session",$session);
-		$view->assign("time",$session->time);
-		$view->assign("avaliacao",$session->avaliacao);
-		$view->assign("disciplina",$session->disciplina);
-		$view->assign("questoes",$session->avaliacao->getListaQuestoes()->getListaQuestao());
-		$view->assign("questaoAtual",$session->questaoAtual);
-		
-		if(isset($get->action)){
-
-			switch($get->action){
-				case 'edit':
-					$aluno_avaliacao->load($get->id);
-					break;
-				case 'delete':
-					$aluno_avaliacao->load($get->id);
-					$aluno_avaliacao->delete();
-
-					$this->_redirect("alunoavaliacao/alunoavaliacao");
-					die();
-			}
-			$view->assign("aluno_avaliacao",$aluno_avaliacao);
-
-			$view->assign("header","html/default/header.tpl");
-			$view->assign("body","alunoavaliacao/alunoavaliacao.tpl");
-			$view->assign("footer","html/default/footer.tpl");
-			$view->output("index.tpl");
-		}
+		$view->assign("avaliacao",$avaliacao);
+		$view->assign("disciplina",$disciplina);
+		$view->assign("questoes",$questoes);
+		$view->assign("questao",$questao);
+		$view->assign("respostaId",$alunoResolveQuestao->getRespostaId());
+		$view->assign("atual",$atual);
+			
+		$view->assign("header","html/default/header.tpl");
+		$view->assign("body","alunoavaliacao/alunoavaliacao.tpl");
+		$view->assign("footer","html/default/footer.tpl");
+		$view->output("index.tpl");
 	}
-	function sessionQuestion(){
+	function createQuestion($avaliacao,$disciplina,$questao){
 		$session = Zend_Registry::get('session');
 		
-		if(empty($session->listaAlunoResolveQuestao))
-				$session->listaAlunoResolveQuestao = new ListaAlunoResolveQuestao();
-		
-		$cont = 1;
-		if(!empty($session->questaoAtual))
-			$cont = $session->questaoAtual['numero']+1;
-		if($cont <= sizeof($session->listaAlunoResolveQuestao->getListaAlunoResolveQuestao())){
-			$questoes = $session->avaliacao->getListaQuestoes()->getListaQuestao();			
-			$questao = $questoes[($cont-1)];
-			
-			$session->alunoResolveQuestao = new AlunoResolveQuestao();
-			$session->alunoResolveQuestao->setPessoaId($session->usuario->getId());
-			$session->alunoResolveQuestao->setAvaliacaoId($session->avaliacao->getId());
-			$session->alunoResolveQuestao->setDisciplinaId($session->disciplina->getId());
-			$session->alunoResolveQuestao->setQuestaoId($questao->getId());
-			$session->alunoResolveQuestao->setInicio(date('H:i:s'));
-			$session->alunoResolveQuestao->insert();
-			
-			$session->questaoAtual 	= array('numero' => $cont,'questao' => $questao,'alunoResolveQuestaoId' => $session->alunoResolveQuestao->getId());
-				
-			$session->listaAlunoResolveQuestao->add($session->alunoResolveQuestao);
-		}
+		$alunoResolveQuestao = new AlunoResolveQuestao();
+		$alunoResolveQuestao->setPessoaId($session->usuario->getId());
+		$alunoResolveQuestao->setAvaliacaoId($avaliacao->getId());
+		$alunoResolveQuestao->setDisciplinaId($disciplina->getId());
+		$alunoResolveQuestao->setQuestaoId($questao->getId());
+		$alunoResolveQuestao->setInicio(date('Y-m-d H:i:s'));
+		$alunoResolveQuestao->insert();
+		return $alunoResolveQuestao;
 	}
 	public function timeAction(){
 		$session = Zend_Registry::get('session');

@@ -20,6 +20,7 @@ class AlunoResolveQuestao extends DefaultObject {
 	private $respostaId;
 	private $inicio;
 	private $fim;
+	private $reinicio;
 
 	public function getId(){return $this->id;}
 	public function setId($var){$this->id = $var;}
@@ -44,6 +45,9 @@ class AlunoResolveQuestao extends DefaultObject {
 	
 	public function getFim(){return $this->fim;}
 	public function setFim($var){$this->fim = $var;}
+	
+	public function getReinicio(){return $this->reinicio;}
+	public function setReinicio($var){$this->reinicio = $var;}
 	
 	public function insert(){
 		$array = array

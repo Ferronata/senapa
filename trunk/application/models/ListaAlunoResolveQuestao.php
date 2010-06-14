@@ -55,4 +55,10 @@ class ListaAlunoResolveQuestao{
 				return $i;
 		return -1;
 	}
+	public function findByQuestion($value){
+		for($i=0;$i<sizeof($this->getListaAlunoResolveQuestao());$i++)
+			if($this->listaAlunoResolveQuestao[$i]->getQuestaoId() == $value->getId())
+				return $i;
+		return -1;
+	}
 }
