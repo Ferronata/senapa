@@ -870,3 +870,13 @@ body {
 .nextOff{background: url("../../images/nextOff_32.png") no-repeat;float: right;}
 
 .back:hover, .next:hover{background-position: -32px;}
+
+.certo, .errado{
+	float: right;
+	width: 16px;
+	height: 16px;
+	overflow: hidden;
+	text-indent: 50px;
+}
+.certo{background: url("../../images/admin/datagrid/edit_16.png") no-repeat;}
+.errado{background: url("../../images/admin/datagrid/delete_16.png") no-repeat;}

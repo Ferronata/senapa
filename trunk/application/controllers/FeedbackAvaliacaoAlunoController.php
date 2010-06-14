@@ -28,6 +28,7 @@ class FeedbackAvaliacaoAlunoController extends Zend_Controller_Action{
 	}
 	public function feedbackavaliacaoalunoAction(){
 		$view = Zend_Registry::get('view');
+		$session = Zend_Registry::get('session');
 
 		$this->acesso($view);
 
@@ -39,23 +40,49 @@ class FeedbackAvaliacaoAlunoController extends Zend_Controller_Action{
 		$funcao 	= new FuncoesProjeto();
 		$display_datagrid = array();
 		
-		$feedbackAvaliacao = new Feedbackavaliacao();
-		$list = $feedbackAvaliacao->fetchAll("`date_delete` IS NULL");
+		$usuario = $session->usuario;
 		
-		$perguntas = array();
+		$id = (int)$session->atual['avaliacaoId'];
+		$avaliacao = new Avaliacao();
+		$avaliacao->load($id);
+			
+		$avaliacaoAluno = new AvaliacaoAluno();
+	
+		$listAvaliacao 	= $avaliacaoAluno->fetchRow("`aluno_pessoa_escola_pessoa_fisica_pessoa_id` = '".$usuario->getPessoaId()."' AND `avaliacao_id` = '".$avaliacao->getId()."'");
 		
-		foreach($list as $linha){
-			$tmp = new Feedbackavaliacao();
-			$tmp->load($linha->id);
-			$perguntas[] = $tmp;
+		$avaliacaoAluno->setAlunoPessoaEscolaPessoaFisicaPessoaId($usuario->getPessoaId());
+		$avaliacaoAluno->setAvaliacaoId($avaliacao->getId());
+					
+		if($listAvaliacao){
+			$avaliacaoAluno->load($listAvaliacao->id);
+			
+			if($avaliacaoAluno->getDataFim()){
+				$feedbackAvaliacaoAluno = new FeedbackAvaliacaoAluno();
+				$tmp = $feedbackAvaliacaoAluno->fetchRow("`avaliacao_aluno_id` = '".$avaliacaoAluno->getId()."'");
+				
+				if($tmp)
+					FeedbackAvaliacaoAlunoController::resultadoAction();
+				else{
+					$feedbackAvaliacao = new Feedbackavaliacao();
+					$list = $feedbackAvaliacao->fetchAll("`date_delete` IS NULL");
+					
+					$perguntas = array();
+					
+					foreach($list as $linha){
+						$tmp = new Feedbackavaliacao();
+						$tmp->load($linha->id);
+						$perguntas[] = $tmp;
+					}
+					
+					$view->assign("perguntas",$perguntas);
+					
+					$view->assign("header","html/default/header.tpl");
+					$view->assign("body","feedbackavaliacaoaluno/index.tpl");
+					$view->assign("footer","html/default/footer.tpl");
+					$view->output("index.tpl");
+				}
+			}
 		}
-		
-		$view->assign("perguntas",$perguntas);
-		
-		$view->assign("header","html/default/header.tpl");
-		$view->assign("body","feedbackavaliacaoaluno/index.tpl");
-		$view->assign("footer","html/default/footer.tpl");
-		$view->output("index.tpl");
 	}
 	public function respostaAction(){
 		$view 		= Zend_Registry::get('view');
@@ -74,12 +101,12 @@ class FeedbackAvaliacaoAlunoController extends Zend_Controller_Action{
 			$this->negado();
 		else{
 			try{
-				$ids = $post->id;
-				
 				$id = (int)$session->atual['avaliacaoId'];
 				$avaliacao = new Avaliacao();
 				$avaliacao->load($id);
-						
+					
+				$ids = $post->id;
+				
 				foreach($ids as $linha){
 					$feedbackAvaliacao = new Feedbackavaliacao();
 					$feedbackAvaliacao->load($linha);
@@ -92,7 +119,7 @@ class FeedbackAvaliacaoAlunoController extends Zend_Controller_Action{
 						$feedbackAvaliacaoAluno->insert();
 					}
 				}
-				die($funcao->array2json(array('msg' => 'ok', 'display' => htmlentities('Feedback concluído com sucesso'),'url' => '/senapa/feedbackAvaliacaoAluno/resultado')));
+				die($funcao->array2json(array('url' => 'resultado')));
 			}catch(Exception $e){die($funcao->array2json(array('msg' => 'error', 'display' => htmlentities('Erro fatal => '.$str.$e))));}
 		}
 	}
@@ -124,8 +151,15 @@ class FeedbackAvaliacaoAlunoController extends Zend_Controller_Action{
 		}
 		
 		$listaQuestao = array();
-		
+		$soma 		= 0;
+		$acertos	= 0;
+		$nulas		= 0;
 		foreach($questoes as $linha){
+			if($linha->getResposta())
+				$soma ++;
+			else
+				$nulas ++;
+			
 			$alunoResolveQuestao = new AlunoResolveQuestao();
 			$tmp = $alunoResolveQuestao->fetchRow("`pessoa_id` = '".$usuario->getPessoaId()."' AND `avaliacao_id` = '".$avaliacao->getId()."' AND `questao_id` = '".$linha->getId()."'");
 			$alunoResolveQuestao->load($tmp->id);
@@ -136,8 +170,11 @@ class FeedbackAvaliacaoAlunoController extends Zend_Controller_Action{
 			$questaoAlternativaAluno = new QuestaoAlternativa();
 			$questaoAlternativaAluno->load($alunoResolveQuestao->getRespostaId());
 			
+			if($linha->getResposta() && $questao_alternativa->getId() == $questaoAlternativaAluno->getId())
+				$acertos ++;
+			
 			if($alunoResolveQuestao->getId())
-				$listaQuestao[] = array('questao'=>$linha,'alunoResolveQuestao' => $alunoResolveQuestao,'resposta' => $questao_alternativa->getDescricao(),'respostaAluno' => $questaoAlternativaAluno->getDescricao());
+				$listaQuestao[] = array('questao'=>$linha,'alunoResolveQuestao' => $alunoResolveQuestao,'resposta' => $questao_alternativa,'respostaAluno' => $questaoAlternativaAluno);
 		}
 		
 		$avaliacaoAluno = new AvaliacaoAluno();
@@ -145,7 +182,30 @@ class FeedbackAvaliacaoAlunoController extends Zend_Controller_Action{
 		if($tmp)
 			$avaliacaoAluno->load($tmp->id);
 			
+		$inicio 	= $avaliacaoAluno->getDataInicio();
+		$dtIni 		= trim(substr($inicio,0,10));
+		$hrIni 		= trim(substr($inicio,10));
+
+		$final 		= $avaliacaoAluno->getDataFim();
+		$dtFim 		= trim(substr($final,0,10));
+		$hrFim 		= trim(substr($final,10));
+		
+		$dayIni = mktime(0,0,0,substr($dtIni,5,2),substr($dtIni,8,2),substr($dtIni,0,4));		
+		$dayFim = mktime(0,0,0,substr($dtFim,5,2),substr($dtFim,8,2),substr($dtFim,0,4));
+
+		$day = mktime(0,0,0,substr($dtIni,5,2),substr($dtIni,8,2),substr($dtIni,0,4));
+		$dt1 = mktime(substr($hrIni,0,2),substr($hrIni,3,2),substr($hrIni,6,2),substr($dtIni,5,2),substr($dtIni,8,2),substr($dtIni,0,4));
+		$dt2 = mktime(substr($hrFim,0,2),substr($hrFim,3,2),substr($hrFim,6,2),substr($dtIni,5,2),substr($dtIni,8,2),substr($dtIni,0,4));
+		
+		$tempo = $day+($dt2-$dt1);
+		$tempo = date('H:i:s',$tempo);
+			
+		$view->assign("soma",$soma);
+		$view->assign("acertos",$acertos);
+		$view->assign("nulas",$nulas);
+		
 		$view->assign("avaliacaoAluno",$avaliacaoAluno);
+		$view->assign("tempo",$tempo);
 		$view->assign("usuario",$usuario);
 		$view->assign("avaliacao",$avaliacao);
 		$view->assign("disciplina",$disciplina);

@@ -3,17 +3,23 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: localhost
--- Tempo de Geração: Jun 10, 2010 as 04:55 AM
+-- Tempo de Geração: Jun 14, 2010 as 05:45 PM
 -- Versão do Servidor: 5.1.37
 -- Versão do PHP: 5.2.10
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 --
--- Banco de Dados: `senapa`
+-- Banco de Dados: `leual27_senapa`
 --
-CREATE DATABASE `senapa` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `senapa`;
+DELETE FROM `mysql`.`user` WHERE `User`='leual27_senapa';
+
+INSERT INTO `mysql`.`user` (`Host`, `User`, `Password`, `Select_priv`, `Insert_priv`, `Update_priv`, `Delete_priv`, `Create_priv`, `Drop_priv`, `Reload_priv`, `Shutdown_priv`, `Process_priv`, `File_priv`, `Grant_priv`, `References_priv`, `Index_priv`, `Alter_priv`, `Show_db_priv`, `Super_priv`, `Create_tmp_table_priv`, `Lock_tables_priv`, `Execute_priv`, `Repl_slave_priv`, `Repl_client_priv`, `Create_view_priv`, `Show_view_priv`, `Create_routine_priv`, `Alter_routine_priv`, `Create_user_priv`, `Event_priv`, `Trigger_priv`, `ssl_type`, `ssl_cipher`, `x509_issuer`, `x509_subject`, `max_questions`, `max_updates`, `max_connections`, `max_user_connections`) VALUES
+('localhost', 'leual27_senapa', PASSWORD('SeNaPa1234'), 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', '', '', '', '', 0, 0, 0, 0);
+
+DROP DATABASE IF EXISTS `leual27_senapa`;
+CREATE DATABASE `leual27_senapa` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `leual27_senapa`;
 
 -- --------------------------------------------------------
 
@@ -39,25 +45,28 @@ INSERT INTO `aluno` (`pessoa_escola_pessoa_fisica_pessoa_id`, `pessoa_escola_mat
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `aluno_avaliacao`
+-- Estrutura da tabela `aluno_resolve_questao`
 --
 
-CREATE TABLE IF NOT EXISTS `aluno_avaliacao` (
+CREATE TABLE IF NOT EXISTS `aluno_resolve_questao` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `questao_alternativa_id` int(10) unsigned DEFAULT NULL,
+  `questao_id` int(10) unsigned NOT NULL,
+  `disciplina_id` int(10) unsigned NOT NULL,
   `avaliacao_id` int(10) unsigned NOT NULL,
-  `aluno_pessoa_escola_matricula` varchar(10) NOT NULL,
-  `aluno_pessoa_escola_pessoa_fisica_pessoa_id` int(10) unsigned NOT NULL,
-  `data_acesso` datetime NOT NULL,
-  `date_create` datetime NOT NULL,
-  `date_update` datetime DEFAULT NULL,
-  `date_delete` datetime DEFAULT NULL,
+  `pessoa_id` int(10) unsigned NOT NULL,
+  `inicio` datetime NOT NULL,
+  `fim` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `aluno_avaliacao_FKIndex1` (`aluno_pessoa_escola_pessoa_fisica_pessoa_id`,`aluno_pessoa_escola_matricula`),
-  KEY `aluno_avaliacao_FKIndex2` (`avaliacao_id`)
+  KEY `aluno_resolve_questao_FKIndex1` (`pessoa_id`),
+  KEY `aluno_resolve_questao_FKIndex2` (`avaliacao_id`),
+  KEY `aluno_resolve_questao_FKIndex3` (`disciplina_id`),
+  KEY `aluno_resolve_questao_FKIndex4` (`questao_id`),
+  KEY `aluno_resolve_questao_FKIndex5` (`questao_alternativa_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
--- Extraindo dados da tabela `aluno_avaliacao`
+-- Extraindo dados da tabela `aluno_resolve_questao`
 --
 
 
@@ -168,7 +177,7 @@ CREATE TABLE IF NOT EXISTS `avaliacao` (
 --
 
 INSERT INTO `avaliacao` (`id`, `avaliacao_situacao_id`, `nome`, `data_inicio`, `hora_iniccio`, `data_fim`, `hora_fim`, `tempo_minimo_prova`, `tempo_maximo_prova`, `status`, `date_create`, `date_update`, `date_delete`) VALUES
-(1, 3, '1ª Avaliação', '2010-06-08', '09:00:00', '2010-06-08', '23:59:00', '01:00:00', '03:00:00', 1, '2010-06-07 21:31:42', NULL, NULL);
+(1, 3, '1ª Avaliação', '2010-06-08', '09:00:00', '2010-06-10', '23:59:00', '01:00:00', '03:00:00', 1, '2010-06-07 21:31:42', '2010-06-10 01:38:40', NULL);
 
 -- --------------------------------------------------------
 
@@ -181,9 +190,8 @@ CREATE TABLE IF NOT EXISTS `avaliacao_aluno` (
   `aluno_pessoa_escola_matricula` varchar(10) NOT NULL,
   `aluno_pessoa_escola_pessoa_fisica_pessoa_id` int(10) unsigned NOT NULL,
   `avaliacao_id` int(10) unsigned NOT NULL,
-  `data_inicio` date NOT NULL,
-  `hora_inicio` time NOT NULL,
-  `hora_fim` time DEFAULT NULL,
+  `data_inicio` datetime NOT NULL,
+  `data_fim` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `avaliacao_aluno_FKIndex1` (`avaliacao_id`),
   KEY `avaliacao_aluno_FKIndex2` (`aluno_pessoa_escola_pessoa_fisica_pessoa_id`,`aluno_pessoa_escola_matricula`)
@@ -227,7 +235,7 @@ CREATE TABLE IF NOT EXISTS `avaliacao_questao` (
   PRIMARY KEY (`id`),
   KEY `avaliacao_questao_FKIndex1` (`avaliacao_id`),
   KEY `avaliacao_questao_FKIndex2` (`questao_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 --
 -- Extraindo dados da tabela `avaliacao_questao`
@@ -235,7 +243,8 @@ CREATE TABLE IF NOT EXISTS `avaliacao_questao` (
 
 INSERT INTO `avaliacao_questao` (`id`, `questao_id`, `avaliacao_id`) VALUES
 (1, 1, 1),
-(2, 2, 1);
+(2, 2, 1),
+(3, 3, 1);
 
 -- --------------------------------------------------------
 
@@ -344,12 +353,17 @@ CREATE TABLE IF NOT EXISTS `feedback_avaliacao_alternativa` (
   `date_delete` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `feedback_avaliacao_alternativa_FKIndex1` (`feedbackAvaliacao_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 --
 -- Extraindo dados da tabela `feedback_avaliacao_alternativa`
 --
 
+INSERT INTO `feedback_avaliacao_alternativa` (`id`, `feedbackAvaliacao_id`, `descricao`, `status`, `date_create`, `date_update`, `date_delete`) VALUES
+(1, 1, 'Muito Fácil', 1, '2010-06-10 15:43:12', NULL, NULL),
+(2, 1, 'Fácil', 1, '2010-06-10 15:43:14', NULL, NULL),
+(3, 1, 'Difícil', 1, '2010-06-10 15:43:16', NULL, NULL),
+(4, 1, 'Muito Difícil', 1, '2010-06-10 15:43:17', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -359,11 +373,11 @@ CREATE TABLE IF NOT EXISTS `feedback_avaliacao_alternativa` (
 
 CREATE TABLE IF NOT EXISTS `feedback_avaliacao_aluno` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `avaliacao_aluno_id` int(10) unsigned NOT NULL,
   `feedback_avaliacao_alternativa_id` int(10) unsigned NOT NULL,
-  `aluno_avaliacao_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `feedback_avaliacao_aluno_FKIndex1` (`aluno_avaliacao_id`),
-  KEY `feedback_avaliacao_aluno_FKIndex2` (`feedback_avaliacao_alternativa_id`)
+  KEY `Table_29_FKIndex1` (`feedback_avaliacao_alternativa_id`),
+  KEY `Table_29_FKIndex2` (`avaliacao_aluno_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
@@ -384,12 +398,14 @@ CREATE TABLE IF NOT EXISTS `feedbackavaliacao` (
   `date_update` datetime DEFAULT NULL,
   `date_delete` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 --
 -- Extraindo dados da tabela `feedbackavaliacao`
 --
 
+INSERT INTO `feedbackavaliacao` (`id`, `descricao`, `date_create`, `date_update`, `date_delete`) VALUES
+(1, '<p>\n	O que voc&ecirc; <strong>achou </strong>da prova?</p>\n', '2010-06-10 15:43:08', '2010-06-10 15:47:53', NULL);
 
 -- --------------------------------------------------------
 
@@ -464,7 +480,7 @@ INSERT INTO `nivel_questao` (`id`, `questao_id`, `nivel`, `data_nivelamento`) VA
 CREATE TABLE IF NOT EXISTS `papel` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `nome` varchar(100) NOT NULL,
-  `status_2` tinyint(1) DEFAULT NULL,
+  `status` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
@@ -472,11 +488,11 @@ CREATE TABLE IF NOT EXISTS `papel` (
 -- Extraindo dados da tabela `papel`
 --
 
-INSERT INTO `papel` (`id`, `nome`, `status_2`) VALUES
-(1, 'Super Administrador', 1),
-(2, 'Administrador', 1),
-(3, 'Professor', 1),
-(4, 'Aluno', 1);
+INSERT INTO `papel` (`id`, `nome`, `status`) VALUES
+(1, 'Super Administrador', NULL),
+(2, 'Administrador', NULL),
+(3, 'Professor', NULL),
+(4, 'Aluno', NULL);
 
 -- --------------------------------------------------------
 
@@ -632,20 +648,23 @@ CREATE TABLE IF NOT EXISTS `professor_avaliacao` (
   `avaliacao_id` int(10) unsigned NOT NULL,
   `professor_pessoa_escola_matricula` varchar(10) NOT NULL,
   `professor_pessoa_escola_pessoa_fisica_pessoa_id` int(10) unsigned NOT NULL,
+  `data_cadastro` datetime NOT NULL,
   `date_create` datetime NOT NULL,
   `date_update` datetime DEFAULT NULL,
   `date_delete` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `professor_avaliacao_FKIndex1` (`professor_pessoa_escola_pessoa_fisica_pessoa_id`,`professor_pessoa_escola_matricula`),
   KEY `professor_avaliacao_FKIndex2` (`avaliacao_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
 
 --
 -- Extraindo dados da tabela `professor_avaliacao`
 --
 
-INSERT INTO `professor_avaliacao` (`id`, `avaliacao_id`, `professor_pessoa_escola_matricula`, `professor_pessoa_escola_pessoa_fisica_pessoa_id`, `date_create`, `date_update`, `date_delete`) VALUES
-(3, 1, 'P0510387', 11, '2010-06-08 14:57:49', NULL, NULL);
+INSERT INTO `professor_avaliacao` (`id`, `avaliacao_id`, `professor_pessoa_escola_matricula`, `professor_pessoa_escola_pessoa_fisica_pessoa_id`, `data_cadastro`, `date_create`, `date_update`, `date_delete`) VALUES
+(3, 1, 'P0510387', 11, '0000-00-00 00:00:00', '2010-06-08 14:57:49', NULL, NULL),
+(4, 1, 'P0510387', 11, '0000-00-00 00:00:00', '2010-06-10 01:37:55', NULL, NULL),
+(5, 1, 'P0510387', 11, '0000-00-00 00:00:00', '2010-06-10 01:38:40', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -669,9 +688,9 @@ CREATE TABLE IF NOT EXISTS `questao` (
 --
 
 INSERT INTO `questao` (`id`, `descricao`, `resposta`, `descricao_resposta`, `date_create`, `date_update`, `date_delete`) VALUES
-(1, 'Quem é o melhor amigo do homem', 0, 'O melhor amigo do homem é o cachorro', '2010-05-23 19:48:52', '2010-05-26 02:48:49', NULL),
-(2, 'Quem', 2, 'Uma explica de quem', '2010-05-24 22:47:10', '2010-05-25 21:59:21', NULL),
-(3, 'O surgimento da figura da Ema no céu, ao leste,\nno anoitecer, na segunda quinzena de junho, indica o início\ndo inverno para os índios do sul do Brasil e o começo da\nestação seca para os do norte. É limitada pelas\nconstelações de Escorpião e do Cruzeiro do Sul, ou\nCut''uxu. Segundo o mito guarani, o Cut?uxu segura a\ncabeça da ave para garantir a vida na Terra, porque, se ela\nse soltar, beberá toda a água do nosso planeta. Os tupisguaranis\nutilizam o Cut''uxu para se orientar e determinar a\nduração das noites e as estações do ano.\nAssinale a opção correta a respeito da linguagem\nempregada no texto acima.', 0, 'Não poderia ser a letra A, já que o texto diz que a expressão Cut?uxu é pertencente às tribos indígenas e não às populações próximas, como falado na referida proposição. Também não poderia ser a letra C, pois não há repetição da palavra ?Ema?. Seria redundância e não há necessidade, ao contrário do que é afirmado na alternativa. A palavra Cut?uxu não se trata de um vocábulo coloquial, mas sim de uma palavra da língua indígena, e está em destaque para indicar uma denominação que não é da língua portuguesa, logo, a opção D  está descartada. A linguagem empregada segue a norma culta e expressa linguagem formal, portanto, desconsidera-se a opção E e considera-se a B', '2010-06-08 23:10:43', '2010-06-09 20:20:55', NULL),
+(1, 'Quem é o melhor amigo do homem', 0, 'O melhor amigo do homem é o cachorro', '2010-05-23 19:48:52', NULL, '2010-06-10 01:36:39'),
+(2, 'Quem', 2, 'Uma explica de quem', '2010-05-24 22:47:10', NULL, '2010-06-10 01:36:41'),
+(3, '<p>\n	O surgimento da figura da Ema no c&eacute;u, ao leste, no anoitecer, na segunda quinzena de junho, indica o in&iacute;cio do inverno para os &iacute;ndios do sul do Brasil e o come&ccedil;o da esta&ccedil;&atilde;o seca para os do norte. &Eacute; limitada pelas constela&ccedil;&otilde;es de Escorpi&atilde;o e do Cruzeiro do Sul, ou Cut&#39;uxu. Segundo o mito guarani, o Cut?uxu segura a cabe&ccedil;a da ave para garantir a vida na Terra, porque, se ela se soltar, beber&aacute; toda a &aacute;gua do nosso planeta. Os tupisguaranis utilizam o Cut&#39;uxu para se orientar e determinar a dura&ccedil;&atilde;o das noites e as esta&ccedil;&otilde;es do ano. Assinale a op&ccedil;&atilde;o correta a respeito da linguagem empregada no texto acima.</p>\n', 61, '<p>\n	N&atilde;o poderia ser a letra A, j&aacute; que o texto diz que a express&atilde;o Cut?uxu &eacute; pertencente &agrave;s tribos ind&iacute;genas e n&atilde;o &agrave;s popula&ccedil;&otilde;es pr&oacute;ximas, como falado na referida proposi&ccedil;&atilde;o. Tamb&eacute;m n&atilde;o poderia ser a letra C, pois n&atilde;o h&aacute; repeti&ccedil;&atilde;o da palavra ?Ema?. Seria redund&acirc;ncia e n&atilde;o h&aacute; necessidade, ao contr&aacute;rio do que &eacute; afirmado na alternativa. A palavra Cut?uxu n&atilde;o se trata de um voc&aacute;bulo coloquial, mas sim de uma palavra da l&iacute;ngua ind&iacute;gena, e est&aacute; em destaque para indicar uma denomina&ccedil;&atilde;o que n&atilde;o &eacute; da l&iacute;ngua portuguesa, logo, a op&ccedil;&atilde;o D est&aacute; descartada. A linguagem empregada segue a norma culta e expressa linguagem formal, portanto, desconsidera-se a op&ccedil;&atilde;o E e considera-se a B</p>\n', '2010-06-08 23:10:43', '2010-06-10 16:12:59', NULL),
 (4, 'Calcula-se que 78% do desmatamento na\nAmazônia tenha sido motivado pela pecuária ? cerca de\n35% do rebanho nacional está na região ? e que pelo\nmenos 50 milhões de hectares de pastos são pouco\nprodutivos. Enquanto o custo médio para aumentar a\nprodutividade de 1 hectare de pastagem é de 2 mil reais, o\ncusto para derrubar igual área de floresta é estimado em\n800 reais, o que estimula novos desmatamentos.\nAdicionalmente, madeireiras retiram as árvores de valor\ncomercial que foram abatidas para a criação de pastagens.\nOs pecuaristas sabem que problemas ambientais como\nesses podem provocar restrições à pecuária nessas áreas,\na exemplo do que ocorreu em 2006 com o plantio da soja,\no qual, posteriormente, foi proibido em áreas de floresta.\nA partir da situação-problema descrita, conclui-se que:', 0, 'A recuperação de áreas degradadas e a utilização de insumos para elevação da produtividade das pastagens impedem que haja uma expansão das fronteiras agropecuárias, resultando automaticamente na diminuição dos níveis de desmatamento.', '2010-06-08 23:21:59', '2010-06-09 20:51:46', NULL),
 (5, 'Um jornal de circulação nacional publicou a seguinte\nnotícia:\nChoveu torrencialmente na madrugada de ontem\nem Roraima, horas depois de os pajés caiapós Mantii e\nKucrit, levados de Mato Grosso pela Funai, terem\nparticipado do ritual da dança da chuva, em Boa Vista.\nA chuva durou três horas em todo o estado e as previsões\nindicam que continuará pelo menos até amanhã. Com isso,\nserá possível acabar de vez com o incêndio que ontem\ncompletou 63 dias e devastou parte das florestas do\nestado.\nJornal do Brasil, abr./1998 (com adaptações).\nConsiderando a situação descrita, avalie as afirmativas\nseguintes.\nI No ritual indígena, a dança da chuva, mais que\nconstituir uma manifestação artística, tem a função de\nintervir no ciclo da água.\nII A existência da dança da chuva em algumas culturas\nestá relacionada à importância do ciclo da água para a\nvida.\nIII Uma das informações do texto pode ser expressa em\nlinguagem científica da seguinte forma: a dança da\nchuva seria efetiva se provocasse a precipitação das\ngotículas de água das nuvens.\nÉ correto o que se afirma em:', 18, 'O item III está incorreto pois o termo linguagem refere-se a um vocabulário técnico, e não a princípios científicos', '2010-06-08 23:30:02', NULL, NULL),
 (6, 'As florestas tropicais estão entre os maiores, mais\ndiversos e complexos biomas do planeta. Novos estudos\nsugerem que elas sejam potentes reguladores do clima, ao\nprovocarem um fluxo de umidade para o interior dos\ncontinentes, fazendo com que essas áreas de floresta não\nsofram variações extremas de temperatura e tenham\numidade suficiente para promover a vida. Um fluxo\npuramente físico de umidade do oceano para o continente,\nem locais onde não há florestas, alcança poucas centenas\nde quilômetros. Verifica-se, porém, que as chuvas sobre\nflorestas nativas não dependem da proximidade do\noceano. Esta evidência aponta para a existência de uma\npoderosa ?bomba biótica de umidade? em lugares como,\npor exemplo, a bacia amazônica. Devido à grande e densa\nárea de folhas, as quais são evaporadores otimizados,\nessa ?bomba? consegue devolver rapidamente a água para\no ar, mantendo ciclos de evaporação e condensação que\nfazem a umidade chegar a milhares de quilômetros no\ninterior do continente.\nAs florestas crescem onde chove, ou chove onde crescem\nas florestas? De acordo com o texto,', 23, 'O desenvolvimento de uma vegetação necessita de condições ambientais (aspectos físicos) favoráveis. Neste caso, a colaboração da umidade provinda tanto dos oceanos, quanto a emissão de umidade despendida pelos vegetais de uma floresta tropical, propiciam no mesmo local ou em um outro local mais distante, o estabelecimento, crescimento e manutenção da vida. Segundo o texto: fazendo com que essas áreas de floresta não sofram variações extremas de temperatura e tenham umidade suficiente para promover a vida', '2010-06-08 23:34:28', NULL, NULL),
@@ -826,15 +845,15 @@ INSERT INTO `questao_alternativa` (`id`, `questao_id`, `descricao`, `date_create
 
 CREATE TABLE IF NOT EXISTS `questao_aluno` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `avaliacao_questao_id` int(10) unsigned NOT NULL,
   `aluno_pessoa_escola_matricula` varchar(10) NOT NULL,
   `aluno_pessoa_escola_pessoa_fisica_pessoa_id` int(10) unsigned NOT NULL,
-  `questao_id` int(10) unsigned NOT NULL,
   `inicio` datetime NOT NULL,
   `tempo_resolucao` time DEFAULT NULL,
   `resposta` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `questao_aluno_FKIndex1` (`questao_id`),
-  KEY `questao_aluno_FKIndex2` (`aluno_pessoa_escola_pessoa_fisica_pessoa_id`,`aluno_pessoa_escola_matricula`)
+  KEY `questao_aluno_FKIndex2` (`aluno_pessoa_escola_pessoa_fisica_pessoa_id`,`aluno_pessoa_escola_matricula`),
+  KEY `questao_aluno_FKIndex3` (`avaliacao_questao_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
@@ -877,11 +896,14 @@ ALTER TABLE `aluno`
   ADD CONSTRAINT `aluno_ibfk_1` FOREIGN KEY (`pessoa_escola_matricula`, `pessoa_escola_pessoa_fisica_pessoa_id`) REFERENCES `pessoa_escola` (`matricula`, `pessoa_fisica_pessoa_id`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
--- Restrições para a tabela `aluno_avaliacao`
+-- Restrições para a tabela `aluno_resolve_questao`
 --
-ALTER TABLE `aluno_avaliacao`
-  ADD CONSTRAINT `aluno_avaliacao_ibfk_1` FOREIGN KEY (`aluno_pessoa_escola_pessoa_fisica_pessoa_id`, `aluno_pessoa_escola_matricula`) REFERENCES `aluno` (`pessoa_escola_pessoa_fisica_pessoa_id`, `pessoa_escola_matricula`) ON DELETE NO ACTION ON UPDATE CASCADE,
-  ADD CONSTRAINT `aluno_avaliacao_ibfk_2` FOREIGN KEY (`avaliacao_id`) REFERENCES `avaliacao` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+ALTER TABLE `aluno_resolve_questao`
+  ADD CONSTRAINT `aluno_resolve_questao_ibfk_1` FOREIGN KEY (`pessoa_id`) REFERENCES `pessoa` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `aluno_resolve_questao_ibfk_2` FOREIGN KEY (`avaliacao_id`) REFERENCES `avaliacao` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `aluno_resolve_questao_ibfk_3` FOREIGN KEY (`disciplina_id`) REFERENCES `disciplina` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `aluno_resolve_questao_ibfk_4` FOREIGN KEY (`questao_id`) REFERENCES `questao` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `aluno_resolve_questao_ibfk_5` FOREIGN KEY (`questao_alternativa_id`) REFERENCES `questao_alternativa` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Restrições para a tabela `assunto_questao`
@@ -933,8 +955,8 @@ ALTER TABLE `feedback_avaliacao_alternativa`
 -- Restrições para a tabela `feedback_avaliacao_aluno`
 --
 ALTER TABLE `feedback_avaliacao_aluno`
-  ADD CONSTRAINT `feedback_avaliacao_aluno_ibfk_1` FOREIGN KEY (`aluno_avaliacao_id`) REFERENCES `aluno_avaliacao` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `feedback_avaliacao_aluno_ibfk_2` FOREIGN KEY (`feedback_avaliacao_alternativa_id`) REFERENCES `feedback_avaliacao_alternativa` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `feedback_avaliacao_aluno_ibfk_1` FOREIGN KEY (`feedback_avaliacao_alternativa_id`) REFERENCES `feedback_avaliacao_alternativa` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `feedback_avaliacao_aluno_ibfk_2` FOREIGN KEY (`avaliacao_aluno_id`) REFERENCES `avaliacao_aluno` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Restrições para a tabela `nivel_avaliacao`
@@ -996,8 +1018,8 @@ ALTER TABLE `questao_alternativa`
 -- Restrições para a tabela `questao_aluno`
 --
 ALTER TABLE `questao_aluno`
-  ADD CONSTRAINT `questao_aluno_ibfk_1` FOREIGN KEY (`questao_id`) REFERENCES `questao` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
-  ADD CONSTRAINT `questao_aluno_ibfk_2` FOREIGN KEY (`aluno_pessoa_escola_pessoa_fisica_pessoa_id`, `aluno_pessoa_escola_matricula`) REFERENCES `aluno` (`pessoa_escola_pessoa_fisica_pessoa_id`, `pessoa_escola_matricula`) ON DELETE NO ACTION ON UPDATE CASCADE;
+  ADD CONSTRAINT `questao_aluno_ibfk_1` FOREIGN KEY (`aluno_pessoa_escola_pessoa_fisica_pessoa_id`, `aluno_pessoa_escola_matricula`) REFERENCES `aluno` (`pessoa_escola_pessoa_fisica_pessoa_id`, `pessoa_escola_matricula`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `questao_aluno_ibfk_2` FOREIGN KEY (`avaliacao_questao_id`) REFERENCES `avaliacao_questao` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Restrições para a tabela `usabilidade_questao`

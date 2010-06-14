@@ -10,6 +10,7 @@
 class AlunoAvaliacaoController extends Zend_Controller_Action{
 	public function init(){
 		include_once("Project/include.php");
+		Zend_Loader::loadClass('FeedbackAvaliacaoAlunoController');
 	}
 	public function negado(){
 		$view = Zend_Registry::get('view');
@@ -31,10 +32,12 @@ class AlunoAvaliacaoController extends Zend_Controller_Action{
 		
 		$pessoa_escola = new PessoaEscola();
 		
+		/*
 		// ALUNO
 		$pessoa_escola->load(12);
 
 		$session->usuario = $pessoa_escola;
+		*/
 		
 		$usuario = $session->usuario;
 
@@ -53,7 +56,20 @@ class AlunoAvaliacaoController extends Zend_Controller_Action{
 		$respostaId = 0;
 		
 		if(!empty($session->atual) && empty($post->action)){
+			$id = (int)$session->atual['avaliacaoId'];			
+			$avaliacao->load($id);
+
+			$avaliacaoAluno = new AvaliacaoAluno();
+			$listAvaliacao 	= $avaliacaoAluno->fetchRow("`aluno_pessoa_escola_pessoa_fisica_pessoa_id` = '".$usuario->getPessoaId()."' AND `avaliacao_id` = '".$avaliacao->getId()."'");
 			
+			$avaliacaoAluno->setAlunoPessoaEscolaPessoaFisicaPessoaId($usuario->getPessoaId());
+			$avaliacaoAluno->setAvaliacaoId($avaliacao->getId());
+			
+			if($listAvaliacao){
+				$avaliacaoAluno->load($listAvaliacao->id);
+				if($avaliacaoAluno->getDataFim())
+					FeedbackAvaliacaoAlunoController::feedbackavaliacaoalunoAction();
+			}			
 			$id = (int)$session->atual['avaliacaoId'];
 			
 			$avaliacao->load($id);
@@ -72,8 +88,6 @@ class AlunoAvaliacaoController extends Zend_Controller_Action{
 			$respostaId = $alunoResolveQuestao->getRespostaId();
 			
 			$session->atual	= array('numero' => $aux,'avaliacaoId' => $avaliacao->getId(),'questao' => $questao,'alunoResolveQuestaoId' => $alunoResolveQuestao->getId());
-			
-			
 		}elseif(!empty($get->id) && (int)$get->id && empty($post->action)){
 			$id = (int)$get->id;
 			
@@ -113,44 +127,50 @@ class AlunoAvaliacaoController extends Zend_Controller_Action{
 				$session->iniciar	 	= false;
 			}else{
 				
-				$questoes 	= $avaliacao->getListaQuestoes()->getListaQuestao();
-				$questao	= $questoes[0];
+				$avaliacaoAluno->load($listAvaliacao->id);
 				
-				
-				$alunoResolveQuestao = new AlunoResolveQuestao();
-				
-				$list = $alunoResolveQuestao->fetchAll("`pessoa_id` = '".$usuario->getPessoaId()."' AND `avaliacao_id` = '".$avaliacao->getId()."'","id");
-				$alunoResolveQuestao->load($list[0]->id);
-				
-				$session->lista = new ListaAlunoResolveQuestao();
-				foreach($list as $linha){
-					$tmp = new AlunoResolveQuestao();
-					$tmp->load($linha->id);
-					$session->lista->add($tmp);
+				if($avaliacaoAluno->getDataFim())
+					FeedbackAvaliacaoAlunoController::feedbackavaliacaoalunoAction();
+				else{				
+					$questoes 	= $avaliacao->getListaQuestoes()->getListaQuestao();
+					$questao	= $questoes[0];
+					
+					
+					$alunoResolveQuestao = new AlunoResolveQuestao();
+					
+					$list = $alunoResolveQuestao->fetchAll("`pessoa_id` = '".$usuario->getPessoaId()."' AND `avaliacao_id` = '".$avaliacao->getId()."'","id");
+					$alunoResolveQuestao->load($list[0]->id);
+					
+					$session->lista = new ListaAlunoResolveQuestao();
+					foreach($list as $linha){
+						$tmp = new AlunoResolveQuestao();
+						$tmp->load($linha->id);
+						$session->lista->add($tmp);
+					}
+								
+					$inicio 	= $list[0]->inicio;
+					$dtIni 		= trim(substr($inicio,0,10));
+					$hrIni 		= trim(substr($inicio,10));
+			
+					$final 		= $list[sizeof($list)-1]->fim;
+					$dtFim 		= trim(substr($final,0,10));
+					$hrFim 		= trim(substr($final,10));
+					
+					$dayIni = mktime(0,0,0,substr($dtIni,5,2),substr($dtIni,8,2),substr($dtIni,0,4));		
+					$dayFim = mktime(0,0,0,substr($dtFim,5,2),substr($dtFim,8,2),substr($dtFim,0,4));
+	
+					$day = mktime(0,0,0,substr($dtIni,5,2),substr($dtIni,8,2),substr($dtIni,0,4));
+					$dt1 = mktime(substr($hrIni,0,2),substr($hrIni,3,2),substr($hrIni,6,2),substr($dtIni,5,2),substr($dtIni,8,2),substr($dtIni,0,4));
+					$dt2 = mktime(substr($hrFim,0,2),substr($hrFim,3,2),substr($hrFim,6,2),substr($dtIni,5,2),substr($dtIni,8,2),substr($dtIni,0,4));
+					
+					$tempo = $day+($dt2-$dt1);
+					$tempo = date('H:i:s',$tempo);
+					
+					$session->atual	 = array('numero' => 1,'avaliacaoId' => $avaliacao->getId(),'questao' => $questao,'alunoResolveQuestaoId' => $alunoResolveQuestao->getId());
+					
+					$session->time			= $tempo;
+					$session->iniciar	 	= true;
 				}
-							
-				$inicio 	= $list[0]->inicio;
-				$dtIni 		= trim(substr($inicio,0,10));
-				$hrIni 		= trim(substr($inicio,10));
-		
-				$final 		= $list[sizeof($list)-1]->fim;
-				$dtFim 		= trim(substr($final,0,10));
-				$hrFim 		= trim(substr($final,10));
-				
-				$dayIni = mktime(0,0,0,substr($dtIni,5,2),substr($dtIni,8,2),substr($dtIni,0,4));		
-				$dayFim = mktime(0,0,0,substr($dtFim,5,2),substr($dtFim,8,2),substr($dtFim,0,4));
-
-				$day = mktime(0,0,0,substr($dtIni,5,2),substr($dtIni,8,2),substr($dtIni,0,4));
-				$dt1 = mktime(substr($hrIni,0,2),substr($hrIni,3,2),substr($hrIni,6,2),substr($dtIni,5,2),substr($dtIni,8,2),substr($dtIni,0,4));
-				$dt2 = mktime(substr($hrFim,0,2),substr($hrFim,3,2),substr($hrFim,6,2),substr($dtIni,5,2),substr($dtIni,8,2),substr($dtIni,0,4));
-				
-				$tempo = $day+($dt2-$dt1);
-				$tempo = date('H:i:s',$tempo);
-				
-				$session->atual	 = array('numero' => 1,'avaliacaoId' => $avaliacao->getId(),'questao' => $questao,'alunoResolveQuestaoId' => $alunoResolveQuestao->getId());
-				
-				$session->time			= $tempo;
-				$session->iniciar	 	= true;
 			}
 		}elseif(!empty($post->action)){
 			$session->iniciar = true;
