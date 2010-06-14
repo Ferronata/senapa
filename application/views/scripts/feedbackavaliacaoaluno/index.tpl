@@ -8,7 +8,7 @@
 <center>
 	<div class="body">
 		<div class="innerBody">
-			<!--  --><form id="form" name="form" method="post" action="javascript: enviarForm('/senapa/feedbackavaliacaoaluno/resposta', 'form', 'save');" onsubmit="return(runAction(this))"><!-- -->
+			<!--  --><form id="form" name="form" method="post" action="javascript: enviarFeedbackAvaliacaoAlunoForm('resposta', 'form');" onsubmit="return(runAction(this))"><!-- -->
 			<!--  --<form id="form" name="form" method="post" action="/senapa/feedbackavaliacaoaluno/resposta" onsubmit="return(runAction(this))"><!-- -->
 				<h1>Feedback do Aluno</h1>
 				<div class="content">

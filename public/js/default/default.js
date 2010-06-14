@@ -655,6 +655,17 @@ function openPage(page,method_,params_){
 	}catch(err){}
 }
 
+function openPopup(page,name,width,height){
+	var w = 550;
+	var h = 600;
+	if(width)
+		w = width; 
+	if(height)
+		h = height;
+	
+	window.open(page,name,"location=0,toolbar=0,status=1,scrollbars=1, width="+w+"px,height="+h+"px");
+}
+
 function enviarForm(page, form_id, bt_id){
 	var form	= $(form_id);
 	var bt		= $(bt_id);
@@ -731,24 +742,55 @@ function enviarFormAvaliacao(page, form_id){
 }
 function enviarFormAvaliacaoBack(e, a){
 	this.removeLoadding();
-	
+	alert("/"+project_root+"/");
 	res = eval('(' + e.responseText + ')');
 
 	/*
 	if(res['url'])
 		this.openPage(res['url']);
 	*/
-
+	alert("/"+project_root+"/"+res['url']);
 	if(res['msg'] == 'error'){
 		if(res['display'])
 			this.addMensage('err', res['display']);
 		else
 			this.addMensage('err', 'Não foi possivel executar a operação, por favor verifique os dados!');
 	}
-	
 	if(res['url'])
 		location.href = "/"+project_root+"/"+res['url'];
 }
+
+function enviarFeedbackAvaliacaoAlunoForm(page, form_id){
+	var form	= $(form_id);
+	
+	var params = form.serialize();
+	new Ajax.Request(
+			"/"+project_root+"/FeedbackAvaliacaoAluno/"+page, 
+			{
+				evalScripts:true,
+				parameters: params, 
+				metod: 'POST', 
+				onLoading: function(response){
+					addLoadding();
+				},			
+				onComplete:enviarFeedbackAvaliacaoAlunoBack,				
+				encoding: 'ISO-8859-1'
+			}
+		);
+}
+function enviarFeedbackAvaliacaoAlunoBack(e, a){
+	this.removeLoadding();
+	res = eval('(' + e.responseText + ')');
+	if(res['msg'] == 'error'){
+		if(res['display'])
+			this.addMensage('err', res['display']);
+		else
+			this.addMensage('err', 'Não foi possivel executar a operação, por favor verifique os dados!');
+	}
+	if(res['url'])
+		location.href = "/"+project_root+"/FeedbackAvaliacaoAluno/"+res['url'];
+}
+
 
 function voltarForm(){
 	var str = this.lerCookie('url');

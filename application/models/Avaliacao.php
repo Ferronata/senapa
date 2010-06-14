@@ -249,7 +249,7 @@ class Avaliacao extends DAO {
 			$usuario = $session->usuario;
 			if($usuario->getPapelId() == $usuario->ENUM('P_ALUNO')){
 				$str  .= '		<tr class="dg_footer">';
-				$str  .= '			<td colspan="2" class="avaliacaoController"><a href="#" class="iniciarAvaliacao" title="Iniciar Avaliação">Iniciar</a></td>';
+				$str  .= '			<td colspan="2" class="avaliacaoController"><a href="javascript: openPopup(\'alunoAvaliacao?id='.$this->getId().'\',\'Avaliacao\')" class="iniciarAvaliacao" title="Iniciar Avaliação">Iniciar</a></td>';
 				$str  .= '		</tr>';
 			}
 		}

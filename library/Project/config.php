@@ -35,6 +35,7 @@ define('MD5_TEXT', "SeNaPa_MD5"); // PALAVRA CHAVE PARA CRIPTOGRAFIA
 $tmp 		= SYS_SEPARATOR_PATH . PROJECT_ROOT;
 $includes 	= array(
 		'library', 
+		'application'. SYS_BAR .'controllers',
 		'application'. SYS_BAR .'models', 
 		"library". SYS_BAR ."Project". SYS_BAR .'class' .SYS_BAR
 	);
