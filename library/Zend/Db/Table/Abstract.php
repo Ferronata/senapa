@@ -1373,7 +1373,7 @@ abstract class Zend_Db_Table_Abstract
         if (count($rows) == 0) {
             return null;
         }
-
+        
         $data = array(
             'table'   => $this,
             'data'     => $rows[0],

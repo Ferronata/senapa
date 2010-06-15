@@ -18,8 +18,9 @@ class AlunoAvaliacaoController extends Zend_Controller_Action{
 		die();
 	}
 	public function acesso($view){
+		$session = Zend_Registry::get('session');
 		$funcao = new FuncoesProjeto();
-		if(!$funcao->acesso())
+		if(!$funcao->acesso(session))
 			$this->negado();
 	}
 

@@ -44,7 +44,7 @@
 {/capture}
 
 {capture name=controller}
-	<span class="buttonLeft"><input type="button" {if $session->atual.numero == 1}disabled="disabled" class="backOff"{else}class="back"{/if} value="Anterior" onclick="anterior()" /></span>
+	<span class="buttonLeft"><input type="button" {if $session->atual.numero == 1}disabled="disabled" class="goBackOff"{else}class="goBack"{/if} value="Anterior" onclick="anterior()" /></span>
 	{if $session->atual.numero >= $smarty.capture.size}
 	<span class="buttonRight"><input type="button" class="finish" value="Finalizar" onclick="finaliza()" /></span>
 	{else}

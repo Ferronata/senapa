@@ -10,14 +10,14 @@
 class AdminController extends Zend_Controller_Action{
 	public function init(){
 		include_once("Project/include.php");
+		Zend_Loader::loadClass('IndexController');
 	}
 
-	public function acesso($view){
+	public function acesso(){
+		$session 	= Zend_Registry::get("session");
 		$funcao = new FuncoesProjeto();
-		if(!$funcao->acesso()){
-			$view->output("negado.tpl");
-			die();
-		}
+		if(empty($session->usuario))
+			IndexController::indexAction();
 	}
 
 	public function indexAction(){
@@ -25,8 +25,11 @@ class AdminController extends Zend_Controller_Action{
 		$session 	= Zend_Registry::get("session");
 		$funcao 	= new FuncoesProjeto();
 		
-		$pessoa_escola = new PessoaEscola();
+		AdminController::acesso();
+		
+		$pessoa_escola = $session->usuario;
 
+		/*
 		// SUPER ADMIN
 		$pessoa_escola->load(1);
 		
@@ -34,9 +37,10 @@ class AdminController extends Zend_Controller_Action{
 		//$pessoa_escola->load(11);
 		
 		// ALUNO
-		$pessoa_escola->load(12);
-
+		//$pessoa_escola->load(12);
+		
 		$session->usuario = $pessoa_escola;
+		*/
 		
 		// S_ADMIN
 		$menuSAdmInst = array

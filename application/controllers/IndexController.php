@@ -5,21 +5,74 @@ class IndexController extends Zend_Controller_Action
 
 	public function init(){
 		include_once("Project/include.php");
+		Zend_Loader::loadClass('AdminController');
+	}
+	public function negado(){
+		$view = Zend_Registry::get('view');
+		$view->output("negado.tpl");
+		die();
 	}
     public function indexAction(){
-    	$view = Zend_Registry::get('view');
+    	$view 		= Zend_Registry::get('view');
+    	$session 	= Zend_Registry::get('session');
+    	$post	 	= Zend_Registry::get('post');
     	/*
     	$produto 	= new Produtos();
     	$produtos 	= $produto->fetchAll('promocao','nome');
     	
     	$view->assign("produtos",$produtos);
     	*/
-    	$view->assign("header","html/header.tpl");
-    	$view->assign("body","index/index.tpl");
-    	$view->assign("footer","html/footer.tpl");
-    	$view->output("index.tpl");
+    	
+    		
+	    	if(!empty($session->usuario))
+	    		AdminController::indexAction();
+	    	else if(!empty($post->action)){
+		    	switch($post->action){
+	    			case 'login':
+	    				IndexController::validaloginAction();
+	    				break;
+	    			default:
+	    				$this->negado();
+	    		}
+	    	}else
+	    		IndexController::loginAction();
     	//$this->_response->setBody($view->render("default.phtml"));
     	//$this->_redirect("teste/popik");
+    }
+    public function validaloginAction(){
+    	$view	 	= Zend_Registry::get('view');
+    	$session 	= Zend_Registry::get('session');
+    	$post	 	= Zend_Registry::get('post');
+    	$funcao 	= new FuncoesProjeto();
+    	
+    	if(!empty($post->senapaUser)){
+    		$user = $post->senapaUser;
+    		$pass = $post->senapaPassword;
+    		
+    		$pessoa_escola = new PessoaEscola();
+    		$db = $pessoa_escola->getAdapter();
+    		
+    		$array = array('matricula' => $user);
+    		$res = $db->fetchRow("SELECT * FROM pessoa_escola WHERE matricula = :matricula",$array);
+			
+    		if(!$res || trim($funcao->md5_decrypt($res['senha'],MD5_TEXT)) != trim($pass)){
+    			
+    			$view->assign("msg","Usuário e/ou senha inválida.");
+    			$view->assign("header","html/default/header.tpl");
+				$view->assign("body","html/default/login.tpl");
+				$view->assign("footer","html/default/footer.tpl");
+				$view->output("index.tpl");
+    		}else{
+    			$pessoa_escola->load($res['pessoa_fisica_pessoa_id']);
+    			if($pessoa_escola->getId()){
+    				$session->usuario = $pessoa_escola;
+    				IndexController::indexAction();
+    			}
+    			$this->negado();
+    		}
+    	}else
+    		$this->negado();
+    	
     }
     public function classgenAction(){
     	$view 	= Zend_Registry::get('view');
@@ -95,6 +148,16 @@ class IndexController extends Zend_Controller_Action
 		$view 		= Zend_Registry::get("view");
 		$session 	= Zend_Registry::get("session");
 		$funcao 	= new FuncoesProjeto();
+		
+		$view->assign("header","html/default/header.tpl");
+		$view->assign("body","html/default/login.tpl");
+		$view->assign("footer","html/default/footer.tpl");
+		$view->output("index.tpl");
+	}
+	public function sairAction(){
+		Zend_Session::destroy();
+		
+		$view = Zend_Registry::get("view");
 		
 		$view->assign("header","html/default/header.tpl");
 		$view->assign("body","html/default/login.tpl");

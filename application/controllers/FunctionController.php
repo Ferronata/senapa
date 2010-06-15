@@ -27,8 +27,9 @@ public function init(){
 		$view->output("index.tpl");
 	}
 	public function acesso($view){
+		$session = Zend_Registry::get('session');
 		$funcao = new FuncoesProjeto();
-		if(!$funcao->acesso()){
+		if(!$funcao->acesso($session)){
 			$view->output("negado.tpl");
 			die();
 		}
