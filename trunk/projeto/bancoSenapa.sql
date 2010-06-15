@@ -63,12 +63,16 @@ CREATE TABLE IF NOT EXISTS `aluno_resolve_questao` (
   KEY `aluno_resolve_questao_FKIndex3` (`disciplina_id`),
   KEY `aluno_resolve_questao_FKIndex4` (`questao_id`),
   KEY `aluno_resolve_questao_FKIndex5` (`questao_alternativa_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 --
 -- Extraindo dados da tabela `aluno_resolve_questao`
 --
 
+INSERT INTO `aluno_resolve_questao` (`id`, `questao_alternativa_id`, `questao_id`, `disciplina_id`, `avaliacao_id`, `pessoa_id`, `inicio`, `fim`) VALUES
+(1, NULL, 1, 1, 1, 12, '2010-06-13 20:20:21', '2010-06-13 20:20:47'),
+(2, 2, 2, 1, 1, 12, '2010-06-13 20:20:47', '2010-06-13 20:20:53'),
+(3, 59, 3, 1, 1, 12, '2010-06-13 20:20:53', '2010-06-13 21:48:43');
 
 -- --------------------------------------------------------
 
@@ -195,12 +199,14 @@ CREATE TABLE IF NOT EXISTS `avaliacao_aluno` (
   PRIMARY KEY (`id`),
   KEY `avaliacao_aluno_FKIndex1` (`avaliacao_id`),
   KEY `avaliacao_aluno_FKIndex2` (`aluno_pessoa_escola_pessoa_fisica_pessoa_id`,`aluno_pessoa_escola_matricula`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 --
 -- Extraindo dados da tabela `avaliacao_aluno`
 --
 
+INSERT INTO `avaliacao_aluno` (`id`, `aluno_pessoa_escola_matricula`, `aluno_pessoa_escola_pessoa_fisica_pessoa_id`, `avaliacao_id`, `data_inicio`, `data_fim`) VALUES
+(1, 'A123456', 12, 1, '2010-06-13 20:20:21', '2010-06-13 21:48:43');
 
 -- --------------------------------------------------------
 
@@ -378,12 +384,14 @@ CREATE TABLE IF NOT EXISTS `feedback_avaliacao_aluno` (
   PRIMARY KEY (`id`),
   KEY `Table_29_FKIndex1` (`feedback_avaliacao_alternativa_id`),
   KEY `Table_29_FKIndex2` (`avaliacao_aluno_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 --
 -- Extraindo dados da tabela `feedback_avaliacao_aluno`
 --
 
+INSERT INTO `feedback_avaliacao_aluno` (`id`, `avaliacao_aluno_id`, `feedback_avaliacao_alternativa_id`) VALUES
+(1, 1, 3);
 
 -- --------------------------------------------------------
 
@@ -517,8 +525,8 @@ CREATE TABLE IF NOT EXISTS `pessoa` (
 
 INSERT INTO `pessoa` (`id`, `nome`, `email`, `site`, `date_create`, `date_update`, `date_delete`) VALUES
 (1, 'Super Administrador', 'leual27@gmail.com', 'leopopik.com.br', '2010-05-18 23:11:37', NULL, NULL),
-(11, 'Leonardo Popik Bastos', 'leual27@gmail.com', NULL, '2010-05-19 01:17:48', NULL, NULL),
-(12, 'Leonardo Popik Bastos', 'leual27@hotmail.com', 'leopopik.com.br', '2010-05-21 00:42:31', '2010-05-24 01:34:01', NULL);
+(11, 'Professor', 'professor@hotmail.com', 'senapa.com.br', '2010-05-19 01:17:48', '2010-06-14 22:53:51', NULL),
+(12, 'Aluno', 'aluno@senapa.com', 'senapa.com.br', '2010-05-21 00:42:31', '2010-06-14 22:53:06', NULL);
 
 -- --------------------------------------------------------
 
@@ -539,9 +547,9 @@ CREATE TABLE IF NOT EXISTS `pessoa_escola` (
 --
 
 INSERT INTO `pessoa_escola` (`matricula`, `pessoa_fisica_pessoa_id`, `senha`) VALUES
-('A123456', 12, 'TO8NzkUA8t5xFkY9LJJz0JlppCBLz5zJputcXIs4024TRkgrd1/EcTeJ+GseXisUOcDhF816QFuU1JFbZu4wB1sVKvVbpbRjBFtRuyiTuAE='),
-('P0510387', 11, '8MU1HgbJKk0D7KGRcA70d3UObKuQOChEaSxFXBKMKRbCNAcJlyJExj5bGyseGUOBPSg/AY6bxwesGBKa/ryR6lw+q+6bbdeDrtTgGEr7xYE='),
-('S123456', 1, '');
+('A123456', 12, '326uEy51M8pFBWB3NqOaOCgljTp8r49zXRgLONI0um+nLUh9vPOUIuzYtU2WgmT0KKYoAVIJdr65obxRKKbPlcUGjMv68WJLisv6PeuYc2Q='),
+('P123456', 11, 'HRcPLLG1FJw8PAPNnOE1OKPaOQ7xGeZuJ0udOU6ni79J6FEkLP7X9bPDpecs32sXscre7DGfdRyDXmK7jpBcbq7ZefUBZHFkuKqVVZ5hVx0='),
+('S123456', 1, 'sz/+r207GqkZcAvBHom7jrG1pJqxsWj9j82yqh7KM23RqpgxXRf6wiZbZEuZX5jGD8SCmk4jXaWgaTDqHCg+r1XaWHq+bZu2OaXIGhvJpM8=');
 
 -- --------------------------------------------------------
 
@@ -557,15 +565,15 @@ CREATE TABLE IF NOT EXISTS `pessoa_escola_disciplina` (
   PRIMARY KEY (`id`),
   KEY `pessoa_escola_disciplina_FKIndex1` (`disciplina_id`),
   KEY `pessoa_escola_disciplina_FKIndex2` (`pessoa_escola_matricula`,`pessoa_escola_pessoa_fisica_pessoa_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=21 ;
 
 --
 -- Extraindo dados da tabela `pessoa_escola_disciplina`
 --
 
 INSERT INTO `pessoa_escola_disciplina` (`id`, `pessoa_escola_pessoa_fisica_pessoa_id`, `pessoa_escola_matricula`, `disciplina_id`) VALUES
-(10, 12, 'A123456', 1),
-(11, 11, 'P0510387', 1);
+(18, 12, 'A123456', 1),
+(20, 11, 'P123456', 1);
 
 -- --------------------------------------------------------
 
@@ -635,7 +643,7 @@ CREATE TABLE IF NOT EXISTS `professor` (
 --
 
 INSERT INTO `professor` (`pessoa_escola_pessoa_fisica_pessoa_id`, `pessoa_escola_matricula`, `formacao`, `area_atuacao`) VALUES
-(11, 'P0510387', 'Ciência da Computação', NULL);
+(11, 'P123456', 'Ciência da Computação', NULL);
 
 -- --------------------------------------------------------
 
@@ -662,9 +670,9 @@ CREATE TABLE IF NOT EXISTS `professor_avaliacao` (
 --
 
 INSERT INTO `professor_avaliacao` (`id`, `avaliacao_id`, `professor_pessoa_escola_matricula`, `professor_pessoa_escola_pessoa_fisica_pessoa_id`, `data_cadastro`, `date_create`, `date_update`, `date_delete`) VALUES
-(3, 1, 'P0510387', 11, '0000-00-00 00:00:00', '2010-06-08 14:57:49', NULL, NULL),
-(4, 1, 'P0510387', 11, '0000-00-00 00:00:00', '2010-06-10 01:37:55', NULL, NULL),
-(5, 1, 'P0510387', 11, '0000-00-00 00:00:00', '2010-06-10 01:38:40', NULL, NULL);
+(3, 1, 'P123456', 11, '0000-00-00 00:00:00', '2010-06-08 14:57:49', NULL, NULL),
+(4, 1, 'P123456', 11, '0000-00-00 00:00:00', '2010-06-10 01:37:55', NULL, NULL),
+(5, 1, 'P123456', 11, '0000-00-00 00:00:00', '2010-06-10 01:38:40', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -980,8 +988,8 @@ ALTER TABLE `pessoa_escola`
 -- Restrições para a tabela `pessoa_escola_disciplina`
 --
 ALTER TABLE `pessoa_escola_disciplina`
-  ADD CONSTRAINT `pessoa_escola_disciplina_ibfk_1` FOREIGN KEY (`disciplina_id`) REFERENCES `disciplina` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `pessoa_escola_disciplina_ibfk_2` FOREIGN KEY (`pessoa_escola_matricula`, `pessoa_escola_pessoa_fisica_pessoa_id`) REFERENCES `pessoa_escola` (`matricula`, `pessoa_fisica_pessoa_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `pessoa_escola_disciplina_ibfk_1` FOREIGN KEY (`disciplina_id`) REFERENCES `disciplina` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `pessoa_escola_disciplina_ibfk_2` FOREIGN KEY (`pessoa_escola_matricula`, `pessoa_escola_pessoa_fisica_pessoa_id`) REFERENCES `pessoa_escola` (`matricula`, `pessoa_fisica_pessoa_id`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
 -- Restrições para a tabela `pessoa_fisica`
