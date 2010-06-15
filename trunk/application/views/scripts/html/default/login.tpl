@@ -10,12 +10,12 @@
 				<div style="height: 210px;">
 					<div style="margin: 30px 30px">
 						<div style="display: block; height: 60px;">
-							<span class="usuario">Usuário</span>
-							<input id="senapaUser" name="senapaUser" class="loginInput" type="text" value="" />
+							<span class="usuario" title="Matrícula">Usuário</span>
+							<input id="senapaUser" name="senapaUser" class="loginInput" type="text" title="Matrícula" value="" />
 						</div>
 						<div style="display: block; height: 60px;">
-							<span class="senha">Senha</span>
-							<input id="senapaPassword" name="senapaPassword" class="loginInput" type="password" value="" />
+							<span class="senha" title="Senha">Senha</span>
+							<input id="senapaPassword" name="senapaPassword" class="loginInput" title="Senha" type="password" value="" />
 						</div>
 						{if $msg}
 						<div style="margin:0;padding:0; color:red; font-weight: 900; text-align: center; width: 100%; height: 15px">

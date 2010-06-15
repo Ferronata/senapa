@@ -26,20 +26,7 @@ class AvaliacaoAlunoController extends Zend_Controller_Action{
 	public function avaliacaoalunoAction(){
 		$view = Zend_Registry::get('view');
 		$session = Zend_Registry::get('session');
-/*		
-		$pessoa_escola = new PessoaEscola();
 
-		// SUPER ADMIN
-		$pessoa_escola->load(1);
-		
-		// PROFESSOR
-		//$pessoa_escola->load(11);
-		
-		// ALUNO
-		//$pessoa_escola->load(12);
-
-		$session->usuario = $pessoa_escola;	
-*/
 		$usuario = $session->usuario;
 		$view->assign("usuario",$usuario);
 

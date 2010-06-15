@@ -78,7 +78,7 @@
 										{foreach item=item from=$alternativas->getAlternativas()}
 										    <li><label><input type="radio" name="resposta" {if $respostaId == $item->getId()} checked="checked"{/if} value="{$item->getId()}" />{$item->getDescricao()}</label></li>
 										{foreachelse}
-											<li><label>Questão anulada</label></li>
+											<label style="font-weight: 900; font-style: italic; color: #666666;">Questão anulada</label>
 										{/foreach}
 									</ul>
 							</div>
