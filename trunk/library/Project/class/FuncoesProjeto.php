@@ -79,7 +79,9 @@ class FuncoesProjeto{
 		}
 		return $dt;
 	}
-	public function acesso(){
+	public function acesso($session){
+		if(empty($session->usuario))
+			return false;
 		return true;
 	}
 	
