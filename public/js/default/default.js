@@ -1106,6 +1106,34 @@ function rerenderCheckDiscAssuntoBack(e, a){
 	}
 }
 
+function rerenderHistoricoAvaliacaoAluno(tag,id){
+	
+	var value = "";
+	try{
+		value = eval(tag.value);
+	}catch(Exception){}
+	
+	if(tag && value){
+		var page 	= "/"+project_root+"/function/renderHistoricoAvaliacaoAluno";
+		
+		this.miniLoad(tag.parentNode,'miniload');
+		
+		myname = id;
+		tagname	= tag;
+	
+		var params 	= "RelationValue=" + tag.value;
+		new Ajax.Request(
+				page, 
+				{
+					evalScripts:true,
+					parameters: params, 
+					metod: 'POST', 
+					onComplete:rerenderAvaliacaoAlunoBack,				
+					encoding: 'ISO-8859-1'
+				}
+			);
+	}
+}
 function rerenderAvaliacaoAluno(tag,id){
 	
 	var value = "";

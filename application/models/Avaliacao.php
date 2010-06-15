@@ -249,7 +249,12 @@ class Avaliacao extends DAO {
 			$usuario = $session->usuario;
 			if($usuario->getPapelId() == $usuario->ENUM('P_ALUNO')){
 				$str  .= '		<tr class="dg_footer">';
-				$str  .= '			<td colspan="2" class="avaliacaoController"><a href="javascript: openPopup(\'alunoAvaliacao?id='.$this->getId().'\',\'Avaliacao\')" class="iniciarAvaliacao" title="Iniciar Avaliação">Iniciar</a></td>';
+				$avaliacaoAluno = new AvaliacaoAluno();
+				$tmp = $avaliacaoAluno->fetchRow("`avaliacao_id` = '".$this->getId()."' AND `aluno_pessoa_escola_pessoa_fisica_pessoa_id` = '".$usuario->getPessoaId()."' ");
+				if($tmp->data_fim)
+					$str  .= '			<td colspan="2" class="avaliacaoController"><a href="javascript: openPopup(\'historicoAluno?id='.$this->getId().'\',\'Avaliacao\')" class="iniciarAvaliacao" title="Visualizar Avaliação">Visualizar</a></td>';
+				else
+					$str  .= '			<td colspan="2" class="avaliacaoController"><a href="javascript: openPopup(\'alunoAvaliacao?id='.$this->getId().'\',\'Avaliacao\')" class="iniciarAvaliacao" title="Iniciar Avaliação">Iniciar</a></td>';
 				$str  .= '		</tr>';
 			}
 		}

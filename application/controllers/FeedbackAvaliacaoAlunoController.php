@@ -17,8 +17,9 @@ class FeedbackAvaliacaoAlunoController extends Zend_Controller_Action{
 		die();
 	}
 	public function acesso($view){
+		$session = Zend_Registry::get('session');
 		$funcao = new FuncoesProjeto();
-		if(!$funcao->acesso()){
+		if(!$funcao->acesso($session)){
 			$view->output("negado.tpl");
 			die();
 		}
@@ -196,6 +197,8 @@ class FeedbackAvaliacaoAlunoController extends Zend_Controller_Action{
 		$day = mktime(0,0,0,substr($dtIni,5,2),substr($dtIni,8,2),substr($dtIni,0,4));
 		$dt1 = mktime(substr($hrIni,0,2),substr($hrIni,3,2),substr($hrIni,6,2),substr($dtIni,5,2),substr($dtIni,8,2),substr($dtIni,0,4));
 		$dt2 = mktime(substr($hrFim,0,2),substr($hrFim,3,2),substr($hrFim,6,2),substr($dtIni,5,2),substr($dtIni,8,2),substr($dtIni,0,4));
+		
+		//Zend_Session::destroy($session->atual);
 		
 		$tempo = $day+($dt2-$dt1);
 		$tempo = date('H:i:s',$tempo);

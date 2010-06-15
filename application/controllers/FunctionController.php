@@ -249,8 +249,49 @@ public function init(){
 				$avaliacoes = $aluno->getAvaliacoes();
 				
 				$return = array();
-				foreach($avaliacoes as $linha)
-					$return[] = array("html" => $linha->toString());
+				foreach($avaliacoes as $linha){
+					$avaliacaoAluno = new AvaliacaoAluno();
+					$tmp = $avaliacaoAluno->fetchRow("`avaliacao_id` = '".$linha->getId()."' AND `aluno_pessoa_escola_pessoa_fisica_pessoa_id` = '".$id."' ");
+					if(!$tmp || !$tmp->data_fim)
+						$return[] = array("html" => $linha->toString());
+				}
+				
+				die($funcao->array2json($return));
+			}catch(Exception $e){die($funcao->array2json(array('msg' => 'erro', 'display' => htmlentities('Problemas na renderização'))));}
+		}
+		$view->output("function/index.tpl");
+	}
+	public function renderhistoricoavaliacaoalunoAction(){
+		$view 		= Zend_Registry::get("view");
+		$session 	= Zend_Registry::get("session");
+		$post 		= Zend_Registry::get("post");
+		$get 		= Zend_Registry::get("get");
+
+		$funcao = new FuncoesProjeto();
+		
+		if(!empty($get->RelationValue) || !empty($post->RelationValue)){
+			try{
+				if(!empty($get->RelationValue))
+					$id = $get->RelationValue;
+				else
+					$id = $post->RelationValue;
+			
+					
+				$pessoa_escola = new PessoaEscola();
+				$pessoa_escola->load($id);
+				
+				$aluno = new Aluno();
+				$aluno->load($pessoa_escola->getMatricula());
+				
+				$avaliacoes = $aluno->getAvaliacoes();
+				
+				$return = array();
+				foreach($avaliacoes as $linha){
+					$avaliacaoAluno = new AvaliacaoAluno();
+					$tmp = $avaliacaoAluno->fetchRow("`avaliacao_id` = '".$linha->getId()."' AND `aluno_pessoa_escola_pessoa_fisica_pessoa_id` = '".$id."' ");
+					if(!$tmp || $tmp->data_fim)
+						$return[] = array("html" => $linha->toString());
+				}
 				
 				die($funcao->array2json($return));
 			}catch(Exception $e){die($funcao->array2json(array('msg' => 'erro', 'display' => htmlentities('Problemas na renderização'))));}
