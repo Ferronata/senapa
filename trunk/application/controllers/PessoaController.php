@@ -31,7 +31,7 @@ class PessoaController extends Zend_Controller_Action{
 	}
 
 	public function indexAction(){
-		$this->PessoaAction();
+		$this->pessoaAction();
 	}
 	public function pessoaAction(){
 		$view = Zend_Registry::get('view');
@@ -74,7 +74,7 @@ class PessoaController extends Zend_Controller_Action{
 			if(empty($post->id)){
 				// CREATE
 				if($pessoa->insert())
-					$retorno = array('msg' => 'ok', 'display' => htmlentities('Pessoa inserido com sucesso'), 'url' => '/?');
+					$retorno = array('msg' => 'ok', 'display' => htmlentities('Pessoa inserida com sucesso'), 'url' => '/?');
 				else
 					$retorno = array('msg' => 'error', 'display' => htmlentities('Erro ao inserir Pessoa'));
 
@@ -84,7 +84,7 @@ class PessoaController extends Zend_Controller_Action{
 				$pessoa->setId($post->id);
 				
 				$pessoa->update();
-				$retorno = array('msg' => 'ok', 'display' => htmlentities('Pessoa modificado com sucesso'));
+				$retorno = array('msg' => 'ok', 'display' => htmlentities('Pessoa modificada com sucesso'));
 				die($funcao->array2json($retorno));
 			}
 		}else{
