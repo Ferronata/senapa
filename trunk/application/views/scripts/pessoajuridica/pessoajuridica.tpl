@@ -19,25 +19,25 @@
 				<div id="aba2" class="content" style="display: none;">
 					<input type="hidden" id="pessoa_id" name="pessoa_id" value="{$pessoa_juridica->getPessoaId()}" />
 					<div class="line">
-						<label class="label required" for="cnpj">cnpj</label>
+						<label class="label required" for="cnpj">CNPJ</label>
 						<div class="innerLine">
 							<input type="text" class="key input normal" id="cnpj" name="cnpj" onkeypress="mascara(this,cnpj_mask)" maxlength="18" value="{$pessoa_juridica->getCnpj()}" />
 						</div>
 					</div>
 					<div class="line">
-						<label class="label" for="nome_fantasia">nome_fantasia</label>
+						<label class="label" for="nome_fantasia">Nome Fantasia</label>
 						<div class="innerLine">
 							<input type="text" class="input grande" id="nome_fantasia" name="nome_fantasia" maxlength="250" value="{$pessoa_juridica->getNomeFantasia()}" />
 						</div>
 					</div>
 					<div class="line">
-						<label class="label" for="inscricao_estadual">inscricao_estadual</label>
+						<label class="label" for="inscricao_estadual">Inscricão Estadual</label>
 						<div class="innerLine">
 							<input type="text" class="input normal" id="inscricao_estadual" name="inscricao_estadual" maxlength="100" value="{$pessoa_juridica->getInscricaoEstadual()}" />
 						</div>
 					</div>
 					<div class="line">
-						<label class="label" for="inscricao_municipal">inscricao_municipal</label>
+						<label class="label" for="inscricao_municipal">Inscricão Municipal</label>
 						<div class="innerLine">
 							<input type="text" class="input normal" id="inscricao_municipal" name="inscricao_municipal" maxlength="100" value="{$pessoa_juridica->getInscricaoMunicipal()}" />
 						</div>

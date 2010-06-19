@@ -7,19 +7,19 @@
 				<div class="content">
 					<input type="hidden" id="id" name="id" value="{$pessoa_juridica->getId()}" />
 					<div class="line">
-						<label class="label required" for="nome">nome</label>
+						<label class="label required" for="nome">Nome</label>
 						<div class="innerLine">
 							<input type="text" class="key input grande" id="nome" name="nome" maxlength="250" value="{$pessoa_juridica->getNome()}" />
 						</div>
 					</div>
 					<div class="line">
-						<label class="label" for="email">email</label>
+						<label class="label" for="email">Email</label>
 						<div class="innerLine">
 							<input type="text" class="input grande" id="email" name="email" maxlength="250" value="{$pessoa_juridica->getEmail()}" />
 						</div>
 					</div>
 					<div class="line">
-						<label class="label" for="site">site</label>
+						<label class="label" for="site">Site</label>
 						<div class="innerLine">
 							<input type="text" class="input grande" id="site" name="site" maxlength="250" value="{$pessoa_juridica->getSite()}" />
 						</div>

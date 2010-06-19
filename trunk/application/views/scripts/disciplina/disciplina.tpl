@@ -14,13 +14,13 @@
 				<div class="content">
 					<input type="hidden" id="id" name="id" value="{$disciplina->getId()}" />
 					<div class="line">
-						<label class="label required" for="codigo">codigo</label>
+						<label class="label required" for="codigo">Código</label>
 						<div class="innerLine">
 							<input type="text" class="key input pequeno" id="codigo" name="codigo" maxlength="8" value="{$disciplina->getCodigo()}" />
 						</div>
 					</div>
 					<div class="line">
-						<label class="label required" for="nome">nome</label>
+						<label class="label required" for="nome">Nome</label>
 						<div class="innerLine">
 							<input type="text" class="key input medio" id="nome" name="nome" maxlength="200" value="{$disciplina->getNome()}" />
 						</div>
