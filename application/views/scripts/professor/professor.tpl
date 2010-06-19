@@ -10,7 +10,7 @@
 		<div class="innerBody">
 		<form id="form" name="form" method="post" action="javascript: enviarForm('/senapa/professor/Professor', 'form', 'save');" onsubmit="return(runAction(this))">
 				<h1>Professor</h1>
-				<sub>Gerencimento - Professor</sub>
+				<sub>Gerenciamento - Professor</sub>
 				
 				<div id="abas" class="divAba">{html_aba value='Dados Gerais' forid='aba1' classe=selected}{html_aba value='Dados Pessoais' forid='aba2'}{html_aba value='Professor' forid='aba3'}{html_aba value='Disciplinas' forid='aba4'}</div>
 				
@@ -23,13 +23,13 @@
 					{include file="pessoaescola/pessoaescola.tpl"}
 					
 					<div class="line">
-						<label class="label required" for="formacao">formacao</label>
+						<label class="label required" for="formacao">Formação</label>
 						<div class="innerLine">
 							<input type="text" class="key input grande" id="formacao" name="formacao" maxlength="250" value="{$object->getFormacao()}" />
 						</div>
 					</div>
 					<div class="line">
-						<label class="label" for="area_atuacao">area_atuacao</label>
+						<label class="label" for="area_atuacao">Área de Atuação</label>
 						<div class="innerLine">
 							<input type="text" class="input grande" id="area_atuacao" name="area_atuacao" maxlength="250" value="{$object->getAreaAtuacao()}" />
 						</div>
