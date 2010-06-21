@@ -59,7 +59,7 @@ class PessoaEscolaController extends Zend_Controller_Action{
 		$view->assign("listaDisciplina",$pessoa_escola->getDisciplinas());
 		
 		$view->assign("header","html/default/header.tpl");
-		$view->assign("body","pessoaEscola/index.tpl");
+		$view->assign("body","pessoaescola/index.tpl");
 		$view->assign("footer","html/default/footer.tpl");
 		$view->output("index.tpl");
 	}

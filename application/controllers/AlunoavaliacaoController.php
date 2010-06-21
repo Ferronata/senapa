@@ -10,7 +10,7 @@
 class AlunoAvaliacaoController extends Zend_Controller_Action{
 	public function init(){
 		include_once("Project/include.php");
-		Zend_Loader::loadClass('FeedbackAvaliacaoAlunoController');
+		Zend_Loader::loadClass('FeedbackavaliacaoalunoController');
 	}
 	public function negado(){
 		$view = Zend_Registry::get('view');
@@ -306,7 +306,7 @@ class AlunoAvaliacaoController extends Zend_Controller_Action{
 						$avaliacaoAluno->setDataFim(date('Y-m-d H:i:s'));
 						$avaliacaoAluno->update();
 						
-						die($funcao->array2json(array('url' => 'feedbackAvaliacaoAluno')));
+						die($funcao->array2json(array('url' => 'feedbackavaliacaoaluno')));
 					}catch(Exception $e){die($funcao->array2json(array('msg' => 'error', 'display' => htmlentities('Erro fatal => '.$str.$e))));}
 					break;
 				default:

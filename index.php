@@ -14,18 +14,12 @@
  */
 header('Content-type: text/html; charset=ISO-8859-1');
 
-include_once("library/Project/config.php");
+include_once("library/Project/ini.php");
 include("debuglib.php");
 
 //show_vars();
 
 $applicationName = basename(getcwd());
-
-// Faz include do componente Zend_loader. É obrigatório para carregar arquivos, classes e recursos
-include ('Zend/Loader.php');
-
-// Registro é um container para armazenar objetos e valores no espaço de aplicação
-Zend_Loader::loadClass('Zend_Registry');
 
 Zend_Loader::loadClass('Zend_View_Abstract');
 
@@ -41,9 +35,6 @@ Zend_Loader::loadClass('Zend_Controller_Front');
 
 // Classe Substituta do Zend_View => Smarty
 Zend_Loader::loadClass('Smarty_View_Smarty');
-
-// Classe para configurações
-Zend_Loader::loadClass('Zend_Config_Ini');
 
 // Classe de acesso a base de dados
 Zend_Loader::loadClass('Zend_Db');
@@ -93,12 +84,6 @@ $frontController->setControllerDirectory('./application/controllers');
 
 // O controlador deve tratar as exceções
 $frontController->throwExceptions(true);
-
-
-// Configuração da base de dados
-
-$config = new Zend_Config_Ini('./application/configs/config.ini','database');
-Zend_Registry::set('config',$config);
 
 //Configura a conexão com a base de dados
 //$config->get();
