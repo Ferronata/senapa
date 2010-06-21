@@ -10,7 +10,7 @@
 class HistoricoAlunoController extends Zend_Controller_Action{
 	public function init(){
 		include_once("Project/include.php");
-		Zend_Loader::loadClass('FeedbackAvaliacaoAlunoController');
+		Zend_Loader::loadClass('FeedbackavaliacaoalunoController');
 	}
 	public function negado(){
 		$view = Zend_Registry::get('view');
@@ -102,60 +102,9 @@ class HistoricoAlunoController extends Zend_Controller_Action{
 			}
 	
 			$view->assign("header","html/default/header.tpl");
-			$view->assign("body","historicoAluno/index.tpl");
+			$view->assign("body","historicoaluno/index.tpl");
 			$view->assign("footer","html/default/footer.tpl");
 			$view->output("index.tpl");
 		}
-		/*
-		$view = Zend_Registry::get('view');
-		$session = Zend_Registry::get('session');
-		
-		$pessoa_escola = new PessoaEscola();
-		
-		$usuario = $session->usuario;
-
-		$this->acesso($view);
-
-		$aluno_avaliacao = new AlunoAvaliacao();
-
-		$post 	= Zend_Registry::get('post');
-		$get 	= Zend_Registry::get('get');
-
-		$funcao 	= new FuncoesProjeto();
-		
-		$avaliacao 	= new Avaliacao();
-		$disciplina = new Disciplina();
-		$alunoResolveQuestao = new AlunoResolveQuestao();
-		$respostaId = 0;
-		
-		if(!empty($get->id)){
-			$id = (int)$get->id;
-			
-			$avaliacao->load($id);
-
-			if(sizeof($avaliacao->getListaQuestoes()->getListaQuestao())){
-				$tmp = $avaliacao->getListaQuestoes()->getListaQuestao();
-				$disciplina = $tmp[0]->getDisciplina();
-			}
-			
-			
-			$avaliacaoAluno = new AvaliacaoAluno();
-			
-			$listAvaliacao 	= $avaliacaoAluno->fetchRow("`aluno_pessoa_escola_pessoa_fisica_pessoa_id` = '".$usuario->getPessoaId()."' AND `avaliacao_id` = '".$avaliacao->getId()."'");
-			
-			$avaliacaoAluno->setAlunoPessoaEscolaPessoaFisicaPessoaId($usuario->getPessoaId());
-			$avaliacaoAluno->setAvaliacaoId($avaliacao->getId());
-						
-			if($listAvaliacao){
-				
-				$avaliacaoAluno->load($listAvaliacao->id);
-				
-				$session->atual	 = array('avaliacaoId' => $avaliacao->getId());
-				
-				FeedbackAvaliacaoAlunoController::resultadoAction();
-			}
-		}else
-			$this->negado();
-		*/
 	}
 }
