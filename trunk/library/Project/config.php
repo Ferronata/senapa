@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Projeto Photograf Web
+ * Projeto Senapa Web
  * Iniciado em 01/02/2010
  * 
  * Arquivo de configuração da aplicação
@@ -14,40 +14,33 @@
  * @version 1.0
  */
 
-// Configura as mensagens de erro que devem ser apresentadas
-//error_reporting(E_ALL|E_STRICT|~E_NOTICE);
-error_reporting(~E_NOTICE&~E_STRICT&~E_WARNING);
+// CAPTURA CONFIGURAÇÕES DO CONFIG.INI
 
-// Identifica o SO do servidor e configura as variáveis delimitadoras
-define('SYS_OS',			(stripos($_SERVER['SERVER_SOFTWARE'],'win32') !== false) ? 'WINDOWS' : 'LINUX');
-define('SYS_BAR',			(SYS_OS === 'WINDOWS') ? '\\' : '/');
-define('SYS_SEPARATOR_PATH',(SYS_OS === 'WINDOWS') ? ';' : ':');
-define('SYS_DOCUMENT_ROOT',	str_replace('/',SYS_BAR,$_SERVER['DOCUMENT_ROOT']));
+/*
+ * CARREGA CLASSES BASES DO ZEND
+ */
 
-define('PROJECT_NAME',		'Sga');
-define('PROJECT_DIR_NAME',	basename(getcwd()));
-define('PROJECT_ROOT',		SYS_DOCUMENT_ROOT . SYS_BAR . PROJECT_DIR_NAME . SYS_BAR);
-define('BASE_URL',			substr($_SERVER['PHP_SELF'],0,strpos($_SERVER['PHP_SELF'],'/index.php')));
+// Faz include do componente Zend_loader. É obrigatório para carregar arquivos, classes e recursos
+include ('Zend/Loader.php');
 
-define('MD5_TEXT', "SeNaPa_MD5"); // PALAVRA CHAVE PARA CRIPTOGRAFIA
+// Registro é um container para armazenar objetos e valores no espaço de aplicação
+Zend_Loader::loadClass('Zend_Registry');
 
-// Configura o caminho a ser procurado em todos os includes
-$tmp 		= SYS_SEPARATOR_PATH . PROJECT_ROOT;
-$includes 	= array(
-		'library', 
-		'application'. SYS_BAR .'controllers',
-		'application'. SYS_BAR .'models', 
-		"library". SYS_BAR ."Project". SYS_BAR .'class' .SYS_BAR
-	);
-$path		= '';
-foreach ($includes as $include)
-	$path .= $tmp.$include;
+// Classe para configurações
+Zend_Loader::loadClass('Zend_Config_Ini');
 
-set_include_path(get_include_path().$path);
+$config = new Zend_Config_Ini('./application/configs/config.ini','database');
+Zend_Registry::set('config',$config);
 
-date_default_timezone_set('America/Sao_Paulo');
+// Configura exibição das mensagens de erro.
+error_reporting($config->project->error_reporting);
+
+define('PROJECT_NAME',$config->project->name);
+define('MD5_TEXT',$config->project->md5_text); // PALAVRA CHAVE PARA CRIPTOGRAFIA
+
+date_default_timezone_set($config->project->timezone);
 
 //Configura o formato da moeda local
-setlocale(LC_MONETARY,'ptb');
+setlocale(LC_MONETARY,$config->project->lc_monetary);
 
-ini_set('max_execution_time','120');
+ini_set('max_execution_time',$config->project->max_execution_time);
