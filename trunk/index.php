@@ -88,7 +88,9 @@ $frontController->throwExceptions(true);
 //Configura a conexão com a base de dados
 //$config->get();
 
-$db = Zend_Db::factory($config->db->adapter, $config->db->config->toArray());
+$database = new Zend_Config_Ini('./application/configs/config.ini','database');
+
+$db = Zend_Db::factory($database->db->adapter, $database->db->config->toArray());
 Zend_Db_Table_Abstract::setDefaultAdapter($db);
 Zend_Registry::set('db',$db);
 
