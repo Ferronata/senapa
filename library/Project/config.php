@@ -37,6 +37,7 @@ error_reporting($config->project->error_reporting);
 
 define('PROJECT_NAME',$config->project->name);
 define('MD5_TEXT',$config->project->md5_text); // PALAVRA CHAVE PARA CRIPTOGRAFIA
+define('CHARSET',$config->project->charset);
 
 date_default_timezone_set($config->project->timezone);
 

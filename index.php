@@ -12,12 +12,12 @@
  * @copyright Copyright 2010 Leonardo Popik Bastos
  * @version 1.0
  */
-header('Content-type: text/html; charset=ISO-8859-1');
-
 include_once("library/Project/ini.php");
 include("debuglib.php");
 
 //show_vars();
+
+header('Content-type: text/html; charset='.CHARSET.'');
 
 $applicationName = basename(getcwd());
 
@@ -60,7 +60,7 @@ Zend_Registry::set('get',new Zend_Filter_Input(NULL,NULL,$_GET));
 // Instancia e configuração de visão
 //$view = new Zend_View();
 $view = new Smarty_View_Smarty();
-$view->setEncoding('UTF-8');
+$view->setEncoding(CHARSET);
 $view->setEscape('htmlentities');
 //$view->setBasePath('./application/views/');
 $view->setTemplateDir($applicationName);
