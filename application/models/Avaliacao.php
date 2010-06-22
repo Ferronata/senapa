@@ -27,6 +27,8 @@ class Avaliacao extends DAO {
 	private $listaQuestoes;
 	private $professor;
 	private $professorAvaliacao;
+	private $disciplina;
+	private $nivel;
 
 	public function getId(){return $this->id;}
 	public function setId($var){$this->id = $var;}
@@ -57,6 +59,20 @@ class Avaliacao extends DAO {
 
 	public function getStatus(){return $this->status;}
 	public function setStatus($var){$this->status = $var;}
+	
+	public function getDisciplina(){return $this->disciplina;}
+	public function setDisciplina($var){$this->disciplina = $var;}
+	
+	public function getNivel(){
+		if(empty($this->nivel))
+			$this->setNivel(new AvaliacaoNivel());
+		return $this->nivel;
+	}
+	public function setNivel($var){
+		if(empty($var))
+			$var = new AvaliacaoNivel();
+		$this->nivel = $var;
+	}
 	
 	public function getListaQuestoes(){
 		if(empty($this->listaQuestoes))
@@ -196,6 +212,13 @@ class Avaliacao extends DAO {
 				if($questao)
 					$this->getListaQuestoes()->addQuestao($questao);
 			}
+			if(sizeof($this->getListaQuestoes()->getListaQuestao())){
+				$tmp = $this->getListaQuestoes()->getListaQuestao();
+				$this->setDisciplina($tmp[0]->getDisciplina());
+			}
+			$tmp = $this->getNivel()->fetchRow("`avaliacao_id` = '".$this->getId()."'");
+			if($tmp->id)
+				$this->getNivel()->load($tmp->id);
 			
 			$tmp = new ProfessorAvaliacao();
 			$tmp = $tmp->fetchRow("`avaliacao_id` = '".$this->getId()."' AND date_delete IS NULL");
@@ -263,5 +286,19 @@ class Avaliacao extends DAO {
 		$str  .= '</div>';
 		
 		return $str;
+	}
+	public function clonarAvaliacao($id){
+		$realId = $this->getId();
+		
+		$return = false;
+		
+		$this->load($id);
+		if($this->getId()){
+			$this->setId(NULL);
+			$return = $this->insert();
+		}
+		if($realId)
+			$this->load($realId);
+		return $return;
 	}
 }

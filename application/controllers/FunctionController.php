@@ -204,19 +204,49 @@ public function init(){
 
 		$funcao = new FuncoesProjeto();
 		
-		if(!empty($post->RelationValue)){
+		if(!empty($post->RelationValue) || !empty($get->RelationValue)){
 			try{
 				
 				$relation_value = (int)$post->RelationValue;
+				$findTo = (int)$post->FindTo;
 				
+				$avaliacao = new Avaliacao();
 				$object = new Assunto();
-				$object = $object->fetchAll("`date_delete` IS NULL AND `id` IN (SELECT `assunto_id` FROM `disciplina_assunto` WHERE `disciplina_id` = '".$relation_value."')","nome");
-
 				$return = array();
-				try{
-					foreach($object as $key => $values)
-						$return[] = array("html" => $values->nome, "value" => $values->id);
-				}catch(Exception $erro){}
+				
+				if(empty($relation_value)){
+					$relation_value = (int)$get->RelationValue;
+					$findTo = (int)$get->FindTo;
+				}
+				switch($findTo){
+					case 'questions':
+					case $object->ENUM('QUESTAO'):
+						$object = $object->fetchAll("`date_delete` IS NULL AND `id` IN (SELECT `assunto_id` FROM `disciplina_assunto` WHERE `disciplina_id` = '".$relation_value."')","nome");
+		
+						try{
+							foreach($object as $key => $values)
+								$return[] = array("html" => $values->nome, "value" => $values->id);
+						}catch(Exception $erro){}
+						break;
+					case 'avaliations':
+					case $object->ENUM('AVALIACAO'):
+						$listaAvaliacao = $avaliacao->fetchAll("`date_delete` IS NULL","nome");
+						$idsAv = " ";
+						foreach($listaAvaliacao as $linha){
+							$tmpAvaliacao = new Avaliacao();
+							$tmpAvaliacao->load($linha->id);
+							if($tmpAvaliacao->getDisciplina()->getId()){
+								try{
+									$tmpObject = $object->fetchAll("`date_delete` IS NULL AND `id` IN (SELECT `assunto_id` FROM `disciplina_assunto` WHERE `disciplina_id` = '".$tmpAvaliacao->getDisciplina()->getId()."')","nome");
+								
+									if($tmpObject && $tmpAvaliacao->getNivel()->getNivel() == 5)
+										$return[] = array("html" => $tmpAvaliacao->getDisciplina()->getNome()." - ".$tmpAvaliacao->getNome(), "value" => $tmpAvaliacao->getId());
+								}catch(Exception $erro){}
+							}
+						}
+						
+						break;
+				}
 				die($funcao->array2json($return));
 				
 			}catch(Exception $e){die($funcao->array2json(array('msg' => 'erro', 'display' => htmlentities('Problemas na renderização'))));}
@@ -289,7 +319,7 @@ public function init(){
 				foreach($avaliacoes as $linha){
 					$avaliacaoAluno = new AvaliacaoAluno();
 					$tmp = $avaliacaoAluno->fetchRow("`avaliacao_id` = '".$linha->getId()."' AND `aluno_pessoa_escola_pessoa_fisica_pessoa_id` = '".$id."' ");
-					if(!$tmp || $tmp->data_fim)
+					if($tmp && $tmp->data_fim)
 						$return[] = array("html" => $linha->toString());
 				}
 				
