@@ -31,7 +31,6 @@ class AvaliacaoNivel extends DefaultObject {
 	public function insert(){
 		$array = array
 			(
-			'id' => $this->getId(),
 			'avaliacao_id' => $this->getAvaliacaoId(),
 			'nivel' => $this->getNivel(),
 			'data_nivelamento' => $this->getDataNivelamento()
@@ -41,7 +40,6 @@ class AvaliacaoNivel extends DefaultObject {
 	public function update(){
 		$array = array
 			(
-			'id' => $this->getId(),
 			'avaliacao_id' => $this->getAvaliacaoId(),
 			'nivel' => $this->getNivel(),
 			'data_nivelamento' => $this->getDataNivelamento()
@@ -56,7 +54,7 @@ class AvaliacaoNivel extends DefaultObject {
 			$this->setNivel($object->nivel);
 			$this->setDataNivelamento($object->data_nivelamento);
 		}
-		return parent::fetchRow("id = '".$this->getId()."'");
+		return $object;
 	}
 	public function delete(){
 		return parent::delete("id = '".$this->getId()."'");
