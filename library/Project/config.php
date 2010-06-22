@@ -29,7 +29,7 @@ Zend_Loader::loadClass('Zend_Registry');
 // Classe para configurações
 Zend_Loader::loadClass('Zend_Config_Ini');
 
-$config = new Zend_Config_Ini('./application/configs/config.ini','database');
+$config = new Zend_Config_Ini('./application/configs/config.ini','config');
 Zend_Registry::set('config',$config);
 
 // Configura exibição das mensagens de erro.
