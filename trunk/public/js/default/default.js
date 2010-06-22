@@ -1,5 +1,5 @@
 var $jq = jQuery.noConflict();
-var project_root = 'senapa';
+var project_root = '/senapa';
 /*
  * RESIZE TELA
  */
@@ -121,7 +121,7 @@ function addLoadding(){
 		this.transparent(div,"65");
 	}
 	/**/
-	var inner = this.addDivId ('loadding','blackout','<img src=\'/'+project_root+'/public/images/loader.gif\' />');
+	var inner = this.addDivId ('loadding','blackout','<img src=\''+project_root+'/public/images/loader.gif\' />');
 	//var inner = this.addDivId ('loadding','blackout');
 	if(!this.goodBrowser())
 		inner.style.position= 'absolute';
@@ -622,7 +622,7 @@ function valida_cnpj(id){
 
 function openPage(page,method_,params_){
 	if(page){
-		var url 	= "/"+project_root+"/"+page;
+		var url 	= project_root+"/"+page;
 		
 		this.gerarCookie('url', page, 1);
 		
@@ -727,7 +727,7 @@ function enviarFormAvaliacao(page, form_id){
 	var params = form.serialize();
 	params += "&action="+page;
 	new Ajax.Request(
-			"/"+project_root+"/alunoavaliacao", 
+			project_root+"/alunoavaliacao", 
 			{
 				evalScripts:true,
 				parameters: params, 
@@ -742,14 +742,14 @@ function enviarFormAvaliacao(page, form_id){
 }
 function enviarFormAvaliacaoBack(e, a){
 	this.removeLoadding();
-	alert("/"+project_root+"/");
+	
 	res = eval('(' + e.responseText + ')');
 
 	/*
 	if(res['url'])
 		this.openPage(res['url']);
 	*/
-	alert("/"+project_root+"/"+res['url']);
+	alert(project_root+"/"+res['url']);
 	if(res['msg'] == 'error'){
 		if(res['display'])
 			this.addMensage('err', res['display']);
@@ -757,7 +757,7 @@ function enviarFormAvaliacaoBack(e, a){
 			this.addMensage('err', 'Não foi possivel executar a operação, por favor verifique os dados!');
 	}
 	if(res['url'])
-		location.href = "/"+project_root+"/"+res['url'];
+		location.href = project_root+"/"+res['url'];
 }
 
 function enviarFeedbackAvaliacaoAlunoForm(page, form_id){
@@ -765,7 +765,7 @@ function enviarFeedbackAvaliacaoAlunoForm(page, form_id){
 	
 	var params = form.serialize();
 	new Ajax.Request(
-			"/"+project_root+"/FeedbackAvaliacaoAluno/"+page, 
+			project_root+"/FeedbackAvaliacaoAluno/"+page, 
 			{
 				evalScripts:true,
 				parameters: params, 
@@ -788,7 +788,7 @@ function enviarFeedbackAvaliacaoAlunoBack(e, a){
 			this.addMensage('err', 'Não foi possivel executar a operação, por favor verifique os dados!');
 	}
 	if(res['url'])
-		location.href = "/"+project_root+"/FeedbackAvaliacaoAluno/"+res['url'];
+		location.href = project_root+"/FeedbackAvaliacaoAluno/"+res['url'];
 }
 
 
@@ -800,7 +800,7 @@ function voltarForm(){
 		location='?';
 }
 
-var root_path = "/"+project_root+"/public";
+var root_path = project_root+"/public";
 
 function aba(tag,id){
 	var parent 	= tag.parentNode;
@@ -827,7 +827,7 @@ function miniLoad(div,id){
 		if(div){
 			var option = document.createElement("div");
 			option.setAttribute('id',id);
-			option.innerHTML = "<img src=\"/"+project_root+"/public/images/mini-loader.gif\" />";
+			option.innerHTML = "<img src=\""+project_root+"/public/images/mini-loader.gif\" />";
 			
 			div.appendChild(option);
 		}
@@ -841,7 +841,7 @@ function removeMiniLoad(div,id){
 }
 
 function rerender(tag,lista, order, retorno){
-	var page 	= "/"+project_root+"/function/render";
+	var page 	= project_root+"/function/render";
 	
 	this.miniLoad(tag.parentNode,'miniload');
 	
@@ -907,7 +907,7 @@ function rerenderBack(e, a){
 
 
 function rerenderObject(file,page,tag,column){
-	var url 	= "/"+project_root+"/admin/";
+	var url 	= project_root+"/admin/";
 	
 	tagname	= tag;
 	var tmp_vl = this.trim(tag.value);
@@ -925,7 +925,7 @@ function rerenderObject(file,page,tag,column){
 		
 		if(flag){
 			if(page){
-				var url 	= "/"+project_root+"/admin/"+page;
+				var url 	= project_root+"/admin/"+page;
 				
 				new Ajax.Updater(
 						'work',
@@ -977,7 +977,7 @@ function rerenderObjectBack(e, a){
 }
 
 function rerenderDiscAssunto(tag,lista){
-	var page 	= "/"+project_root+"/function/renderDisciplinaAssunto";
+	var page 	= project_root+"/function/renderDisciplinaAssunto";
 	
 	this.miniLoad(tag.parentNode,'miniload');
 	
@@ -1038,15 +1038,15 @@ function rerenderDiscAssuntoBack(e, a){
 
 
 function rerenderCheckDiscAssunto(tag,table){
-	var page 	= "/"+project_root+"/function/renderCheckDisciplinaAssunto";
+	var page 	= project_root+"/function/renderCheckDisciplinaAssunto";
 	
 	this.miniLoad(tag.parentNode,'miniload');
 	
 	myname = table;
 	tagname	= tag;
 
-	var params 	= "RelationValue=" + tag.value;
-
+	var params 	= "RelationValue=" + tag.value +"&FindTo="+$('tpPesqusia').value;
+	alert(params);
 	new Ajax.Request(
 			page, 
 			{
@@ -1114,7 +1114,7 @@ function rerenderHistoricoAvaliacaoAluno(tag,id){
 	}catch(Exception){}
 	
 	if(tag && value){
-		var page 	= "/"+project_root+"/function/renderHistoricoAvaliacaoAluno";
+		var page 	= project_root+"/function/renderHistoricoAvaliacaoAluno";
 		
 		this.miniLoad(tag.parentNode,'miniload');
 		
@@ -1142,7 +1142,7 @@ function rerenderAvaliacaoAluno(tag,id){
 	}catch(Exception){}
 	
 	if(tag && value){
-		var page 	= "/"+project_root+"/function/renderAvaliacaoAluno";
+		var page 	= project_root+"/function/renderAvaliacaoAluno";
 		
 		this.miniLoad(tag.parentNode,'miniload');
 		
@@ -1150,6 +1150,7 @@ function rerenderAvaliacaoAluno(tag,id){
 		tagname	= tag;
 	
 		var params 	= "RelationValue=" + tag.value;
+
 		new Ajax.Request(
 				page, 
 				{
@@ -1203,7 +1204,7 @@ function rerenderAvaliacaoAlunoBack(e, a){
 }
 
 function findQuestions(tag,table){
-	var page 	= "/"+project_root+"/function/findQuestions";
+	var page 	= project_root+"/function/findQuestions";
 	
 	listaQuestao = $('listaQuestoes');
 	this.miniLoad(listaQuestao.parentNode,'miniload');
@@ -1300,7 +1301,7 @@ function findQuestionsBack(e, a){
 
 
 function listRender(tag,lista){
-	var page 	= "/"+project_root+"/function/listRender";
+	var page 	= project_root+"/function/listRender";
 	
 	this.miniLoad(tag.parentNode,'miniload');
 	
