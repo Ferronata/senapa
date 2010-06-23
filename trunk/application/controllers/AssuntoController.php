@@ -90,7 +90,14 @@ class AssuntoController extends Zend_Controller_Action{
 			}
 		}else{
 			// DATAGRID
-			$funcao->datagrid($view, 'assunto',$display_datagrid,"","Gerenciamento de Assunto");
+			$display_datagrid = array(
+				'nome'			=>	'Assunto', 
+				'date_create'	=>	'Data de Criação',
+				'date_update'	=>	'Ultima Atualização'
+			);
+			$where = "`date_delete` IS NULL";
+			
+			$funcao->datagrid($view, 'assunto',$display_datagrid,$where,"Gerenciamento de Assunto");
 		}
 	}
 }

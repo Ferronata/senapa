@@ -128,7 +128,8 @@ class FuncoesProjeto{
 	}
 	function datagrid($view, $table, $display = array(), $where = "", $title = ""){
 		//Exemplo => $datagrid = new Datagrid('com_endereco', array('id'=>'ID', 'logradouro'=>'Rua'));
-		$datagrid = new Datagrid($table,$where,$display,$title);
+		$datagrid = new Datagrid($title, $table,$where, $display);
+		//$datagrid = new Datagrid($table,$where,$display,$title);
 		$view->assign("datagrid",$datagrid);
 
 		$view->assign("body","html/default/datagrid.tpl");

@@ -1037,26 +1037,29 @@ function rerenderDiscAssuntoBack(e, a){
 }
 
 
-function rerenderCheckDiscAssunto(tag,table){
+function rerenderCheckDiscAssunto(form,tag,table){
 	var page 	= project_root+"/function/renderCheckDisciplinaAssunto";
 	
-	this.miniLoad(tag.parentNode,'miniload');
+	if(tag.value){
+		this.miniLoad(tag.parentNode,'miniload');
+		
+		myname = table;
+		tagname	= tag;
 	
-	myname = table;
-	tagname	= tag;
-
-	var params 	= "RelationValue=" + tag.value +"&FindTo="+$('tpPesqusia').value;
-	alert(params);
-	new Ajax.Request(
-			page, 
-			{
-				evalScripts:true,
-				parameters: params, 
-				metod: 'POST', 
-				onComplete:rerenderCheckDiscAssuntoBack,				
-				encoding: 'ISO-8859-1'
-			}
-		);
+		var params 	= form.serialize();
+		params 	+= "&RelationValue=" + tag.value +"&FindTo="+$('tpPesqusia').value;
+		
+		new Ajax.Request(
+				page, 
+				{
+					evalScripts:true,
+					parameters: params, 
+					metod: 'POST', 
+					onComplete:rerenderCheckDiscAssuntoBack,				
+					encoding: 'ISO-8859-1'
+				}
+			);
+	}
 }
 
 function rerenderCheckDiscAssuntoBack(e, a){

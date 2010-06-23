@@ -11,16 +11,7 @@ class AvaliacaoSituacaoController extends Zend_Controller_Action{
 	public function init(){
 		include_once("Project/include.php");
 	}
-	public function datagrid($view, $table, $display = array()){
-		//Exemplo => $datagrid = new Datagrid('com_endereco', array('id'=>'ID', 'logradouro'=>'Rua'));
-		$datagrid = new Datagrid($table,$display);
-		$view->assign("datagrid",$datagrid);
 
-		$view->assign("body","html/default/datagrid.tpl");
-		$view->assign("header","html/default/header.tpl");
-		$view->assign("footer","html/default/footer.tpl");
-		$view->output("index.tpl");
-	}
 	public function acesso($view){
 		$session = Zend_Registry::get('session');
 		$funcao = new FuncoesProjeto();
@@ -86,7 +77,15 @@ class AvaliacaoSituacaoController extends Zend_Controller_Action{
 			}
 		}else{
 			// DATAGRID
-			$this->datagrid($view, 'avaliacao_situacao',$display_datagrid);
+			$display_datagrid = array(
+				'nome'		=> 'Situação',
+				'status'	=> 'Ativo',
+				'date_create'=> 'Data de Criação',
+				'date_update'=> 'Ultima Atualização'
+			);
+			$where = "`date_delete` IS NULL";
+			
+			$funcao->datagrid($view, 'avaliacao_situacao',$display_datagrid,$where,"Situação da Avaliação");
 		}
 	}
 }

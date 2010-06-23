@@ -87,7 +87,20 @@ class PessoaJuridicaController extends Zend_Controller_Action{
 			}
 		}else{
 			// DATAGRID
-			$funcao->datagrid($view, 'pessoa_juridica',$display_datagrid,"","Gerenciamento de Instituição");
+			$display_datagrid = array(
+				'cnpj'				=> 'CNPJ', 
+				'pessoa' => array(
+								'sigla' => 'B',
+								'relacionamento' => array('this'=>'id', 'other'=>'pessoa_id'),
+								'data' => array('nome'=>'Nome','site'=>'Site','email'=>'E-mail')
+							), 
+				'nome_fantasia'		=> 'Nome Fantasia',
+				'inscricao_estadual'=> 'Incrição Estadual',
+				'inscricao_municipal'=> 'Incrição Municipal'
+			);
+			$where = "";
+			
+			$funcao->datagrid($view, 'pessoa_juridica',$display_datagrid,$where,"Gerenciamento de Instituição");
 		}
 	}
 }

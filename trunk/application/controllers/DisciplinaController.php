@@ -79,7 +79,15 @@ class DisciplinaController extends Zend_Controller_Action{
 			}
 		}else{
 			// DATAGRID
-			$funcao->datagrid($view, 'disciplina',$display_datagrid,"","Gerenciamento de Disciplina");
+			$display_datagrid = array(
+				'codigo'		=>	'Código',
+				'nome'			=>	'Assunto', 
+				'date_create'	=>	'Data de Criação',
+				'date_update'	=>	'Ultima Atualização'
+			);
+			$where = "`date_delete` IS NULL";
+			
+			$funcao->datagrid($view, 'disciplina',$display_datagrid,$where,"Gerenciamento de Disciplina");
 		}
 	}
 }

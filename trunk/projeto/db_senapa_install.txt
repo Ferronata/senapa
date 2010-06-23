@@ -1,0 +1,820 @@
+-- phpMyAdmin SQL Dump
+-- version 3.2.1
+-- http://www.phpmyadmin.net
+--
+-- Servidor: localhost
+-- Tempo de Geração: Jun 23, 2010 as 03:34 AM
+-- Versão do Servidor: 5.1.37
+-- Versão do PHP: 5.2.10
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
+--
+-- Banco de Dados: `leual27_senapa`
+--
+
+-- --------------------------------------------------------
+
+DROP DATABASE IF EXISTS `leual27_senapa`;
+COMMIT;
+CREATE DATABASE `leual27_senapa` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+COMMIT;
+USE `leual27_senapa`;
+
+--
+-- Estrutura da tabela `aluno`
+--
+
+CREATE TABLE `aluno` (
+  `pessoa_escola_pessoa_fisica_pessoa_id` int(10) unsigned NOT NULL,
+  `pessoa_escola_matricula` varchar(10) NOT NULL,
+  `area_interece` varchar(250) NOT NULL,
+  PRIMARY KEY (`pessoa_escola_pessoa_fisica_pessoa_id`,`pessoa_escola_matricula`),
+  KEY `aluno_FKIndex1` (`pessoa_escola_matricula`,`pessoa_escola_pessoa_fisica_pessoa_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `aluno`
+--
+
+INSERT INTO `aluno` (`pessoa_escola_pessoa_fisica_pessoa_id`, `pessoa_escola_matricula`, `area_interece`) VALUES
+(6, 'A001', 'Informática'),
+(7, 'A002', 'Informática'),
+(8, 'A003', 'Informática');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `aluno_resolve_questao`
+--
+
+CREATE TABLE `aluno_resolve_questao` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `questao_alternativa_id` int(10) unsigned DEFAULT NULL,
+  `questao_id` int(10) unsigned NOT NULL,
+  `disciplina_id` int(10) unsigned NOT NULL,
+  `avaliacao_id` int(10) unsigned NOT NULL,
+  `pessoa_id` int(10) unsigned NOT NULL,
+  `inicio` datetime NOT NULL,
+  `fim` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `aluno_resolve_questao_FKIndex1` (`pessoa_id`),
+  KEY `aluno_resolve_questao_FKIndex2` (`avaliacao_id`),
+  KEY `aluno_resolve_questao_FKIndex3` (`disciplina_id`),
+  KEY `aluno_resolve_questao_FKIndex4` (`questao_id`),
+  KEY `aluno_resolve_questao_FKIndex5` (`questao_alternativa_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `aluno_resolve_questao`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `assunto`
+--
+
+CREATE TABLE `assunto` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `nome` varchar(200) NOT NULL,
+  `date_create` datetime NOT NULL,
+  `date_update` datetime DEFAULT NULL,
+  `date_delete` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `assunto`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `assunto_questao`
+--
+
+CREATE TABLE `assunto_questao` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `questao_id` int(10) unsigned NOT NULL,
+  `assunto_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `assunto_questao_FKIndex1` (`assunto_id`),
+  KEY `assunto_questao_FKIndex2` (`questao_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `assunto_questao`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `avaliacao`
+--
+
+CREATE TABLE `avaliacao` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `avaliacao_situacao_id` int(10) unsigned NOT NULL,
+  `nome` varchar(200) NOT NULL,
+  `data_inicio` date NOT NULL,
+  `hora_iniccio` time NOT NULL,
+  `data_fim` date NOT NULL,
+  `hora_fim` time NOT NULL,
+  `tempo_minimo_prova` time NOT NULL,
+  `tempo_maximo_prova` time NOT NULL,
+  `status` tinyint(1) DEFAULT NULL,
+  `date_create` datetime NOT NULL,
+  `date_update` datetime DEFAULT NULL,
+  `date_delete` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `avaliacao_FKIndex1` (`avaliacao_situacao_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `avaliacao`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `avaliacao_aluno`
+--
+
+CREATE TABLE `avaliacao_aluno` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `aluno_pessoa_escola_matricula` varchar(10) NOT NULL,
+  `aluno_pessoa_escola_pessoa_fisica_pessoa_id` int(10) unsigned NOT NULL,
+  `avaliacao_id` int(10) unsigned NOT NULL,
+  `data_inicio` datetime NOT NULL,
+  `data_fim` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `avaliacao_aluno_FKIndex1` (`avaliacao_id`),
+  KEY `avaliacao_aluno_FKIndex2` (`aluno_pessoa_escola_pessoa_fisica_pessoa_id`,`aluno_pessoa_escola_matricula`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `avaliacao_aluno`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `avaliacao_nivel`
+--
+
+CREATE TABLE `avaliacao_nivel` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `avaliacao_id` int(10) unsigned NOT NULL,
+  `nivel` int(10) unsigned NOT NULL,
+  `data_nivelamento` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `avaliacao_nivel_FKIndex1` (`avaliacao_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `avaliacao_nivel`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `avaliacao_questao`
+--
+
+CREATE TABLE `avaliacao_questao` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `questao_id` int(10) unsigned NOT NULL,
+  `avaliacao_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `avaliacao_questao_FKIndex1` (`avaliacao_id`),
+  KEY `avaliacao_questao_FKIndex2` (`questao_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `avaliacao_questao`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `avaliacao_situacao`
+--
+
+CREATE TABLE `avaliacao_situacao` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `nome` varchar(100) NOT NULL,
+  `status` tinyint(1) DEFAULT NULL,
+  `date_create` datetime NOT NULL,
+  `date_update` datetime DEFAULT NULL,
+  `date_delete` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
+--
+-- Extraindo dados da tabela `avaliacao_situacao`
+--
+
+INSERT INTO `avaliacao_situacao` (`id`, `nome`, `status`, `date_create`, `date_update`, `date_delete`) VALUES
+(1, 'Válida', 1, '2010-05-18 23:57:51', NULL, NULL),
+(2, 'Inválida', 1, '2010-05-18 23:58:03', NULL, NULL),
+(3, 'Em andamento', 1, '2010-05-18 23:59:37', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `disciplina`
+--
+
+CREATE TABLE `disciplina` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `codigo` varchar(8) NOT NULL,
+  `nome` varchar(200) NOT NULL,
+  `date_create` datetime NOT NULL,
+  `date_update` datetime DEFAULT NULL,
+  `date_delete` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `disciplina`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `disciplina_assunto`
+--
+
+CREATE TABLE `disciplina_assunto` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `disciplina_id` int(10) unsigned NOT NULL,
+  `assunto_id` int(10) unsigned NOT NULL,
+  `data_atribuicao` date NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `disciplina_assunto_FKIndex1` (`assunto_id`),
+  KEY `disciplina_assunto_FKIndex2` (`disciplina_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `disciplina_assunto`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `feedbackavaliacao`
+--
+
+CREATE TABLE `feedbackavaliacao` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `descricao` mediumtext NOT NULL,
+  `date_create` datetime NOT NULL,
+  `date_update` datetime DEFAULT NULL,
+  `date_delete` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+
+--
+-- Extraindo dados da tabela `feedbackavaliacao`
+--
+
+INSERT INTO `feedbackavaliacao` (`id`, `descricao`, `date_create`, `date_update`, `date_delete`) VALUES
+(1, '<p>\n	O que voc&ecirc; <strong>achou </strong>da prova?</p>\n', '2010-06-10 15:43:08', '2010-06-10 15:47:53', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `feedback_avaliacao_alternativa`
+--
+
+CREATE TABLE `feedback_avaliacao_alternativa` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `feedbackAvaliacao_id` int(10) unsigned NOT NULL,
+  `descricao` mediumtext NOT NULL,
+  `status` tinyint(1) DEFAULT NULL,
+  `date_create` datetime NOT NULL,
+  `date_update` datetime DEFAULT NULL,
+  `date_delete` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `feedback_avaliacao_alternativa_FKIndex1` (`feedbackAvaliacao_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+
+--
+-- Extraindo dados da tabela `feedback_avaliacao_alternativa`
+--
+
+INSERT INTO `feedback_avaliacao_alternativa` (`id`, `feedbackAvaliacao_id`, `descricao`, `status`, `date_create`, `date_update`, `date_delete`) VALUES
+(1, 1, 'Muito Fácil', 1, '2010-06-10 15:43:12', NULL, NULL),
+(2, 1, 'Fácil', 1, '2010-06-10 15:43:14', NULL, NULL),
+(3, 1, 'Difícil', 1, '2010-06-10 15:43:16', NULL, NULL),
+(4, 1, 'Muito Difícil', 1, '2010-06-10 15:43:17', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `feedback_avaliacao_aluno`
+--
+
+CREATE TABLE `feedback_avaliacao_aluno` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `avaliacao_aluno_id` int(10) unsigned NOT NULL,
+  `feedback_avaliacao_alternativa_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `Table_29_FKIndex1` (`feedback_avaliacao_alternativa_id`),
+  KEY `Table_29_FKIndex2` (`avaliacao_aluno_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `feedback_avaliacao_aluno`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `nivel_avaliacao`
+--
+
+CREATE TABLE `nivel_avaliacao` (
+  `nivel` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `professor_avaliacao_id` int(10) unsigned NOT NULL,
+  `data_nivelamento` datetime NOT NULL,
+  PRIMARY KEY (`nivel`),
+  KEY `nivel_avaliacao_FKIndex1` (`professor_avaliacao_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `nivel_avaliacao`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `nivel_questao`
+--
+
+CREATE TABLE `nivel_questao` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `questao_id` int(10) unsigned NOT NULL,
+  `nivel` int(10) unsigned NOT NULL,
+  `data_nivelamento` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `nivel_questao_FKIndex1` (`questao_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `nivel_questao`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `papel`
+--
+
+CREATE TABLE `papel` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `nome` varchar(100) NOT NULL,
+  `status` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+
+--
+-- Extraindo dados da tabela `papel`
+--
+
+INSERT INTO `papel` (`id`, `nome`, `status`) VALUES
+(1, 'Super Administrador', NULL),
+(2, 'Administrador', NULL),
+(3, 'Professor', NULL),
+(4, 'Aluno', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `pessoa`
+--
+
+CREATE TABLE `pessoa` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `nome` varchar(250) NOT NULL,
+  `email` varchar(250) DEFAULT NULL,
+  `site` varchar(250) DEFAULT NULL,
+  `date_create` datetime NOT NULL,
+  `date_update` datetime DEFAULT NULL,
+  `date_delete` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
+
+--
+-- Extraindo dados da tabela `pessoa`
+--
+
+INSERT INTO `pessoa` (`id`, `nome`, `email`, `site`, `date_create`, `date_update`, `date_delete`) VALUES
+(1, 'Super Administrador', 'leual27@gmail.com', 'leopopik.com.br', '2010-06-01 09:00:00', NULL, NULL),
+(2, 'Admin', 'admin@senapa.com.br', 'senapa.com.br', '2010-06-01 09:00:00', NULL, NULL),
+(3, 'Professor 1', 'professor1@senapa.com.br', 'senapa.com.br', '2010-06-01 09:00:00', NULL, NULL),
+(4, 'Professor 2', 'professor2@senapa.com.br', 'senapa.com.br', '2010-06-01 09:00:00', NULL, NULL),
+(5, 'Professor 3', 'professor3@senapa.com.br', 'senapa.com.br', '2010-06-01 09:00:00', NULL, NULL),
+(6, 'Aluno 1', 'aluno1@senapa.com', 'senapa.com.br', '2010-06-01 09:00:00', NULL, NULL),
+(7, 'Aluno 2', 'aluno2@senapa.com.br', 'senapa.com.br', '2010-06-01 09:00:00', NULL, NULL),
+(8, 'Aluno 3', 'aluno3@senapa.com.br', 'senapa.com.br', '2010-06-01 09:00:00', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `pessoa_escola`
+--
+
+CREATE TABLE `pessoa_escola` (
+  `matricula` varchar(10) NOT NULL,
+  `pessoa_fisica_pessoa_id` int(10) unsigned NOT NULL,
+  `senha` varchar(150) NOT NULL,
+  PRIMARY KEY (`matricula`,`pessoa_fisica_pessoa_id`),
+  KEY `pessoa_escola_FKIndex1` (`pessoa_fisica_pessoa_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `pessoa_escola`
+--
+
+INSERT INTO `pessoa_escola` (`matricula`, `pessoa_fisica_pessoa_id`, `senha`) VALUES
+('A001', 6, 'UY2JgLt+v+QNO+5bm/9z5ULJ0qN7mE9S//cc+9TgJRvYuirzl+DGScF74bO+y8588O9a77r0EESLKM5ofoG1G1slLt+DhF+CL8Ul/4L1X9k='),
+('A002', 7, 'yPHbrv8w/1tKyyu+vSoe6rDSjtXtHSEm7psZNw7FHK6KMhYI8LkmV2Ayte5jluPwHD2PyBaN39KcEStrMTZN+qn931Y0RawX+w0jC+d8bSc='),
+('A003', 8, 'QhoYoB3gojgvVRqyv09RSdjhUQx18ruWnoo8meXaSOlZ++2VigWI9fTzhUOEnCQ/ek6m5FdddvLesNKMGTFKCFfL6lNOLm8nFnoEN92Y7DI='),
+('admin', 2, 'AdrH45SjVcyvm5bMTuormTb4P0LL5ZI6AMSvSXZgIPDL4AQAobCu4VAALYtzkbfbWmTkkFc/5Cb3p4AbS7zVWGDd1KHXvXjUflQbWaGqKD0='),
+('P001', 3, 'PwNiiYQ8wFna4hRSCimSuL3e0LzctIUwZtwS15LmPcEG4WNeNErMpnqxo2JtUPUZk49UGq7n8KlroN0qpci36wtOOR/ZqRre53/hQUEOkVk='),
+('P002', 4, '58g14ND+i6SZPZ0dOMGcJA24GfXfO+VHB9h2a+sjXrfnO6RaiO30g21H0WHXG7qE8NKaNA6y7t/bXP7qp4ef6nwLBGIi3/gK+bzAm9MVFN4='),
+('P003', 5, 'ZIwa/TOZtY24d9WG/xtvWWLquouAqJRNIlaf+Kulcw0xVcr8EN3pQpy949CHSXdQBjzuIbde2ZNjSKgNZxoaBQYxJWacWSoCp4fGZxcS8s0='),
+('S001', 1, 'sz/+r207GqkZcAvBHom7jrG1pJqxsWj9j82yqh7KM23RqpgxXRf6wiZbZEuZX5jGD8SCmk4jXaWgaTDqHCg+r1XaWHq+bZu2OaXIGhvJpM8=');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `pessoa_escola_disciplina`
+--
+
+CREATE TABLE `pessoa_escola_disciplina` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `pessoa_escola_pessoa_fisica_pessoa_id` int(10) unsigned NOT NULL,
+  `pessoa_escola_matricula` varchar(10) NOT NULL,
+  `disciplina_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `pessoa_escola_disciplina_FKIndex1` (`disciplina_id`),
+  KEY `pessoa_escola_disciplina_FKIndex2` (`pessoa_escola_matricula`,`pessoa_escola_pessoa_fisica_pessoa_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `pessoa_escola_disciplina`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `pessoa_fisica`
+--
+
+CREATE TABLE `pessoa_fisica` (
+  `pessoa_id` int(10) unsigned NOT NULL,
+  `papel_id` int(10) unsigned NOT NULL,
+  `cpf` varchar(14) DEFAULT NULL,
+  `data_nascimento` date NOT NULL,
+  PRIMARY KEY (`pessoa_id`),
+  KEY `pessoa_fisica_FKIndex1` (`pessoa_id`),
+  KEY `pessoa_fisica_FKIndex2` (`papel_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `pessoa_fisica`
+--
+
+INSERT INTO `pessoa_fisica` (`pessoa_id`, `papel_id`, `cpf`, `data_nascimento`) VALUES
+(1, 1, NULL, '2010-06-01'),
+(2, 2, NULL, '2010-06-01'),
+(3, 3, NULL, '2010-06-01'),
+(4, 3, NULL, '2010-06-01'),
+(5, 3, NULL, '2010-06-01'),
+(6, 4, NULL, '2010-06-01'),
+(7, 4, NULL, '2010-06-01'),
+(8, 4, NULL, '2010-06-01');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `pessoa_juridica`
+--
+
+CREATE TABLE `pessoa_juridica` (
+  `pessoa_id` int(10) unsigned NOT NULL,
+  `cnpj` varchar(18) NOT NULL,
+  `nome_fantasia` varchar(250) DEFAULT NULL,
+  `inscricao_estadual` varchar(100) DEFAULT NULL,
+  `inscricao_municipal` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`pessoa_id`),
+  KEY `pessoa_juridica_FKIndex1` (`pessoa_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `pessoa_juridica`
+--
+
+INSERT INTO `pessoa_juridica` (`pessoa_id`, `cnpj`, `nome_fantasia`, `inscricao_estadual`, `inscricao_municipal`) VALUES
+(1, '45.677.473/0001-66', 'Senapa - Sistema Especialista', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `professor`
+--
+
+CREATE TABLE `professor` (
+  `pessoa_escola_pessoa_fisica_pessoa_id` int(10) unsigned NOT NULL,
+  `pessoa_escola_matricula` varchar(10) NOT NULL,
+  `formacao` varchar(250) NOT NULL,
+  `area_atuacao` varchar(250) DEFAULT NULL,
+  PRIMARY KEY (`pessoa_escola_pessoa_fisica_pessoa_id`,`pessoa_escola_matricula`),
+  KEY `professor_FKIndex1` (`pessoa_escola_matricula`,`pessoa_escola_pessoa_fisica_pessoa_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `professor`
+--
+
+INSERT INTO `professor` (`pessoa_escola_pessoa_fisica_pessoa_id`, `pessoa_escola_matricula`, `formacao`, `area_atuacao`) VALUES
+(3, 'P001', 'Ciência da Computação', NULL),
+(4, 'P002', 'Ciência da Computação', NULL),
+(5, 'P003', 'Ciência da Computação', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `professor_avaliacao`
+--
+
+CREATE TABLE `professor_avaliacao` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `avaliacao_id` int(10) unsigned NOT NULL,
+  `professor_pessoa_escola_matricula` varchar(10) NOT NULL,
+  `professor_pessoa_escola_pessoa_fisica_pessoa_id` int(10) unsigned NOT NULL,
+  `data_cadastro` datetime NOT NULL,
+  `date_create` datetime NOT NULL,
+  `date_update` datetime DEFAULT NULL,
+  `date_delete` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `professor_avaliacao_FKIndex1` (`professor_pessoa_escola_pessoa_fisica_pessoa_id`,`professor_pessoa_escola_matricula`),
+  KEY `professor_avaliacao_FKIndex2` (`avaliacao_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `professor_avaliacao`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `questao`
+--
+
+CREATE TABLE `questao` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `descricao` mediumtext NOT NULL,
+  `resposta` int(10) unsigned NOT NULL,
+  `descricao_resposta` mediumtext NOT NULL,
+  `date_create` datetime NOT NULL,
+  `date_update` datetime DEFAULT NULL,
+  `date_delete` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `questao`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `questao_alternativa`
+--
+
+CREATE TABLE `questao_alternativa` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `questao_id` int(10) unsigned NOT NULL,
+  `descricao` mediumtext NOT NULL,
+  `date_create` datetime NOT NULL,
+  `date_update` datetime DEFAULT NULL,
+  `date_delete` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `questao_alternativa_FKIndex1` (`questao_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `questao_alternativa`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `questao_aluno`
+--
+
+CREATE TABLE `questao_aluno` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `avaliacao_questao_id` int(10) unsigned NOT NULL,
+  `aluno_pessoa_escola_matricula` varchar(10) NOT NULL,
+  `aluno_pessoa_escola_pessoa_fisica_pessoa_id` int(10) unsigned NOT NULL,
+  `inicio` datetime NOT NULL,
+  `tempo_resolucao` time DEFAULT NULL,
+  `resposta` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `questao_aluno_FKIndex2` (`aluno_pessoa_escola_pessoa_fisica_pessoa_id`,`aluno_pessoa_escola_matricula`),
+  KEY `questao_aluno_FKIndex3` (`avaliacao_questao_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `questao_aluno`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `usabilidade_questao`
+--
+
+CREATE TABLE `usabilidade_questao` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `avaliacao_id` int(10) unsigned NOT NULL,
+  `professor_pessoa_escola_matricula` varchar(10) NOT NULL,
+  `professor_pessoa_escola_pessoa_fisica_pessoa_id` int(10) unsigned NOT NULL,
+  `questao_alternativa_id` int(10) unsigned NOT NULL,
+  `data_escolha` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `usabilidade_questao_FKIndex1` (`questao_alternativa_id`),
+  KEY `usabilidade_questao_FKIndex2` (`professor_pessoa_escola_pessoa_fisica_pessoa_id`,`professor_pessoa_escola_matricula`),
+  KEY `usabilidade_questao_FKIndex3` (`avaliacao_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `usabilidade_questao`
+--
+
+
+--
+-- Restrições para as tabelas dumpadas
+--
+
+--
+-- Restrições para a tabela `aluno`
+--
+ALTER TABLE `aluno`
+  ADD CONSTRAINT `aluno_ibfk_1` FOREIGN KEY (`pessoa_escola_matricula`, `pessoa_escola_pessoa_fisica_pessoa_id`) REFERENCES `pessoa_escola` (`matricula`, `pessoa_fisica_pessoa_id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `aluno_resolve_questao`
+--
+ALTER TABLE `aluno_resolve_questao`
+  ADD CONSTRAINT `aluno_resolve_questao_ibfk_1` FOREIGN KEY (`pessoa_id`) REFERENCES `pessoa` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `aluno_resolve_questao_ibfk_2` FOREIGN KEY (`avaliacao_id`) REFERENCES `avaliacao` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `aluno_resolve_questao_ibfk_3` FOREIGN KEY (`disciplina_id`) REFERENCES `disciplina` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `aluno_resolve_questao_ibfk_4` FOREIGN KEY (`questao_id`) REFERENCES `questao` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `aluno_resolve_questao_ibfk_5` FOREIGN KEY (`questao_alternativa_id`) REFERENCES `questao_alternativa` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Restrições para a tabela `assunto_questao`
+--
+ALTER TABLE `assunto_questao`
+  ADD CONSTRAINT `assunto_questao_ibfk_1` FOREIGN KEY (`assunto_id`) REFERENCES `assunto` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `assunto_questao_ibfk_2` FOREIGN KEY (`questao_id`) REFERENCES `questao` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `avaliacao`
+--
+ALTER TABLE `avaliacao`
+  ADD CONSTRAINT `avaliacao_ibfk_1` FOREIGN KEY (`avaliacao_situacao_id`) REFERENCES `avaliacao_situacao` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `avaliacao_aluno`
+--
+ALTER TABLE `avaliacao_aluno`
+  ADD CONSTRAINT `avaliacao_aluno_ibfk_1` FOREIGN KEY (`avaliacao_id`) REFERENCES `avaliacao` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `avaliacao_aluno_ibfk_2` FOREIGN KEY (`aluno_pessoa_escola_pessoa_fisica_pessoa_id`, `aluno_pessoa_escola_matricula`) REFERENCES `aluno` (`pessoa_escola_pessoa_fisica_pessoa_id`, `pessoa_escola_matricula`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `avaliacao_nivel`
+--
+ALTER TABLE `avaliacao_nivel`
+  ADD CONSTRAINT `avaliacao_nivel_ibfk_1` FOREIGN KEY (`avaliacao_id`) REFERENCES `avaliacao` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `avaliacao_questao`
+--
+ALTER TABLE `avaliacao_questao`
+  ADD CONSTRAINT `avaliacao_questao_ibfk_1` FOREIGN KEY (`avaliacao_id`) REFERENCES `avaliacao` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `avaliacao_questao_ibfk_2` FOREIGN KEY (`questao_id`) REFERENCES `questao` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `disciplina_assunto`
+--
+ALTER TABLE `disciplina_assunto`
+  ADD CONSTRAINT `disciplina_assunto_ibfk_1` FOREIGN KEY (`assunto_id`) REFERENCES `assunto` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `disciplina_assunto_ibfk_2` FOREIGN KEY (`disciplina_id`) REFERENCES `disciplina` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `feedback_avaliacao_alternativa`
+--
+ALTER TABLE `feedback_avaliacao_alternativa`
+  ADD CONSTRAINT `feedback_avaliacao_alternativa_ibfk_1` FOREIGN KEY (`feedbackAvaliacao_id`) REFERENCES `feedbackavaliacao` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `feedback_avaliacao_aluno`
+--
+ALTER TABLE `feedback_avaliacao_aluno`
+  ADD CONSTRAINT `feedback_avaliacao_aluno_ibfk_1` FOREIGN KEY (`feedback_avaliacao_alternativa_id`) REFERENCES `feedback_avaliacao_alternativa` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `feedback_avaliacao_aluno_ibfk_2` FOREIGN KEY (`avaliacao_aluno_id`) REFERENCES `avaliacao_aluno` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Restrições para a tabela `nivel_avaliacao`
+--
+ALTER TABLE `nivel_avaliacao`
+  ADD CONSTRAINT `nivel_avaliacao_ibfk_1` FOREIGN KEY (`professor_avaliacao_id`) REFERENCES `professor_avaliacao` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `nivel_questao`
+--
+ALTER TABLE `nivel_questao`
+  ADD CONSTRAINT `nivel_questao_ibfk_1` FOREIGN KEY (`questao_id`) REFERENCES `questao` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `pessoa_escola`
+--
+ALTER TABLE `pessoa_escola`
+  ADD CONSTRAINT `pessoa_escola_ibfk_1` FOREIGN KEY (`pessoa_fisica_pessoa_id`) REFERENCES `pessoa_fisica` (`pessoa_id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `pessoa_escola_disciplina`
+--
+ALTER TABLE `pessoa_escola_disciplina`
+  ADD CONSTRAINT `pessoa_escola_disciplina_ibfk_1` FOREIGN KEY (`disciplina_id`) REFERENCES `disciplina` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `pessoa_escola_disciplina_ibfk_2` FOREIGN KEY (`pessoa_escola_matricula`, `pessoa_escola_pessoa_fisica_pessoa_id`) REFERENCES `pessoa_escola` (`matricula`, `pessoa_fisica_pessoa_id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `pessoa_fisica`
+--
+ALTER TABLE `pessoa_fisica`
+  ADD CONSTRAINT `pessoa_fisica_ibfk_1` FOREIGN KEY (`pessoa_id`) REFERENCES `pessoa` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `pessoa_juridica`
+--
+ALTER TABLE `pessoa_juridica`
+  ADD CONSTRAINT `pessoa_juridica_ibfk_1` FOREIGN KEY (`pessoa_id`) REFERENCES `pessoa` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `professor`
+--
+ALTER TABLE `professor`
+  ADD CONSTRAINT `professor_ibfk_1` FOREIGN KEY (`pessoa_escola_matricula`, `pessoa_escola_pessoa_fisica_pessoa_id`) REFERENCES `pessoa_escola` (`matricula`, `pessoa_fisica_pessoa_id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `professor_avaliacao`
+--
+ALTER TABLE `professor_avaliacao`
+  ADD CONSTRAINT `professor_avaliacao_ibfk_1` FOREIGN KEY (`professor_pessoa_escola_pessoa_fisica_pessoa_id`, `professor_pessoa_escola_matricula`) REFERENCES `professor` (`pessoa_escola_pessoa_fisica_pessoa_id`, `pessoa_escola_matricula`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `professor_avaliacao_ibfk_2` FOREIGN KEY (`avaliacao_id`) REFERENCES `avaliacao` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `questao_alternativa`
+--
+ALTER TABLE `questao_alternativa`
+  ADD CONSTRAINT `questao_alternativa_ibfk_1` FOREIGN KEY (`questao_id`) REFERENCES `questao` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `questao_aluno`
+--
+ALTER TABLE `questao_aluno`
+  ADD CONSTRAINT `questao_aluno_ibfk_1` FOREIGN KEY (`aluno_pessoa_escola_pessoa_fisica_pessoa_id`, `aluno_pessoa_escola_matricula`) REFERENCES `aluno` (`pessoa_escola_pessoa_fisica_pessoa_id`, `pessoa_escola_matricula`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `questao_aluno_ibfk_2` FOREIGN KEY (`avaliacao_questao_id`) REFERENCES `avaliacao_questao` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Restrições para a tabela `usabilidade_questao`
+--
+ALTER TABLE `usabilidade_questao`
+  ADD CONSTRAINT `usabilidade_questao_ibfk_1` FOREIGN KEY (`questao_alternativa_id`) REFERENCES `questao_alternativa` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `usabilidade_questao_ibfk_2` FOREIGN KEY (`professor_pessoa_escola_pessoa_fisica_pessoa_id`, `professor_pessoa_escola_matricula`) REFERENCES `professor` (`pessoa_escola_pessoa_fisica_pessoa_id`, `pessoa_escola_matricula`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `usabilidade_questao_ibfk_3` FOREIGN KEY (`avaliacao_id`) REFERENCES `avaliacao` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;

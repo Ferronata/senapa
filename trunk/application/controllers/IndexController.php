@@ -16,28 +16,19 @@ class IndexController extends Zend_Controller_Action
     	$view 		= Zend_Registry::get('view');
     	$session 	= Zend_Registry::get('session');
     	$post	 	= Zend_Registry::get('post');
-    	/*
-    	$produto 	= new Produtos();
-    	$produtos 	= $produto->fetchAll('promocao','nome');
-    	
-    	$view->assign("produtos",$produtos);
-    	*/
-    	
-    		
-	    	if(!empty($session->usuario))
-	    		AdminController::indexAction();
-	    	else if(!empty($post->action)){
-		    	switch($post->action){
-	    			case 'login':
-	    				IndexController::validaloginAction();
-	    				break;
-	    			default:
-	    				$this->negado();
-	    		}
-	    	}else
-	    		IndexController::loginAction();
-    	//$this->_response->setBody($view->render("default.phtml"));
-    	//$this->_redirect("teste/popik");
+
+    	if(!empty($session->usuario))
+    		AdminController::indexAction();
+    	else if(!empty($post->action)){
+	    	switch($post->action){
+    			case 'login':
+    				IndexController::validaloginAction();
+    				break;
+    			default:
+    				$this->negado();
+    		}
+    	}else
+    		IndexController::loginAction();
     }
     public function validaloginAction(){
     	$view	 	= Zend_Registry::get('view');
@@ -161,6 +152,51 @@ class IndexController extends Zend_Controller_Action
 		
 		$view->assign("header","html/default/header.tpl");
 		$view->assign("body","html/default/login.tpl");
+		$view->assign("footer","html/default/footer.tpl");
+		$view->output("index.tpl");
+	}
+	public function datagridAction(){
+		$view 		= Zend_Registry::get("view");
+		
+		$columns = array
+		(
+			//'pessoa_escola_pessoa_fisica_pessoa_id' => 'ID',
+			'pessoa' 		=> array(
+										'sigla' => 'B',
+										'relacionamento' => array('this'=>'id', 'other'=>'pessoa_escola_pessoa_fisica_pessoa_id'),
+										'data' => array('nome'=>'Nome')
+									),
+			'pessoa_fisica' => array(
+								'sigla' => 'C',
+								'relacionamento' => array('this'=>'pessoa_id', 'other'=>'pessoa_escola_pessoa_fisica_pessoa_id'),
+								'data' => array('data_nascimento'=>'Data de Nascimento')
+							),
+			//'pessoa_escola'		=> array('conteudo' => array('where'=>'id', 'filho'=>'pessoa_escola_pessoa_fisica_pessoa_id'),'nome' => 'Nome'),
+			'pessoa_escola_matricula' => 'Matrícula',
+			'area_interece' => 'Área de Interece'
+		);
+		/*
+		$columns = array(
+				'descricao'	=>	'Questão', 
+				//'resposta'	=>	'Resposta',
+				'questao_alternativa' 	=> array(
+									'subconsulta' => array('this'=>'id', 'other'=>'resposta'),
+									'data' => array('descricao'=>'Resposta')
+								),
+				'descricao_resposta'	=>	'Explicação da Resposta'
+			);
+		$where = "`date_delete` IS NULL";
+		*/	
+		$datagrid = new Datagrid("TESTE", 'aluno',$where, $columns, "B.nome");
+		//$datagrid = new Datagrid("TESTE", 'aluno',"", $columns, "B.nome DESC");
+		//$datagrid = new Datagrid("TESTE", 'aluno',"", $columns);
+		//$datagrid = new Datagrid("TESTE", 'aluno');
+		//$datagrid->defaultLays();
+		
+		$view->assign("datagrid",$datagrid);
+
+		$view->assign("header","html/default/header.tpl");
+		$view->assign("body","html/default/datagrid.tpl");
 		$view->assign("footer","html/default/footer.tpl");
 		$view->output("index.tpl");
 	}

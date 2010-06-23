@@ -43,10 +43,10 @@ class AlunoController extends Zend_Controller_Action{
 					
 			switch($get->action){
 				case 'edit':
-					$aluno->load($get->pessoa_escola_matricula);
+					$aluno->loadId($get->pessoa_escola_pessoa_fisica_pessoa_id);
 					break;
 				case 'delete':
-					$aluno->load($get->pessoa_escola_matricula);
+					$aluno->loadId($get->pessoa_escola_pessoa_fisica_pessoa_id);
 					$aluno->delete();
 
 					$this->_redirect("aluno/aluno");
@@ -103,6 +103,21 @@ class AlunoController extends Zend_Controller_Action{
 			}
 		}else{
 			// DATAGRID
+			$display_datagrid = array(
+				'pessoa_escola_matricula'	=>	'Matrícula', 
+				'pessoa' => array(
+								'sigla' => 'B',
+								'relacionamento' => array('this'=>'id', 'other'=>'pessoa_escola_pessoa_fisica_pessoa_id'),
+								'data' => array('nome'=>'Nome','email'=>'E-mail')
+							), 
+				'pessoa_fisica' => array(
+								'sigla' => 'C',
+								'relacionamento' => array('this'=>'pessoa_id', 'other'=>'pessoa_escola_pessoa_fisica_pessoa_id'),
+								'data' => array('data_nascimento'=>'Data de Nascimento')
+							),
+				'area_interece'	=>	'Área de Interesse'
+			);
+			$where = "";
 			$funcao->datagrid($view, 'aluno',$display_datagrid,"","Gerenciamento de Aluno");
 		}
 	}
