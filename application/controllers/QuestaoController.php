@@ -139,10 +139,18 @@ class QuestaoController extends Zend_Controller_Action{
 			// DATAGRID
 			$display_datagrid = array(
 				'descricao'			=>	'Questão', 
-				'resposta'	=>	'Resposta',
+				'questao_alternativa' 	=> array(
+									'subconsulta' => array('this'=>'id', 'other'=>'resposta'),
+									'data' => array('descricao'=>'Resposta')
+								),
+				'nivel_questao' 	=> array(
+									'subconsulta' => array('this'=>'questao_id', 'other'=>'id'),
+									'complement' => 'ORDER BY `data_nivelamento` DESC',
+									'data' => array('nivel'=>'Nível Atual')
+								),
 				'descricao_resposta'	=>	'Explicação da Resposta'
 			);
-			$where = "`date_delete` IS NULL";
+			$where = "A.`date_delete` IS NULL";
 			
 			$funcao->datagrid($view, 'questao',$display_datagrid,$where,"Gerenciamento de Questão");
 		}

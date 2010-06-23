@@ -1,1 +1,1 @@
-{$datagrid->display()}
+{$datagrid->defaultLays()}

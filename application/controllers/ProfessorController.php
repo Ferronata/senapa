@@ -43,10 +43,10 @@ class ProfessorController extends Zend_Controller_Action{
 			
 			switch($get->action){
 				case 'edit':
-					$professor->load($get->pessoa_escola_matricula);
+					$professor->loadId($get->pessoa_escola_pessoa_fisica_pessoa_id);
 					break;
 				case 'delete':
-					$professor->load($get->pessoa_escola_matricula);
+					$professor->loadId($get->pessoa_escola_pessoa_fisica_pessoa_id);
 					$professor->delete();
 
 					$this->_redirect("professor");
@@ -104,7 +104,24 @@ class ProfessorController extends Zend_Controller_Action{
 			}
 		}else{
 			// DATAGRID
-			$funcao->datagrid($view, 'professor',$display_datagrid,"","Gerenciamento de Professor");
+			$display_datagrid = array(
+				'pessoa_escola_matricula'	=>	'Matrícula',
+				'pessoa' => array(
+								'sigla' => 'B',
+								'relacionamento' => array('this'=>'id', 'other'=>'pessoa_escola_pessoa_fisica_pessoa_id'),
+								'data' => array('nome'=>'Nome','email'=>'E-mail')
+							), 
+				'pessoa_fisica' => array(
+								'sigla' => 'C',
+								'relacionamento' => array('this'=>'pessoa_id', 'other'=>'pessoa_escola_pessoa_fisica_pessoa_id'),
+								'data' => array('data_nascimento'=>'Data de Nascimento')
+							),
+				'formacao'	=>	'Formação',
+				'area_atuacao'	=>	'Área de Atuação'
+			);
+			$where = "";
+			
+			$funcao->datagrid($view, 'professor',$display_datagrid,$where,"Gerenciamento de Professor");
 		}
 	}
 }

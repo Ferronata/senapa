@@ -76,6 +76,19 @@ class Aluno extends PessoaEscola {
 		}
 		return $object;
 	}
+	public function loadId($id = ""){
+		$this->_name = 'aluno';
+		
+		$object = parent::fetchRow("pessoa_escola_pessoa_fisica_pessoa_id = '".$id."'");
+		if($object){
+			parent::load($object->pessoa_escola_pessoa_fisica_pessoa_id);
+			
+			$this->setPessoaEscolaPessoaFisicaPessoaId($object->pessoa_escola_pessoa_fisica_pessoa_id);
+			$this->setPessoaEscolaMatricula($object->pessoa_escola_matricula);
+			$this->setAreaInterece($object->area_interece);
+		}
+		return $object;
+	}
 	public function delete(){
 		return parent::delete();
 	}

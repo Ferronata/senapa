@@ -207,16 +207,16 @@ public function init(){
 		if(!empty($post->RelationValue) || !empty($get->RelationValue)){
 			try{
 				
-				$relation_value = (int)$post->RelationValue;
-				$findTo = (int)$post->FindTo;
-				
 				$avaliacao = new Avaliacao();
 				$object = new Assunto();
 				$return = array();
 				
-				if(empty($relation_value)){
+				if(isset($get->RelationValue)){
 					$relation_value = (int)$get->RelationValue;
-					$findTo = (int)$get->FindTo;
+					$findTo = (int)$get->tpPesqusia;
+				}else{
+					$relation_value = (int)$post->RelationValue;
+					$findTo = (int)$post->FindTo;
 				}
 				switch($findTo){
 					case 'questions':
@@ -230,6 +230,17 @@ public function init(){
 						break;
 					case 'avaliations':
 					case $object->ENUM('AVALIACAO'):
+						$niveis = array();
+						if(isset($get->lista_niveis))
+							$niveis = $get->lista_niveis;
+						elseif(isset($post->lista_niveis))
+							$niveis = $post->lista_niveis;
+
+						if(sizeof($niveis)){
+							$niveis[sizeof($niveis)] = $niveis[0];
+							$niveis[0] = NULL;
+						}
+						
 						$listaAvaliacao = $avaliacao->fetchAll("`date_delete` IS NULL","nome");
 						$idsAv = " ";
 						foreach($listaAvaliacao as $linha){
@@ -238,8 +249,8 @@ public function init(){
 							if($tmpAvaliacao->getDisciplina()->getId()){
 								try{
 									$tmpObject = $object->fetchAll("`date_delete` IS NULL AND `id` IN (SELECT `assunto_id` FROM `disciplina_assunto` WHERE `disciplina_id` = '".$tmpAvaliacao->getDisciplina()->getId()."')","nome");
-								
-									if($tmpObject && $tmpAvaliacao->getNivel()->getNivel() == 5)
+
+									if($tmpObject && array_search($tmpAvaliacao->getNivel()->getNivel(),$niveis))
 										$return[] = array("html" => $tmpAvaliacao->getDisciplina()->getNome()." - ".$tmpAvaliacao->getNome(), "value" => $tmpAvaliacao->getId());
 								}catch(Exception $erro){}
 							}
@@ -253,6 +264,13 @@ public function init(){
 		}
 		
 		$view->output("function/index.tpl");
+	}
+	public function findArray($needle,$array){
+		foreach($array as $key => $linha){
+			if($needle == $linha)
+				return $key;
+		return -1;
+		}
 	}
 	public function renderavaliacaoalunoAction(){
 		$view 		= Zend_Registry::get("view");
