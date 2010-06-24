@@ -53,10 +53,15 @@ class AssuntoQuestao extends DefaultObject {
 	public function delete(){
 		return parent::delete("id = '".$this->getId()."'");
 	}
+	public function toString(){
+		return $this->getId()." - Q:".$this->getQuestaoId()." - A:".$this->getAssuntoId();
+	}
 	public function load2Questao($questao_id){
+		$this->_name = 'assunto_questao';
 		$object = parent::fetchRow("`questao_id` = '".$questao_id."'");
-		if($object)
+		if($object){
 			return $this->load($object->id);
+		}
 		return NULL;
 	}
 }

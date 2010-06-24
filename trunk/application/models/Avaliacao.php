@@ -107,7 +107,8 @@ class Avaliacao extends DAO {
 	}
 
 	public function insert(){
-		$situacao = $this->ENUM('A_S_VALIDA');
+		$situacao = $this->ENUM('A_S_ANDAMENTO');
+
 		$this->setAvaliacaoSituacaoId($situacao['id']);
 		$array = array
 			(
@@ -209,11 +210,13 @@ class Avaliacao extends DAO {
 			foreach($lista as $linha){
 				$questao = new Questao();
 				$questao->load($linha->id);
+				//print $linha->id.",";
 				if($questao)
 					$this->getListaQuestoes()->addQuestao($questao);
 			}
 			if(sizeof($this->getListaQuestoes()->getListaQuestao())){
 				$tmp = $this->getListaQuestoes()->getListaQuestao();
+				//print "<br>".$tmp[0]->getDisciplina()->getId();
 				$this->setDisciplina($tmp[0]->getDisciplina());
 			}
 			$tmp = $this->getNivel()->fetchRow("`avaliacao_id` = '".$this->getId()."'");
@@ -241,7 +244,7 @@ class Avaliacao extends DAO {
 		$str   = '<div class="divAvaliacao">';
 		$str  .= '	<div class="divTitleAvaliacao">';
 		$str  .= '		<div>';
-		$str  .= '			<h1 class="h1Avaliacao">Disciplina - '.((sizeof($disciplinas))?$disciplinas[0]->getDisciplina()->getNome():"Não cadastrada").'</h1>';
+		$str  .= '			<h1 class="h1Avaliacao">Disciplina - '.((sizeof($disciplinas))?$this->getDisciplina()->getNome():"Não cadastrada").'</h1>';
 		$str  .= '			<h2 class="h2Avaliacao">'.$this->getNome().'</h2>';
 		$str  .= '		</div>';
 		$str  .= '	</div>';

@@ -190,9 +190,11 @@ class AvaliacaoController extends Zend_Controller_Action{
 				'hora_fim'		=>	'Hora de Fim',
 				'tempo_minimo_prova'	=>	'Tempo Mínimo',
 				'tempo_maximo_prova'	=>	'Tempo Máximo',
-				'status'		=>	'Status'
+				'status'		=>	'Disponibilidade'
 			);
 			$where = "`date_delete` IS NULL";
+			if($usuario->getPapelId() == $usuario->ENUM('P_PROFESSOR'))
+				$where .= " AND `id` IN (SELECT `avaliacao_id` FROM `professor_avaliacao` WHERE `professor_pessoa_escola_pessoa_fisica_pessoa_id` = '".$usuario->getPessoaId()."')";
 			$funcao->datagrid($view,'avaliacao',$display_datagrid,$where,"Gerencimento de Avaliação");
 		}
 	}

@@ -539,7 +539,7 @@ INSERT INTO `pessoa_escola` (`matricula`, `pessoa_fisica_pessoa_id`, `senha`) VA
 ('A002', 7, 'yPHbrv8w/1tKyyu+vSoe6rDSjtXtHSEm7psZNw7FHK6KMhYI8LkmV2Ayte5jluPwHD2PyBaN39KcEStrMTZN+qn931Y0RawX+w0jC+d8bSc='),
 ('A003', 8, 'QhoYoB3gojgvVRqyv09RSdjhUQx18ruWnoo8meXaSOlZ++2VigWI9fTzhUOEnCQ/ek6m5FdddvLesNKMGTFKCFfL6lNOLm8nFnoEN92Y7DI='),
 ('admin', 2, 'AdrH45SjVcyvm5bMTuormTb4P0LL5ZI6AMSvSXZgIPDL4AQAobCu4VAALYtzkbfbWmTkkFc/5Cb3p4AbS7zVWGDd1KHXvXjUflQbWaGqKD0='),
-('P001', 3, 'PwNiiYQ8wFna4hRSCimSuL3e0LzctIUwZtwS15LmPcEG4WNeNErMpnqxo2JtUPUZk49UGq7n8KlroN0qpci36wtOOR/ZqRre53/hQUEOkVk='),
+('P001', 3, '8uO9tE/1petT115eT3KZpgWiGZ+TNfkXDjzUwKalbOb5MIwetoHESuKMWJGxCWiGONISBlyHFHvh3eSNHJldEgBaMkpdRr33NxmziTW1tKM='),
 ('P002', 4, '58g14ND+i6SZPZ0dOMGcJA24GfXfO+VHB9h2a+sjXrfnO6RaiO30g21H0WHXG7qE8NKaNA6y7t/bXP7qp4ef6nwLBGIi3/gK+bzAm9MVFN4='),
 ('P003', 5, 'ZIwa/TOZtY24d9WG/xtvWWLquouAqJRNIlaf+Kulcw0xVcr8EN3pQpy949CHSXdQBjzuIbde2ZNjSKgNZxoaBQYxJWacWSoCp4fGZxcS8s0='),
 ('S001', 1, 'XdmxeeF5VOjn+E8yKTUp5FsLGlsF1Pzdnu18ovrhMaVU1RZbPoy2yGzhzUE3lREsEjv+Qc21EF4/W5sbRhEy4Qn7BXv9t9RJwiL0+c8zE+g=');

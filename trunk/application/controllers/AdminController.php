@@ -88,7 +88,8 @@ class AdminController extends Zend_Controller_Action{
 			
 		$menuProfAvali = array
 			(
-			array('nome' => 'Avaliação','url' => 'javascript: openPage(\'avaliacao\');')
+			array('nome' => 'Avaliação','url' => 'javascript: openPage(\'avaliacao\');'),
+			array('nome' => 'Finalizar Avaliação','url' => 'javascript: openPage(\'finalizarAvaliacao\');')
 			);
 			
 		$dataProf = array
