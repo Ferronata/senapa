@@ -84,7 +84,7 @@
 						</div>
 					</div>
 					<div class="line">
-						<label class="label" for="status">Status</label>
+						<label class="label" for="status">Disponibilidade</label>
 						<div class="innerLine">
 							<input type="checkbox" class="input" id="status" name="status"  value="1" {if $object->getStatus()}checked="checked"{/if} />
 						</div>

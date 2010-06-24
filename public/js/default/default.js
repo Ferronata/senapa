@@ -1048,7 +1048,7 @@ function rerenderCheckDiscAssunto(form,tag,table){
 	
 		var params 	= form.serialize();
 		params 	+= "&RelationValue=" + tag.value +"&FindTo="+$('tpPesqusia').value;
-		
+		//alert(params);
 		new Ajax.Request(
 				page, 
 				{

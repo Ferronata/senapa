@@ -168,6 +168,7 @@ class Questao extends DAO {
 		return $return;
 	}
 	public function load($id = ""){
+		$this->_name = 'questao';
 		$object = parent::fetchRow("id = '".$id."'");
 		if($object){
 			$this->setId($object->id);
@@ -193,6 +194,7 @@ class Questao extends DAO {
 			$assuntoQuestao->load2Questao($object->id);
 			$this->setAssuntoQuestao($assuntoQuestao);
 			
+			// DisciplinaAssunto VERIFICAR INSERÇÃO... o mesmo assunto serve para duas disciplinas?
 			$disciplinaAssunto = new DisciplinaAssunto();
 			$disciplinaAssunto = $disciplinaAssunto->fetchRow("`assunto_id` = '".$this->getAssuntoQuestao()->getAssuntoId()."'");
 			
