@@ -19,6 +19,8 @@ include("debuglib.php");
 
 header('Content-type: text/html; charset='.CHARSET.'');
 
+//basename Retorna a parte nome do arquivo do caminho/path ex: basename("/home/httpd/html/index.php"); retorna index.php
+//getcwd Obtem o diretorio atual
 $applicationName = basename(getcwd());
 
 Zend_Loader::loadClass('Zend_View_Abstract');

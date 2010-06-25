@@ -166,16 +166,16 @@ class AvaliacaoController extends Zend_Controller_Action{
 					// CREATE
 
 					if($avaliacao->insert())
-						$retorno = array('msg' => 'ok', 'display' => htmlentities('Avaliacao inserido com sucesso'), 'url' => 'avaliacao/avaliacao');
+						$retorno = array('msg' => 'ok', 'display' => htmlentities('Avaliação inserida com sucesso'), 'url' => 'avaliacao/avaliacao');
 					else
-						$retorno = array('msg' => 'error', 'display' => htmlentities('Erro ao inserir Avaliacao'));
+						$retorno = array('msg' => 'error', 'display' => htmlentities('Erro ao inserir Avaliação'));
 	
 					die($funcao->array2json($retorno));
 				}else{
 					// UPDATE
 					$avaliacao->setId($post->id);
 					$avaliacao->update();
-					$retorno = array('msg' => 'ok', 'display' => htmlentities('Avaliacao modificado com sucesso'));
+					$retorno = array('msg' => 'ok', 'display' => htmlentities('Avaliação modificada com sucesso'));
 					die($funcao->array2json($retorno));
 				}
 			}catch(Exception $e){die($funcao->array2json(array('msg' => 'error', 'display' => htmlentities('Erro fatal - INSERT/UPDATE => '.$e))));}
