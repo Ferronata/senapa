@@ -293,13 +293,13 @@ class Datagrid{
 				if($column['subconsulta']){
 					$tmp = $column['subconsulta'];
 					foreach($column['data'] as $keyData => $tmpData){
-						$vars .= "(SELECT `".$keyData."` FROM `".$key."` WHERE `".$tmp['this']."` = A.`".$tmp['other']."`".$column['complement']." LIMIT 1) AS `".$keyData."`,";
+						$vars .= "(SELECT `".$keyData."` FROM `".$key."` WHERE `".$tmp['this']."` = A.`".$tmp['other']."`".$column['complement']." LIMIT 1) AS '".(($column['sigla'])?$column['sigla']."_":"").$keyData."',";
 						
 						$query 	= "SHOW COLUMNS FROM `".$key."` WHERE `Field` = '".$keyData."'";
 				
 						$cols 	= $db->fetchAll($query);
 						foreach($cols as $coluna)
-							$colunas[] = new Coluna(array($keyData, $tmpData), $coluna['Type'], (($coluna['Null'] == 'YES')?true:false), (($coluna['Extra'] == 'auto_increment')?true:false), $coluna['Default'], $coluna['Key']);
+							$colunas[] = new Coluna(array((($column['sigla'])?$column['sigla']."_":"").$keyData, $tmpData), $coluna['Type'], (($coluna['Null'] == 'YES')?true:false), (($coluna['Extra'] == 'auto_increment')?true:false), $coluna['Default'], $coluna['Key']);
 						
 					}
 				}else{
@@ -368,6 +368,7 @@ class Datagrid{
 		
 		$i = 0;
 		$data = "";
+		$tam = 180;
 		foreach($this->get_data() as $value){
 			$data .= "<tr class=\"dg_body".(($i++%2 == 0)?" tr_color":"")."\">\n";
 			foreach($this->get_columns() as $key => $column){
@@ -378,8 +379,14 @@ class Datagrid{
 					case 'DATETIME':
 						$tmp_value = $funcao->to_date($value[$tmp[0]], false);
 						break;
+					case 'TINYINT(1)':
+						if($value[$tmp[0]])
+							$tmp_value = "<img border=\"0\" width=\"16\" height=\"16\" src=\"".BASE_URL."//public//images//admin//datagrid//ok_16.png\" />";
+						else
+							$tmp_value = "<img border=\"0\" width=\"16\" height=\"16\" src=\"".BASE_URL."//public//images//admin//datagrid//error_16.png\" />";
+						break;
 					default:
-						$tmp_value = $value[$tmp[0]];
+						$tmp_value = $funcao->getResumo($value[$tmp[0]],180);
 				}
 				$data .= "<td>".$tmp_value."&nbsp;</td>\n";
 			}

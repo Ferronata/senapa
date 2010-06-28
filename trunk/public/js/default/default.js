@@ -633,17 +633,17 @@ function openPage(page,method_,params_){
 			method_ = "POST";
 		
 		new Ajax.Updater(
-				'work',
-				url, 
+				'work', // DivId de renderização da página
+				url, // pagina a ser renderizada na div
 				{
-					evalScripts:true,
-					onLoading: function(response){
+					evalScripts:true, // permite execução de javascript na renderização
+					onLoading: function(response){ // método que executa enquanto está carregando
 						addLoadding();
 					},
-					onComplete: function(response){
+					onComplete: function(response){// método que executa quando completa o carregamento
 						removeLoadding();
 					},
-					parameters: params,
+					parameters: params, // Parametros (id=5&nome=Popik)
 					method: method_,
 					encoding: 'ISO-8859-1',
 					evalJS: true
@@ -1282,19 +1282,19 @@ function findQuestionsBack(e, a){
 					else
 						str += '<li>'+alternativas[j]['descricao']+'</li>';
 				}
+				str += '</ul>';
 			}
+			if(res[i]['descricao_resposta']){
+				str += '<hr \>';
+				str += "<h2 class=\\'h2Questoes\\'>Descricao da Resposta</h2>";
+				str += "<span class=\\'descricaoResposta\\'>"+res[i]['descricao_resposta']+"</span>";
+			}	
 			
-			str += '</ul>';
-			
-			str += '<hr \>';
-			str += "<h2 class=\\'h2Questoes\\'>Descricao da Resposta</h2>";
-			str += "<span class=\\'descricaoResposta\\'>"+res[i]['descricao_resposta']+"</span>";
-				
-			var popup = 'onmouseover=\"return overlib(\''+str+'\',STICKY,WIDTH,400,CLOSETEXT,\'X\',CAPTION,\'Detalhes\',SNAPX,5,SNAPY,5);\" onmouseout=\"nd();\"';
-
 			td = document.createElement("td");
 			td.setAttribute('class','left');
-			td.innerHTML = '<span class="questions" '+popup+'>'+res[i]['resume']+'</span>';			
+			// td.innerHTML = '<span class="questions" '+popup+'>'+res[i]['resume']+'</span>';			
+			td.innerHTML  = '<span class="questions"><a href="javascript: viewQuestion($(\'questions'+res[i]['id']+'\'))" title="Expandir">'+res[i]['resume']+'</a></span>';
+			td.innerHTML += '<span id="questions'+res[i]['id']+'" style="display:none">'+str+'</span>';
 			tr.appendChild(td);
 
 			tBody.appendChild(tr);
@@ -1529,6 +1529,14 @@ function removeComponent(tag){
 		if(node)
 			node.deleteRow(0);
 	}
+}
+function viewQuestion(id){
+
+	var display = id.style.display;
+	if(display == 'none')
+		id.style.display = 'block';
+	else
+		id.style.display = 'none';
 }
 function removeCheckboxComponent(tag){
 	if(tag){

@@ -938,3 +938,16 @@ body {
 .certo {background: url("../../images/avaliacao/apply_32.png") no-repeat;}
 
 .errado {background: url("../../images/avaliacao/error_32.png") no-repeat;}
+
+/*
+ *
+ *	CSS -> FINALIZAR AVALIAÇÃO
+ *
+ */
+.ok_16{
+	float: right;
+	width: 16px;
+	height: 16px;
+	
+	background: url("../../images/avaliacao/apply_16.png") no-repeat;
+}

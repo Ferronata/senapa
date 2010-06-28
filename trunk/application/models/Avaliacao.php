@@ -10,6 +10,7 @@
 
 require_once 'DAO.php';
 require_once 'ListaQuestao.php';
+require_once 'FuncoesProjeto.php';
 
 class Avaliacao extends DAO {
 	protected $_name = 'avaliacao';
@@ -303,5 +304,69 @@ class Avaliacao extends DAO {
 		if($realId)
 			$this->load($realId);
 		return $return;
+	}
+	private function getBaseDados($id = ""){
+		$function = new FuncoesProjeto();
+		
+		$id = trim($id);
+		
+		if(empty($id))
+			$id = $this->getId();
+		$query = 
+		"
+			SELECT 
+				HOUR	(`inicio`) AS ini_h,
+				MINUTE	(`inicio`) AS ini_i,
+				SECOND	(`inicio`) AS ini_s,
+				MONTH	(`inicio`) AS ini_m,
+				DAY		(`inicio`) AS ini_d,
+				YEAR	(`inicio`) AS ini_y,
+				
+				HOUR	(`fim`) AS fim_h,
+				MINUTE	(`fim`) AS fim_i,
+				SECOND	(`fim`) AS fim_s,
+				MONTH	(`fim`) AS fim_m,
+				DAY		(`fim`) AS fim_d,
+				YEAR	(`fim`) AS fim_y
+			FROM
+				`aluno_resolve_questao`
+			WHERE
+				`avaliacao_id` = '".$id."' AND 
+				`fim` IS NOT NULL AND 
+				(`fim`-`inicio`) >= 0
+		";
+		
+		$db = $this->getAdapter();
+		
+		$res = $db->fetchAll($query);
+		$base = array(); //BASE DE DADOS
+		foreach($res as $linha){
+			$day = mktime(0,0,0,$linha['ini_m'],$linha['ini_d'],$linha['ini_y']); // COMPLEMENTA A DIFERENÇA ENTRE A DIFERENÇA DOS DIAS
+			$dt1 = mktime($linha['ini_h'],$linha['ini_i'],$linha['ini_s'],$linha['ini_m'],$linha['ini_d'],$linha['ini_y']); // UNIX_TIMESTAMP DA DATA INICIAL
+			$dt2 = mktime($linha['fim_h'],$linha['fim_i'],$linha['fim_s'],$linha['fim_m'],$linha['fim_d'],$linha['fim_y']);
+			
+			// CONVERTE UNIX TIMESTAMP EM STRING HH:MM:SS
+			$tempo = date('H:i:s',($day+($dt2 - $dt1)));
+
+			// CONVERTE STRING HORAS EM SEGUNDOS
+			$total = $function->timeToSec($tempo);
+
+			$base[] = $total;
+		}
+		return $base;
+	}
+	public function getMediaAritimetica($id = ""){
+		$function = new FuncoesProjeto();
+		
+		$base = $this->getBaseDados($id);
+		$mediaAritimetica = $function->mediaAritimetica($base);
+		return date("H:i:s",mktime(0,0,$mediaAritimetica,0,0,0));
+	}
+	public function getDesvioPadraoResoluao($id = ""){
+		$function = new FuncoesProjeto();
+		
+		$base = $this->getBaseDados($id);
+		$desvio_padrao = $function->desvio_padrao($base);
+		return date("H:i:s",mktime(0,0,$desvio_padrao,0,0,0));
 	}
 }

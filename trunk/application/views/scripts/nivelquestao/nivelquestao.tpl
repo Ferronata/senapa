@@ -8,6 +8,6 @@
 				<div class="line">
 					<label class="label" for="nivel">Nível</label>
 					<div class="innerLine">
-						<input type="text" class="input pequeno" id="nivel" name="nivel" onkeypress="mascara(this,soNumeros)" maxlength="10" value="{$nivelQuestao->getNivel()}" />
+						<input type="text" class="input pequeno" id="nivel" name="nivel" {if $usuario->getPapelId() != $usuario->ENUM('P_PROFESSOR')} readonly="readonly" {/if} onkeypress="mascara(this,soNumeros)" maxlength="10" value="{$nivelQuestao->getNivel()}" />
 					</div>
 				</div>
