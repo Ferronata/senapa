@@ -24,8 +24,11 @@ class QuestaoController extends Zend_Controller_Action{
 		$this->QuestaoAction();
 	}
 	public function questaoAction(){
-		$view = Zend_Registry::get('view');
+		$view 	= Zend_Registry::get('view');
+		$session = Zend_Registry::get('session');
 
+		$usuario = $session->usuario;
+		
 		$this->acesso($view);
 
 		$questao = new Questao();
@@ -62,6 +65,8 @@ class QuestaoController extends Zend_Controller_Action{
 			}
 			
 			$alternativas = $questao->getAlternativas();
+			
+			$view->assign("usuario",$usuario);
 			
 			$view->assign("disciplina",$questao->getDisciplina());
 			$view->assign("alternativas",$alternativas);
@@ -140,15 +145,16 @@ class QuestaoController extends Zend_Controller_Action{
 			$display_datagrid = array(
 				'descricao'			=>	'Questão', 
 				'questao_alternativa' 	=> array(
+									'sigla' => 'B',
 									'subconsulta' => array('this'=>'id', 'other'=>'resposta'),
 									'data' => array('descricao'=>'Resposta')
 								),
 				'nivel_questao' 	=> array(
+									//'sigla' => 'C',
 									'subconsulta' => array('this'=>'questao_id', 'other'=>'id'),
 									'complement' => 'ORDER BY `data_nivelamento` DESC',
 									'data' => array('nivel'=>'Nível Atual')
-								),
-				'descricao_resposta'	=>	'Explicação da Resposta'
+								)
 			);
 			$where = "A.`date_delete` IS NULL";
 			

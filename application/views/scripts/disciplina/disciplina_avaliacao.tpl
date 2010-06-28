@@ -100,7 +100,7 @@ function pesquisa(tag){
 									{assign var=str value=$item->toString()}
 								    <tr>
 								    	<td style="width: 18px;"><input type="checkbox" name="lista_questoes[]" value="{$item->getId()}" checked="checked" /></td>
-								    	<td class="left"><span {popup sticky=false closetext="X" caption="Detalhes" text="$str" width=400 padx=5 padx=5}>{$item->getDescricao()}</span></td>
+								    	<td class="left"><span><a href="javascript: viewQuestion($('mQuestions{$item->getId()}'))" title="Expandir">{$item->getResumo(150)}</a></span><span id="mQuestions{$item->getId()}" style="display:none">{$str}</span></td>
 								    </tr>
 								{/foreach}
 							</tbody>

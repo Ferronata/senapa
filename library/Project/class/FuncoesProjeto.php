@@ -137,4 +137,52 @@ class FuncoesProjeto{
 		$view->assign("footer","html/default/footer.tpl");
 		$view->output("index.tpl");
 	}
+	public function getResumo($tmp_value,$length = ""){
+		$tam = trim($length);
+		if(empty($tam))
+			$tam = 60;
+		$str = trim(strip_tags($tmp_value));
+		if(strlen($str)>$tam){
+			$tmp = strpos($str," ",$tam+1);
+			if($tmp>0){
+				$str = substr($str,0,$tmp);
+				$str = trim($str)."...";
+			}
+			else
+				$str = substr($str,0,$tam);
+			
+		}			
+		return $str;
+	}
+	function timeToSec($tempo){	
+		// SEPARA A STRING EM HORAS, MINUTOS E SEGUNDOS
+		$hh = substr($tempo,0,2);
+		$mm = substr($tempo,3,2);
+		$ss = substr($tempo,6,2);
+		
+		// CONVERTE EM SEGUNDOS
+		$total = $hh*60;
+		$total = $total+$mm;
+		$total = $total*60;
+		$total = $total+$ss;
+		return $total;
+	}
+	function mediaAritimetica($array) {
+		return array_sum($array)/sizeof($array);
+	}
+	function varianca($array) {
+		$length = sizeof($array);
+		$u = $this->mediaAritimetica($array);
+		
+		$sum = 0;
+		foreach($array as $linha)
+			$sum += (double)pow(($linha-$u),2);
+
+		return ($sum/($length-1));
+	}
+   
+	function desvio_padrao($array) {
+		return sqrt($this->varianca($array));
+	}
+	
 }

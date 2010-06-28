@@ -35,7 +35,9 @@ class AvaliacaoNivel extends DefaultObject {
 			'nivel' => $this->getNivel(),
 			'data_nivelamento' => $this->getDataNivelamento()
 			);
-		return parent::insert($array);
+		$id = parent::insert($array);
+		$this->setId($id);
+		return $id;
 	}
 	public function update(){
 		$array = array

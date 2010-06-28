@@ -394,6 +394,7 @@ public function init(){
 						
 						break;
 					case $object->ENUM('AVALIACAO'):
+						
 						break;
 				}
 				
@@ -406,7 +407,7 @@ public function init(){
 						foreach($alternativas as $alternativa){
 							$lista[] = array("id" => $alternativa->getId(), "questao_id" => $alternativa->getQuestaoId(), "descricao" => $alternativa->getDescricao());
 						}
-						$return[] = array("id" => $values->getId(),"resume" => $values->getDescricao(), "html" => $values->getDescricao(), "resposta" => $values->getResposta(), "descricao_resposta" => $values->getDescricaoResposta(), "alternativas" => $lista);
+						$return[] = array("id" => $values->getId(),"resume" => $values->getResumo(150), "html" => $values->getDescricao(), "resposta" => $values->getResposta(), "descricao_resposta" => ($values->getDescricaoResposta())?$values->getDescricaoResposta():"", "alternativas" => $lista);
 //						$return[] = array("id" => $values->getId(),"resume" => $values->getDescricao(), "html" => $values->getDescricao(), "resposta" => $values->getResposta());
 					}
 					
