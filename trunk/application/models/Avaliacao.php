@@ -30,6 +30,7 @@ class Avaliacao extends DAO {
 	private $professorAvaliacao;
 	private $disciplina;
 	private $nivel;
+	private $nivelProposto;
 
 	public function getId(){return $this->id;}
 	public function setId($var){$this->id = $var;}
@@ -66,13 +67,23 @@ class Avaliacao extends DAO {
 	
 	public function getNivel(){
 		if(empty($this->nivel))
-			$this->setNivel(new AvaliacaoNivel());
+			$this->setNivel(new NivelAvaliacao());
 		return $this->nivel;
 	}
 	public function setNivel($var){
 		if(empty($var))
-			$var = new AvaliacaoNivel();
+			$var = new NivelAvaliacao();
 		$this->nivel = $var;
+	}
+	public function getNivelProposto(){
+		if(empty($this->nivelProposto))
+			$this->setNivelProposto(new NivelAvaliacao());
+		return $this->nivelProposto;
+	}
+	public function setNivelProposto($var){
+		if(empty($var))
+			$var = new NivelAvaliacao();
+		$this->nivelProposto = $var;
 	}
 	
 	public function getListaQuestoes(){
@@ -173,7 +184,7 @@ class Avaliacao extends DAO {
 		
 				
 		if($this->getProfessor()->getId()){		
-			if($this->getProfessor()->getId() != $this->getProfessorAvaliacao()->getProfessorPessoaEscolaPessoaFisicaPessoaId()){
+			if($this->getProfessor()->getPessoaEscolaPessoaFisicaPessoaId() != $this->getProfessorAvaliacao()->getProfessorPessoaEscolaPessoaFisicaPessoaId()){
 				if($this->getProfessorAvaliacao()->getProfessorPessoaEscolaPessoaFisicaPessoaId())
 					$this->getProfessorAvaliacao()->delete();
 				
@@ -220,7 +231,7 @@ class Avaliacao extends DAO {
 				//print "<br>".$tmp[0]->getDisciplina()->getId();
 				$this->setDisciplina($tmp[0]->getDisciplina());
 			}
-			$tmp = $this->getNivel()->fetchRow("`avaliacao_id` = '".$this->getId()."'");
+			$tmp = $this->getNivel()->fetchRow("`avaliacao_id` = '".$this->getId()."'","data_nivelamento DESC");
 			if($tmp->id)
 				$this->getNivel()->load($tmp->id);
 			
@@ -291,6 +302,60 @@ class Avaliacao extends DAO {
 		
 		return $str;
 	}
+	public function toStringFinalizarAvaliacao(){
+		$funcao = new FuncoesProjeto();
+		
+		$disciplinas = $this->getListaQuestoes()->getListaQuestao();
+		
+		$str   = '<div class="divAvaliacao">';
+		$str  .= '	<div class="divTitleAvaliacao">';
+		$str  .= '		<div>';
+		$str  .= '			<h1 class="h1Avaliacao">Disciplina - '.((sizeof($disciplinas))?$this->getDisciplina()->getNome():"Não cadastrada").'</h1>';
+		$str  .= '			<h2 class="h2Avaliacao">'.$this->getNome().'</h2>';
+		$str  .= '		</div>';
+		$str  .= '	</div>';
+		$str  .= '	<table border="0" width="100%">';
+		$str  .= '		<tr>';
+		$str  .= '			<td class="tdLabel">Disponibilização:</td>';
+		$str  .= '			<td>'.$funcao->to_date($this->getDataInicio(),false).' a partir de '.$this->getHoraIniccio().' horas</td>';
+		$str  .= '		</tr>';
+		$str  .= '		<tr>';
+		$str  .= '			<td class="tdLabel">Finalização:</td>';
+		$str  .= '			<td>'.$funcao->to_date($this->getDataFim(),false).' às '.$this->getHoraFim().' horas</td>';
+		$str  .= '	</tr>';
+		$str  .= '		<tr>';
+		$str  .= '			<td class="tdLabel">Duração Mínima:</td>';
+		$str  .= '			<td>'.$this->getTempoMinimoProva().' hora(s)</td>';
+		$str  .= '		</tr>';
+		$str  .= '		<tr>';
+		$str  .= '			<td class="tdLabel">Duração Máxima:</td>';
+		$str  .= '			<td>'.$this->getTempoMaximoProva().' hora(s)</td>';
+		$str  .= '		</tr>';
+		$str  .= '		<tr>';
+		$str  .= '			<td class="tdLabel">Nº Questões:</td>';
+		$str  .= '			<td>'.sizeof($this->getListaQuestoes()->getListaQuestao()).'</td>';
+		$str  .= '		</tr>';
+		
+		$session = Zend_Registry::get('session');
+		if(isset($session->usuario)){
+			$usuario = $session->usuario;
+			if($usuario->getPapelId() == $usuario->ENUM('P_PROFESSOR')){
+				$str  .= '		<tr class="dg_footer">';
+				$avaliacaoAluno = new AvaliacaoAluno();
+				$tmp = $avaliacaoAluno->fetchRow("`avaliacao_id` = '".$this->getId()."' AND `aluno_pessoa_escola_pessoa_fisica_pessoa_id` = '".$usuario->getPessoaId()."' ");
+				if($tmp->data_fim)
+					$str  .= '			<td colspan="2" class="avaliacaoController"><a href="javascript: openPopup(\'finalizaravaliacao?id='.$this->getId().'\',\'Avaliacao\')" class="iniciarAvaliacao" title="Visualizar Avaliação">Visualizar</a></td>';
+				else
+					$str  .= '			<td colspan="2" class="avaliacaoController"><a href="javascript: openPopup(\'finalizaravaliacao?id='.$this->getId().'\',\'Avaliacao\')" class="iniciarAvaliacao" title="Iniciar Avaliação">Iniciar</a></td>';
+				$str  .= '		</tr>';
+			}
+		}
+		
+		$str  .= '	</table>';
+		$str  .= '</div>';
+		
+		return $str;
+	}
 	public function clonarAvaliacao($id){
 		$realId = $this->getId();
 		
@@ -305,13 +370,20 @@ class Avaliacao extends DAO {
 			$this->load($realId);
 		return $return;
 	}
-	private function getBaseDados($id = ""){
+	private function getBaseDados($id = "",$pessoas_id = array()){
 		$function = new FuncoesProjeto();
 		
 		$id = trim($id);
 		
 		if(empty($id))
 			$id = $this->getId();
+		
+		$pessoas = "";
+		if(sizeof($pessoas_id)){
+			$pessoas = implode(",",$pessoas_id);
+			$pessoas = " `pessoa_id` IN (".trim($pessoas_id).") AND ";
+		}
+		
 		$query = 
 		"
 			SELECT 
@@ -355,17 +427,17 @@ class Avaliacao extends DAO {
 		}
 		return $base;
 	}
-	public function getMediaAritimetica($id = ""){
+	public function getMediaAritimetica($id = "",$pessoas_id = array()){
 		$function = new FuncoesProjeto();
 		
-		$base = $this->getBaseDados($id);
+		$base = $this->getBaseDados($id,$pessoas_id);
 		$mediaAritimetica = $function->mediaAritimetica($base);
 		return date("H:i:s",mktime(0,0,$mediaAritimetica,0,0,0));
 	}
-	public function getDesvioPadraoResoluao($id = ""){
+	public function getDesvioPadraoResoluao($id = "",$pessoas_id = array()){
 		$function = new FuncoesProjeto();
 		
-		$base = $this->getBaseDados($id);
+		$base = $this->getBaseDados($id,$pessoas_id);
 		$desvio_padrao = $function->desvio_padrao($base);
 		return date("H:i:s",mktime(0,0,$desvio_padrao,0,0,0));
 	}

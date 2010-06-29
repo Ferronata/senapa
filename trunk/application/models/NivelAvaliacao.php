@@ -16,9 +16,13 @@ class NivelAvaliacao extends DefaultObject {
 	private $por;
 	private $professorAvaliacaoId;
 	private $dataNivelamento;
+	private $avaliacaoId;
 
 	public function getId(){return $this->id;}
 	public function setId($var){$this->id = $var;}
+	
+	public function getAvaliacaoId(){return $this->avaliacaoId;}
+	public function setAvaliacaoId($var){$this->avaliacaoId = $var;}
 	
 	public function getNivel(){return $this->nivel;}
 	public function setNivel($var){$this->nivel = $var;}
@@ -38,7 +42,8 @@ class NivelAvaliacao extends DefaultObject {
 			'nivel' => $this->getNivel(),
 			'professor_avaliacao_id' => $this->getProfessorAvaliacaoId(),
 			'por' => $this->getPor(),
-			'data_nivelamento' => $this->getDataNivelamento()
+			'data_nivelamento' => $this->getDataNivelamento(),
+			'avaliacao_id' => $this->getAvaliacaoId()
 			);
 		$id = parent::insert($array);
 		$this->setId($id);
@@ -49,7 +54,8 @@ class NivelAvaliacao extends DefaultObject {
 			(
 			'nivel' => $this->getNivel(),
 			'professor_avaliacao_id' => $this->getProfessorAvaliacaoId(),
-			'data_nivelamento' => $this->getDataNivelamento()
+			'data_nivelamento' => $this->getDataNivelamento(),
+			'avaliacao_id' => $this->getAvaliacaoId()
 			);
 		return parent::update($array,"id = '".$this->getId()."'");
 	}
@@ -61,6 +67,7 @@ class NivelAvaliacao extends DefaultObject {
 			$this->setPor($object->por);
 			$this->setProfessorAvaliacaoId($object->professor_avaliacao_id);
 			$this->setDataNivelamento($object->data_nivelamento);
+			$this->setAvaliacaoId($object->avaliacao_id);
 		}
 		return $object;
 	}

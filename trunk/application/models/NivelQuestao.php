@@ -14,6 +14,7 @@ class NivelQuestao extends DefaultObject {
 	private $id;
 	private $questaoId;
 	private $nivel;
+	private $por;
 	private $dataNivelamento;
 
 	public function getId(){return $this->id;}
@@ -25,6 +26,9 @@ class NivelQuestao extends DefaultObject {
 	public function getNivel(){return $this->nivel;}
 	public function setNivel($var){$this->nivel = $var;}
 
+	public function getPor(){return $this->por;}
+	public function setPor($var){$this->por = $var;}
+	
 	public function getDataNivelamento(){return $this->dataNivelamento;}
 	public function setDataNivelamento($var){$this->dataNivelamento = $var;}
 	
@@ -34,19 +38,22 @@ class NivelQuestao extends DefaultObject {
 	public function insert(){
 		$array = array
 			(
-			'id' => $this->getId(),
 			'questao_id' => $this->getQuestaoId(),
 			'nivel' => $this->getNivel(),
+			'por' => $this->getPor(),
 			'data_nivelamento' => $this->getDataNivelamento()
 			);
-		return parent::insert($array);
+		$id = parent::insert($array);
+		$this->setId($id);
+		
+		return $id;
 	}
 	public function update(){
 		$array = array
 			(
-			'id' => $this->getId(),
 			'questao_id' => $this->getQuestaoId(),
 			'nivel' => $this->getNivel(),
+			'por' => $this->getPor(),
 			'data_nivelamento' => $this->getDataNivelamento()
 			);
 		return parent::update($array,"id = '".$this->getId()."'");
@@ -57,6 +64,7 @@ class NivelQuestao extends DefaultObject {
 			$this->setId($object->id);
 			$this->setQuestaoId($object->questao_id);
 			$this->setNivel($object->nivel);
+			$this->setPor($object->por);
 			$this->setDataNivelamento($object->data_nivelamento);
 		}
 		return $object;

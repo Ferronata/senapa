@@ -23,6 +23,8 @@ class Questao extends DAO {
 	private $alternativas;
 	private $assuntoQuestao;
 	private $nivelQuestao;
+	private $nivelProposto;
+	
 	private $disciplina;
 
 	public function getId(){return $this->id;}
@@ -67,6 +69,16 @@ class Questao extends DAO {
 		if(empty($var))
 			$var = new NivelQuestao();
 		$this->nivelQuestao = $var;
+	}
+	public function getNivelProposto(){
+		if(empty($this->nivelProposto))
+			$this->setNivelProposto(new NivelQuestao());
+		return $this->nivelProposto;
+	}
+	public function setNivelProposto($var){
+		if(empty($var))
+			$var = new NivelQuestao();
+		$this->nivelProposto = $var;
 	}
 	public function getDisciplina(){
 		if(empty($this->disciplina))
@@ -270,5 +282,78 @@ class Questao extends DAO {
 			$str .= "<span class='descricaoResposta'>".$this->getDescricaoResposta()."</span>";
 		}
 		return $str;
+	}
+	
+	public function getBaseDados($id = "",$pessoas_id = array()){
+		$function = new FuncoesProjeto();
+		
+		$id = trim($id);
+		
+		if(empty($id))
+			$id = $this->getId();
+
+		$pessoas = "";
+		if(sizeof($pessoas_id)){
+			$pessoas = implode(",",$pessoas_id);
+			$pessoas = " `pessoa_id` IN (".trim($pessoas_id).") AND ";
+		}
+		
+		$query = 
+		"
+			SELECT 
+				HOUR	(`inicio`) AS ini_h,
+				MINUTE	(`inicio`) AS ini_i,
+				SECOND	(`inicio`) AS ini_s,
+				MONTH	(`inicio`) AS ini_m,
+				DAY		(`inicio`) AS ini_d,
+				YEAR	(`inicio`) AS ini_y,
+				
+				HOUR	(`fim`) AS fim_h,
+				MINUTE	(`fim`) AS fim_i,
+				SECOND	(`fim`) AS fim_s,
+				MONTH	(`fim`) AS fim_m,
+				DAY		(`fim`) AS fim_d,
+				YEAR	(`fim`) AS fim_y
+			FROM
+				`aluno_resolve_questao`
+			WHERE 
+				".$pessoas."
+				`questao_id` = '".$id."' AND 
+				`fim` IS NOT NULL AND 
+				(`fim`-`inicio`) >= 0
+		";
+		
+		$db = $this->getAdapter();
+		
+		$res = $db->fetchAll($query);
+		$base = array(); //BASE DE DADOS
+		foreach($res as $linha){
+			$day = mktime(0,0,0,$linha['ini_m'],$linha['ini_d'],$linha['ini_y']); // COMPLEMENTA A DIFERENÇA ENTRE A DIFERENÇA DOS DIAS
+			$dt1 = mktime($linha['ini_h'],$linha['ini_i'],$linha['ini_s'],$linha['ini_m'],$linha['ini_d'],$linha['ini_y']); // UNIX_TIMESTAMP DA DATA INICIAL
+			$dt2 = mktime($linha['fim_h'],$linha['fim_i'],$linha['fim_s'],$linha['fim_m'],$linha['fim_d'],$linha['fim_y']);
+			
+			// CONVERTE UNIX TIMESTAMP EM STRING HH:MM:SS
+			$tempo = date('H:i:s',($day+($dt2 - $dt1)));
+
+			// CONVERTE STRING HORAS EM SEGUNDOS
+			$total = $function->timeToSec($tempo);
+
+			$base[] = $total;
+		}
+		return $base;
+	}
+	public function getMediaAritimetica($id = "",$pessoas_id = array()){
+		$function = new FuncoesProjeto();
+		
+		$base = $this->getBaseDados($id,$pessoas_id);
+		$mediaAritimetica = $function->mediaAritimetica($base);
+		return date("H:i:s",mktime(0,0,$mediaAritimetica,0,0,0));
+	}
+	public function getDesvioPadraoResoluao($id = "",$pessoas_id = array()){
+		$function = new FuncoesProjeto();
+		
+		$base = $this->getBaseDados($id,$pessoas_id);
+		$desvio_padrao = $function->desvio_padrao($base);
+		return date("H:i:s",mktime(0,0,$desvio_padrao,0,0,0));
 	}
 }

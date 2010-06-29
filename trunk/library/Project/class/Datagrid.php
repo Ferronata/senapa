@@ -381,9 +381,9 @@ class Datagrid{
 						break;
 					case 'TINYINT(1)':
 						if($value[$tmp[0]])
-							$tmp_value = "<img border=\"0\" width=\"16\" height=\"16\" src=\"".BASE_URL."//public//images//admin//datagrid//ok_16.png\" />";
+							$tmp_value = "<img border=\"0\" width=\"16\" height=\"16\" src=\"".BASE_URL."/public/images/admin/datagrid/ok_16.png\" />";
 						else
-							$tmp_value = "<img border=\"0\" width=\"16\" height=\"16\" src=\"".BASE_URL."//public//images//admin//datagrid//error_16.png\" />";
+							$tmp_value = "<img border=\"0\" width=\"16\" height=\"16\" src=\"".BASE_URL."/public/images/admin/datagrid/error_16.png\" />";
 						break;
 					default:
 						$tmp_value = $funcao->getResumo($value[$tmp[0]],180);

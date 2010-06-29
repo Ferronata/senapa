@@ -31,108 +31,140 @@ class FinalizarAvaliacaoController extends Zend_Controller_Action{
 	
 	public function finalizaravaliacaoAction(){
 		$view 	= Zend_Registry::get('view');
-		$session = Zend_Registry::get('session');
+		$session= Zend_Registry::get('session');
+		$post 	= Zend_Registry::get('post');
+		$get 	= Zend_Registry::get('get');
 		
-		$usuario = $session->usuario;
+		$usuario 	= $session->usuario;
+		$professor 	= new Professor();
+		$tmp = $professor->fetchAll("`pessoa_escola_pessoa_fisica_pessoa_id` IN (SELECT `id` FROM `pessoa` WHERE `date_delete` IS NULL)");
+		
+		$professores = array();
+		foreach($tmp as $linha){
+			$tmpProf = new Professor();
+			$tmpProf->load($linha->pessoa_escola_matricula);
+			$professores[] = $tmpProf;
+		}
+		$view->assign("professores",$professores);
 		
 		$this->acesso($view);
 		
-		$avaliacao = new Avaliacao();
-		$avaliacao->load(1);
+		$funcao = new FuncoesProjeto();
 		
-		$view->assign("avaliacao", $avaliacao);
-		$view->assign("system", array('nivel'=>''));
-		$view->assign("usuario", $usuario);
-		$view->assign("tmp", $tmp);		
-		
+		if(!empty($get->id) || !empty($post->id)){
+			$id = "";
+			if(!empty($get->id))
+				$id = $get->id;
+			else
+				$id = $post->id;
+			$professorAvaliacao = new ProfessorAvaliacao();
+			$professorAvaliacao->load($id);
+					
+			$avaliacao = $this->machine($professorAvaliacao);
+				
+			switch($post->action){
+				case 'end':
+					
+					$inputNivel = $post->nivelAvaliacao;
+					if($avaliacao->getNivelProposto()->getNivel() != $inputNivel){
+						$avaliacao->getNivelProposto()->setPor('P');
+						$avaliacao->getNivelProposto()->setNivel($inputNivel);
+						$avaliacao->getNivelProposto()->setDataNivelamento(date("Y-m-d H:i:s"));
+					}
+					try{
+						if($avaliacao->getNivel()->getNivel() != $inputNivel)
+							$avaliacao->getNivelProposto()->insert();
+					}catch(Exception $e){die($funcao->array2json(array('msg' => 'error', 'display' => htmlentities('Erro ao gravar nivelamento da avaliação'))));};
+					
+					$niveis = $post->nivelQuestao;
+					foreach($avaliacao->getListaQuestoes()->getListaQuestao() as $linha){
+						$inputNivel = $niveis[$linha->getId()];
+						
+						if($linha->getNivelProposto()->getNivel() != $inputNivel){
+							$linha->getNivelProposto()->setPor('P');
+							$linha->getNivelProposto()->setNivel($inputNivel);
+							$linha->getNivelProposto()->setDataNivelamento(date("Y-m-d H:i:s"));
+						}
+						try{
+							if($linha->getNivelQuestao()->getNivel() != $inputNivel)
+								$linha->getNivelProposto()->insert();
+						}catch(Exception $e){die($funcao->array2json(array('msg' => 'error', 'display' => htmlentities('Erro ao gravar nivelamento das questões'))));};
+					}
+					try{
+						$avaliacao->setAvaliacaoSituacaoId($avaliacao->ENUM('A_S_VALIDA'));
+						$avaliacao->update();
+					}catch(Exception $e){die($funcao->array2json(array('msg' => 'error', 'display' => htmlentities('Erro ao atualizar status da avaliação'))));};
+					
+					$retorno = array('msg' => 'ok', 'display' => htmlentities('Avaliação nivelada e finalizada com sucesso'));
+					die($funcao->array2json($retorno));
+				break;
+			}
+			$view->assign("professorAvaliacao", $professorAvaliacao);
+			$view->assign("avaliacao", $avaliacao);
+			$view->assign("usuario", $usuario);
+			$view->assign("tmp", $tmp);		
+			
+			$view->assign("body","finalizaravaliacao/finalizaravaliacao.tpl");
+		}else
+			$view->assign("body","finalizaravaliacao/index.tpl");
+
+		$view->assign("usuario",$usuario);
 		$view->assign("header","html/default/header.tpl");
-		$view->assign("body","finalizaravaliacao/finalizaravaliacao.tpl");
 		$view->assign("footer","html/default/footer.tpl");
 		$view->output("index.tpl");
-		
 	}
-	public function machineAction(){
+	private function defaultConfigDataBase($largura,$classeModal){
+		$tmp1 = array();
+		$tmp2 = array();
+		$objCM = array();
+		
+		foreach($classeModal->lista->classe as $key => $linha){
+			$tmp = explode("-",$linha);
+			$tmp1[] = array('min' => ($largura*(int)$tmp[0]),'max' => ($largura*(int)$tmp[1]));
+		}
+			
+		foreach($classeModal->lista->nivel as $key => $linha)
+			$tmp2[] = $linha;
+		
+		for($i=0;$i < sizeof($tmp1);$i++)
+			$objCM[] = array('classe' => array('min' => $tmp1[$i]['min'],'max' => $tmp1[$i]['max']),'nivel' => $tmp2[$i]);
+		return $objCM;
+	}
+	private function machine($professorAvaliacao){
 		$view 	= Zend_Registry::get('view');
 		$funcao = new FuncoesProjeto();
 		
 		$classeModalConfig 		= new Zend_Config_Ini('./application/configs/frequencia_moda.ini','config');
 		$classeModalAvaliacao 	= new Zend_Config_Ini('./application/configs/frequencia_moda.ini','avaliacao');
 		$classeModalQuestao 	= new Zend_Config_Ini('./application/configs/frequencia_moda.ini','questao');
-		
-		$tmp1 = array();
-		$tmp2 = array();
-		$avaliacaoCM = array();
-		
-		foreach($classeModalAvaliacao->lista->classe as $key => $linha){
-			$tmp = explode("-",$linha);
-			$tmp1[] = array('min' => ($classeModalConfig->largura*(int)$tmp[0]),'max' => ($classeModalConfig->largura*(int)$tmp[1]));
-		}
-			
-		foreach($classeModalAvaliacao->lista->nivel as $key => $linha)
-			$tmp2[] = $linha;
-		
-		for($i=0;$i < sizeof($tmp1);$i++)
-			$avaliacaoCM[] = array('classe' => array('min' => $tmp1[$i]['min'],'max' => $tmp1[$i]['max']),'nivel' => $tmp2[$i]);
-		
-		print "<h1>Avaliacao</h1>";
-		foreach($avaliacaoCM as $linha)
-			print $linha['classe']['min']." a ".$linha['classe']['max']." - ".$linha['nivel']."<p />";
-			
-			
-		$tmp1 = array();
-		$tmp2 = array();
-		$tmp3 = array();
-		$questaoCM = array();
-		
-		foreach($classeModalQuestao->lista->classe as $key => $linha)
-			$tmp1[] = $linha;
-			
-		foreach($classeModalQuestao->lista->nivel->min as $key => $linha)
-			$tmp2[] = $linha;
-		foreach($classeModalQuestao->lista->nivel->max as $key => $linha)
-			$tmp3[] = $linha;
-		
-		for($i=0;$i < sizeof($tmp1);$i++)
-			$questaoCM[] = array('classe' => $tmp1[$i],'nivel' => array('min'=>$tmp2[$i],'max'=>$tmp3[$i]));
-		/**
-		print "<h1>Questao</h1>";
-		foreach($questaoCM as $linha)
-			print $linha['classe']." => ".$linha['nivel']['min']." - ".$linha['nivel']['max']."<p />";
-		/**/
-		
-		print "<hr />";
-		
-		$professorAvaliacao = new ProfessorAvaliacao();
-		$professorAvaliacao->load(1);
-		
+
+		$avaliacaoCM 	= $this->defaultConfigDataBase($classeModalConfig->aLargura,$classeModalAvaliacao);
+		$questaoCM 		= $this->defaultConfigDataBase($classeModalConfig->qLargura,$classeModalQuestao);		
+
 		$avaliacao = new Avaliacao();
 		$avaliacao->load($professorAvaliacao->getAvaliacaoId());
 		
-		$nivelAvaliacao = new NivelAvaliacao();
-		
-		$avaliacaoNivel = new AvaliacaoNivel();
-		$avaliacaoNivel->setAvaliacaoId($avaliacao->getId());
-		$avaliacaoNivel->setDataNivelamento(date('Y-m-d H:i:s'));
-		
 		$avaliacaoDesvioPadrao = $funcao->timeToSec($avaliacao->getDesvioPadraoResoluao());
-		$nivel = $this->classeModalAvaliacao($avaliacaoCM,$avaliacaoDesvioPadrao);
+		$nivel = $this->classeModal($avaliacaoCM,$avaliacaoDesvioPadrao);
 		
-		if(!$avaliacao->getNivel()->getId()){
-			$avaliacaoNivel->setNivel($nivel);
-			$avaliacaoNivel->insert();
-			$avaliacao->setNivel($avaliacaoNivel);
-			
-			$nivelAvaliacao->setProfessorAvaliacaoId($professorAvaliacao->getId());
-			$nivelAvaliacao->setNivel($avaliacaoNivel->getNivel());
-			$nivelAvaliacao->setDataNivelamento($avaliacaoNivel->getDataNivelamento());
-			$nivelAvaliacao->setPor('S');
+		/* NIVELAMENTO DA AVALIACAO */
+		$nivelAvaliacao = new NivelAvaliacao();
+		$nivelAvaliacao->setNivel($nivel);
+		$nivelAvaliacao->setProfessorAvaliacaoId($professorAvaliacao->getId());
+		$nivelAvaliacao->setAvaliacaoId($avaliacao->getId());
+		$nivelAvaliacao->setDataNivelamento(date('Y-m-d H:i:s'));
+		$nivelAvaliacao->setPor('S');
+		
+		if(!$avaliacao->getNivel()->getId()){		
 			$nivelAvaliacao->insert();
+			
+			$avaliacao->setNivel($nivelAvaliacao);
 		}else{
 			if($avaliacao->getNivel()->getNivel() != $nivel){
 				$tmpNivel = $nivel;
 				
 				$sucesso 	= $nivelAvaliacao->fetchAll("`avaliacao_id` = '".$avaliacao->getId()."' AND `por` = 'S'","data_nivelamento");
-				$fracasso 	= $nivelAvaliacao->fetchAll("`avaliacao_id` = '".$avaliacao->getId()."' AND `por` <> 'S'","data_nivelamento");
+				$fracasso 	= $nivelAvaliacao->fetchAll("`avaliacao_id` = '".$avaliacao->getId()."' AND (`por` <> 'S' OR `por` IS NULL)","data_nivelamento");
 				
 				$baseSucesso 	= array();
 				$baseFracasso 	= array();
@@ -146,26 +178,81 @@ class FinalizarAvaliacaoController extends Zend_Controller_Action{
 					$tmpNivel = $baseSucesso[(sizeof($baseSucesso)-1)];
 				else
 					$tmpNivel = $this->moda($baseFracasso);
-					
-				print $tmpNivel = (int)(($nivel+$tmpNivel)/2);
+
+				if(!empty($tmpNivel))
+					$nivel = (int)(($nivel+$tmpNivel)/2);
+				
+				$nivelAvaliacao->setNivel($nivel);
 			}
 		}
+		$avaliacao->setNivelProposto($nivelAvaliacao);
+		/* FIM AVALIACAO */
 		
-		$view->assign("header","html/default/header.tpl");
-		$view->assign("body","finalizarAvaliacao/index.tpl");
-		$view->assign("footer","html/default/footer.tpl");
-		$view->output("index.tpl");
+		
+		/* NIVELAMENTO DE QUESTOES */
+		foreach($avaliacao->getListaQuestoes()->getListaQuestao() as $questao){
+			$qBase 	= $questao->getBaseDados();
+			$moda	= $this->moda($qBase);
+			$nivel 	= $this->classeModal($questaoCM,$moda);
+			if(empty($nivel))
+				$nivel = ($classeModalConfig->nivel->max/2);
+			
+			$nivelQuestao = new NivelQuestao();
+			$nivelQuestao->setNivel($nivel);
+			$nivelQuestao->setQuestaoId($questao->getId());
+			$nivelQuestao->setDataNivelamento(date("Y-m-d H:i:s"));
+			$nivelQuestao->setPor('S');
+/**/
+			if(!$questao->getNivelQuestao()->getId()){
+				$nivelQuestao->insert();
+				$questao->setNivelQuestao($nivelQuestao);
+			}else{
+				if($questao->getNivelQuestao()->getNivel() != $nivel){
+/**/
+					$tmpNivel 	= $nivel;
+					
+					$sucesso 	= $nivelQuestao->fetchAll("`questao_id` = '".$questao->getId()."' AND `por` = 'S'","data_nivelamento");
+					$fracasso 	= $nivelQuestao->fetchAll("`questao_id` = '".$questao->getId()."' AND (`por` <> 'S' OR `por` IS NULL)","data_nivelamento");
+					
+					$baseSucesso 	= array();
+					$baseFracasso 	= array();
+					
+					foreach($sucesso as $linha)
+						$baseSucesso[] = $linha->nivel;
+						
+					foreach($fracasso as $linha){
+						$baseFracasso[] = $linha->nivel;
+					}
+					if(sizeof($sucesso) > sizeof($fracasso))
+						$tmpNivel = $baseSucesso[(sizeof($baseSucesso)-1)];
+					else
+						$tmpNivel = $this->moda($baseFracasso);
+					
+					if(!empty($tmpNivel))
+						$nivel = (int)(($nivel+$tmpNivel)/2);
+					
+					$nivelQuestao->setNivel($nivel);
+/**/
+				}
+			}
+			$questao->setNivelProposto($nivelQuestao);
+/**/
+		}	
+		/* FIM QUESTOES */
+		return $avaliacao;
 	}
-	private function classeModalAvaliacao($avaliacaoCM = array(),$value){
-		foreach($avaliacaoCM as $key => $linha){
+	private function classeModal($classeModal = array(),$value){
+		if(empty($value))
+			return 0;
+		foreach($classeModal as $key => $linha){
 			if($linha['classe']['min'] <= $value && $linha['classe']['max'] > $value)
 				return $linha['nivel'];
 		}
-		return $avaliacaoCM[(sizeof($avaliacaoCM)-1)]['nivel'];
+		return $classeModal[(sizeof($classeModal)-1)]['nivel'];
 	}
-	private function moda($baseFracasso){
+	private function moda($base){
 		$tmp = array();
-		foreach($baseFracasso as $linha){
+		foreach($base as $linha){
 			$tmp[$linha]++;
 		}
 		$pos 	= 0;

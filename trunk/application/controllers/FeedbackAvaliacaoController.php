@@ -86,9 +86,9 @@ class FeedbackAvaliacaoController extends Zend_Controller_Action{
 				// CREATE
 				try{
 					if($feedbackavaliacao->insert())
-						$retorno = array('msg' => 'ok', 'display' => htmlentities('Feedbackavaliacao inserido com sucesso'), 'url' => 'feedbackAvaliacao');
+						$retorno = array('msg' => 'ok', 'display' => htmlentities('Feedback Avaliacao inserido com sucesso'), 'url' => 'feedbackavaliacao');
 					else
-						$retorno = array('msg' => 'error', 'display' => htmlentities('Erro ao inserir Feedbackavaliacao'));
+						$retorno = array('msg' => 'error', 'display' => htmlentities('Erro ao inserir Feedback Avaliacao'));
 	
 					die($funcao->array2json($retorno));
 				}catch(Exception $e){die($funcao->array2json(array('msg' => 'error', 'display' => htmlentities('Erro fatal - INSERT => '.$e))));}
@@ -97,7 +97,7 @@ class FeedbackAvaliacaoController extends Zend_Controller_Action{
 				try{
 					$feedbackavaliacao->setId($post->id);
 					$feedbackavaliacao->update();
-					$retorno = array('msg' => 'ok', 'display' => htmlentities('Feedbackavaliacao modificado com sucesso'));
+					$retorno = array('msg' => 'ok', 'display' => htmlentities('Feedback Avaliacao modificado com sucesso'));
 					die($funcao->array2json($retorno));
 				}catch(Exception $e){die($funcao->array2json(array('msg' => 'error', 'display' => htmlentities('Erro fatal - UPDATE => '.$e))));}
 			}
