@@ -20,6 +20,13 @@ class Smarty_View_Smarty extends Zend_View_Abstract{
 		$this->_bar 			= ($this->_operatingSystem == 'WINDOWS') ? '\\' : '/';
 		$this->_pathSeparator	= ($this->_operatingSystem == 'WINDOWS') ? ';' : ':';
 		$this->_documentRoot	= str_replace('/',$this->_bar,$_SERVER['DOCUMENT_ROOT']);
+		
+		/*
+		$tmp = str_replace('/',$this->_bar,$_SERVER['DOCUMENT_ROOT']);
+		$tmp = str_replace($this->_bar.$dir_name,'',$tmp);
+		$this->_documentRoot = $tmp;
+		*/
+		
 		$this->_libraryPath		= $this->_documentRoot .$this->_bar. $dir_name .$this->_bar. 'library' .$this->_bar. 'Smarty' .$this->_bar;
 		
 		$config					= parse_ini_file($this->_libraryPath. 'config.ini',TRUE);

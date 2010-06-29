@@ -73,16 +73,16 @@ class PessoaJuridicaController extends Zend_Controller_Action{
 				// CREATE
 
 				if($pessoa_juridica->insert())
-					$retorno = array('msg' => 'ok', 'display' => htmlentities('PessoaJuridica inserido com sucesso'), 'url' => '?');
+					$retorno = array('msg' => 'ok', 'display' => htmlentities('Instituição inserido com sucesso'), 'url' => '?');
 				else
-					$retorno = array('msg' => 'error', 'display' => htmlentities('Erro ao inserir PessoaJuridica'));
+					$retorno = array('msg' => 'error', 'display' => htmlentities('Erro ao inserir Instituição'));
 
 				die($funcao->array2json($retorno));
 			}else{
 				// UPDATE
 				$pessoa_juridica->setPessoaId($post->pessoa_id);
 				$pessoa_juridica->update();
-				$retorno = array('msg' => 'ok', 'display' => htmlentities('PessoaJuridica modificado com sucesso'));
+				$retorno = array('msg' => 'ok', 'display' => htmlentities('Instituição modificado com sucesso'));
 				die($funcao->array2json($retorno));
 			}
 		}else{

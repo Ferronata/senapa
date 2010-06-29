@@ -65,16 +65,16 @@ class DisciplinaController extends Zend_Controller_Action{
 				// CREATE
 
 				if($disciplina->insert())
-					$retorno = array('msg' => 'ok', 'display' => htmlentities('Disciplina inserido com sucesso'), 'url' => 'disciplina');
+					$retorno = array('msg' => 'ok', 'display' => htmlentities('Disciplina inserida com sucesso'), 'url' => 'disciplina');
 				else
-					$retorno = array('msg' => 'error', 'display' => htmlentities('Erro ao inserir Disciplina'));
+					$retorno = array('msg' => 'error', 'display' => htmlentities('Erro ao inserir disciplina'));
 
 				die($funcao->array2json($retorno));
 			}else{
 				// UPDATE
 				$disciplina->setId($post->id);
 				$disciplina->update();
-				$retorno = array('msg' => 'ok', 'display' => htmlentities('Disciplina modificado com sucesso'));
+				$retorno = array('msg' => 'ok', 'display' => htmlentities('Disciplina modificada com sucesso'));
 				die($funcao->array2json($retorno));
 			}
 		}else{

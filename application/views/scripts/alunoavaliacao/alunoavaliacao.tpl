@@ -27,7 +27,7 @@
 		function timer(){
 			new Ajax.Updater(
 					'timer',
-					'/senapa/alunoavaliacao/time', 
+					'{php}print BASE_URL;{/php}/alunoavaliacao/time', 
 					{
 						encoding: 'ISO-8859-1',
 						evalJS: true

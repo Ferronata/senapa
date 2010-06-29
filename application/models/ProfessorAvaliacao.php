@@ -44,7 +44,6 @@ class ProfessorAvaliacao extends DAO {
 	public function update(){
 		$array = array
 			(
-			'id' => $this->getId(),
 			'avaliacao_id' => $this->getAvaliacaoId(),
 			'professor_pessoa_escola_matricula' => $this->getProfessorPessoaEscolaMatricula(),
 			'professor_pessoa_escola_pessoa_fisica_pessoa_id' => $this->getProfessorPessoaEscolaPessoaFisicaPessoaId(),

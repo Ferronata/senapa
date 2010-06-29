@@ -182,7 +182,6 @@ class AvaliacaoController extends Zend_Controller_Action{
 		}else{
 			// DATAGRID
 			$display_datagrid = array(
-				//'id'			=>	'ID',
 				'nome'			=>	'Nome', 
 				'data_inicio'	=>	'Data de Disponibilização',
 				'hora_iniccio'	=>	'Hora de Início',

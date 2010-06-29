@@ -8,7 +8,7 @@
 <center>
 	<div class="body">
 		<div class="innerBody">
-			<form id="form" name="form" method="post" action="javascript: enviarForm('/senapa/feedbackavaliacao/Feedbackavaliacao', 'form', 'save');" onsubmit="return(runAction(this))">
+			<form id="form" name="form" method="post" action="javascript: enviarForm('{php}print BASE_URL;{/php}/feedbackavaliacao/Feedbackavaliacao', 'form', 'save');" onsubmit="return(runAction(this))">
 				<h1>Feedback de Avaliação</h1>
 				<sub>Gerencimento - Feedback de Avaliação</sub>
 				<div id="abas" class="divAba">{html_aba value='Pergunta' forid='aba1' classe=selected}{html_aba value='Alternativas' forid='aba2'}</div>
@@ -22,7 +22,7 @@
 						</div>
 					</div>
 				</div>
-				<div id="aba2" style="display: none;">{include file='feedbackAvaliacaoAlternativa/feedbackAvaliacaoAlternativa.tpl'}</div>
+				<div id="aba2" style="display: none;">{include file='feedbackavaliacaoalternativa/feedbackavaliacaoalternativa.tpl'}</div>
 				
 				<div class="controle">
 					<input type="submit" class="button save" value="Salvar" />

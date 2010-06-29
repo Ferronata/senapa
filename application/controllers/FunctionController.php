@@ -309,6 +309,46 @@ public function init(){
 		}
 		$view->output("function/index.tpl");
 	}
+	public function rerenderfinalizaravaliacaoAction(){
+		$view 		= Zend_Registry::get("view");
+		$session 	= Zend_Registry::get("session");
+		$post 		= Zend_Registry::get("post");
+		$get 		= Zend_Registry::get("get");
+
+		$funcao = new FuncoesProjeto();
+		
+		if(!empty($get->RelationValue) || !empty($post->RelationValue)){
+			try{
+				if(!empty($get->RelationValue))
+					$id = $get->RelationValue;
+				else
+					$id = $post->RelationValue;
+			
+					
+				$pessoa_escola = new PessoaEscola();
+				$pessoa_escola->load($id);
+				
+				$professor = new Professor();
+				$professor->load($pessoa_escola->getMatricula());
+				
+				$avaliacoes = $professor->getAvaliacoes();
+				
+				$return = array();
+				foreach($avaliacoes as $linha){
+					$dt = $linha->getDataFim()." ".$linha->getHoraFim();											
+					$day = mktime(substr($linha->getHoraFim(),0,2),substr($linha->getHoraFim(),3,2),substr($linha->getHoraFim(),6,2),substr($linha->getDataFim(),5,2),substr($linha->getDataFim(),8,2),substr($linha->getDataFim(),0,4)); // COMPLEMENTA A DIFERENÇA ENTRE A DIFERENÇA DOS DIAS
+					$day = date("Y-m-d H:i:s",$day);
+					$now = date("Y-m-d H:i:s");
+					
+					if($dt<$now)
+						$return[] = array("html" => $linha->toStringFinalizarAvaliacao());
+				}
+				
+				die($funcao->array2json($return));
+			}catch(Exception $e){die($funcao->array2json(array('msg' => 'erro', 'display' => htmlentities('Problemas na renderização'))));}
+		}
+		$view->output("function/index.tpl");
+	}
 	public function renderhistoricoavaliacaoalunoAction(){
 		$view 		= Zend_Registry::get("view");
 		$session 	= Zend_Registry::get("session");

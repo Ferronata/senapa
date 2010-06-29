@@ -63,16 +63,16 @@ class AvaliacaoSituacaoController extends Zend_Controller_Action{
 				// CREATE
 
 				if($avaliacao_situacao->insert())
-					$retorno = array('msg' => 'ok', 'display' => htmlentities('AvaliacaoSituacao inserido com sucesso'), 'url' => 'avaliacaosituacao');
+					$retorno = array('msg' => 'ok', 'display' => htmlentities('Situação da avaliação inserida com sucesso'), 'url' => 'avaliacaosituacao');
 				else
-					$retorno = array('msg' => 'error', 'display' => htmlentities('Erro ao inserir AvaliacaoSituacao'));
+					$retorno = array('msg' => 'error', 'display' => htmlentities('Erro ao inserir situação da avaliação'));
 
 				die($funcao->array2json($retorno));
 			}else{
 				// UPDATE
 				$avaliacao_situacao->setId($post->id);
 				$avaliacao_situacao->update();
-				$retorno = array('msg' => 'ok', 'display' => htmlentities('AvaliacaoSituacao modificado com sucesso'));
+				$retorno = array('msg' => 'ok', 'display' => htmlentities('Situação da avaliação modificada com sucesso'));
 				die($funcao->array2json($retorno));
 			}
 		}else{

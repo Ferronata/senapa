@@ -45,7 +45,7 @@ class AdminController extends Zend_Controller_Action{
 		// S_ADMIN
 		$menuSAdmInst = array
 			(
-			array('nome' => 'Feedback Questions','url' => 'javascript: openPage(\'feedbackAvaliacao\');')
+			array('nome' => 'Feedback Questions','url' => 'javascript: openPage(\'feedbackavaliacao\');')
 			);
 			
 		$dataSAdmin = array
@@ -57,8 +57,8 @@ class AdminController extends Zend_Controller_Action{
 		// ADMIN
 		$menuAdmInst = array
 			(
-			array('nome' => 'Instituição','url' => 'javascript: openPage(\'pessoaJuridica\');'),
-			array('nome' => 'Situações de Avaliação','url' => 'javascript: openPage(\'avaliacaoSituacao\');')
+			array('nome' => 'Instituição','url' => 'javascript: openPage(\'pessoajuridica\');'),
+			array('nome' => 'Situações de Avaliação','url' => 'javascript: openPage(\'avaliacaosituacao\');')
 			);
 			
 		$menuAdmCoor = array
@@ -89,7 +89,7 @@ class AdminController extends Zend_Controller_Action{
 		$menuProfAvali = array
 			(
 			array('nome' => 'Avaliação','url' => 'javascript: openPage(\'avaliacao\');'),
-			array('nome' => 'Finalizar Avaliação','url' => 'javascript: openPage(\'finalizarAvaliacao\');')
+			array('nome' => 'Finalizar Avaliação','url' => 'javascript: openPage(\'finalizaravaliacao\');')
 			);
 			
 		$dataProf = array
@@ -102,8 +102,8 @@ class AdminController extends Zend_Controller_Action{
 			// ALUNO
 		$menuAlunoAdmin = array
 			(
-			array('nome' => 'Avaliações','url' 	=> 'javascript: openPage(\'avaliacaoAluno\');'),
-			array('nome' => 'Histórico','url' 	=> 'javascript: openPage(\'historicoAluno\');')
+			array('nome' => 'Avaliações','url' 	=> 'javascript: openPage(\'avaliacaoaluno\');'),
+			array('nome' => 'Histórico','url' 	=> 'javascript: openPage(\'historicoaluno\');')
 			);
 			
 		$dataAluno = array

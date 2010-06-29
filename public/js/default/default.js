@@ -3,10 +3,11 @@ var project_root = '/senapa';
 /*
  * RESIZE TELA
  */
- 
+/*
 window.onload = function(){
-	//voltarForm();
+	voltarForm();
 }
+*/
 function tela(){
 	var width 	= document.body.clientWidth;
 	var height = screen.availHeight;
@@ -622,7 +623,9 @@ function valida_cnpj(id){
 
 function openPage(page,method_,params_){
 	if(page){
+		page = page.toLowerCase();
 		var url 	= project_root+"/"+page;
+		var a = "";
 		
 		this.gerarCookie('url', page, 1);
 		
@@ -667,6 +670,8 @@ function openPopup(page,name,width,height){
 }
 
 function enviarForm(page, form_id, bt_id){
+	page = page.toLowerCase();
+
 	var form	= $(form_id);
 	var bt		= $(bt_id);
 	if(bt){
@@ -712,9 +717,11 @@ function enviarFormBack(e, a){
 		else
 			this.addMensage('err', 'Não foi possivel executar a operação, por favor verifique os dados!');
 	}
-	if(res['url'])
-		this.openPage(res['url']);
-	else{
+	if(res['url']){
+		tmpPage = res['url'];
+		tmpPage = tmpPage.toLowerCase();
+		this.openPage(tmpPage);
+	}else{
 		var bt = $(botao);
 		if(bt)
 			bt.disabled = false;
@@ -723,6 +730,8 @@ function enviarFormBack(e, a){
 
 function enviarFormAvaliacao(page, form_id){
 	var form	= $(form_id);
+	
+	page = page.toLowerCase();
 	
 	var params = form.serialize();
 	params += "&action="+page;
@@ -762,10 +771,11 @@ function enviarFormAvaliacaoBack(e, a){
 
 function enviarFeedbackAvaliacaoAlunoForm(page, form_id){
 	var form	= $(form_id);
+	page = page.toLowerCase();
 	
 	var params = form.serialize();
 	new Ajax.Request(
-			project_root+"/FeedbackAvaliacaoAluno/"+page, 
+			project_root+"/feedbackavaliacaoaluno/"+page, 
 			{
 				evalScripts:true,
 				parameters: params, 
@@ -788,7 +798,7 @@ function enviarFeedbackAvaliacaoAlunoBack(e, a){
 			this.addMensage('err', 'Não foi possivel executar a operação, por favor verifique os dados!');
 	}
 	if(res['url'])
-		location.href = project_root+"/FeedbackAvaliacaoAluno/"+res['url'];
+		location.href = project_root+"/feedbackavaliacaoaluno/"+res['url'];
 }
 
 
@@ -925,6 +935,7 @@ function rerenderObject(file,page,tag,column){
 		
 		if(flag){
 			if(page){
+				page = page.toLowerCase();
 				var url 	= project_root+"/admin/"+page;
 				
 				new Ajax.Updater(
@@ -977,7 +988,7 @@ function rerenderObjectBack(e, a){
 }
 
 function rerenderDiscAssunto(tag,lista){
-	var page 	= project_root+"/function/renderDisciplinaAssunto";
+	var page 	= project_root+"/function/renderdisciplinaassunto";
 	
 	this.miniLoad(tag.parentNode,'miniload');
 	
@@ -1038,7 +1049,7 @@ function rerenderDiscAssuntoBack(e, a){
 
 
 function rerenderCheckDiscAssunto(form,tag,table){
-	var page 	= project_root+"/function/renderCheckDisciplinaAssunto";
+	var page 	= project_root+"/function/rendercheckdisciplinaassunto";
 	
 	if(tag.value){
 		this.miniLoad(tag.parentNode,'miniload');
@@ -1117,7 +1128,7 @@ function rerenderHistoricoAvaliacaoAluno(tag,id){
 	}catch(Exception){}
 	
 	if(tag && value){
-		var page 	= project_root+"/function/renderHistoricoAvaliacaoAluno";
+		var page 	= project_root+"/function/renderhistoricoavaliacaoaluno";
 		
 		this.miniLoad(tag.parentNode,'miniload');
 		
@@ -1145,7 +1156,36 @@ function rerenderAvaliacaoAluno(tag,id){
 	}catch(Exception){}
 	
 	if(tag && value){
-		var page 	= project_root+"/function/renderAvaliacaoAluno";
+		var page 	= project_root+"/function/renderavaliacaoaluno";
+		
+		this.miniLoad(tag.parentNode,'miniload');
+		
+		myname = id;
+		tagname	= tag;
+	
+		var params 	= "RelationValue=" + tag.value;
+
+		new Ajax.Request(
+				page, 
+				{
+					evalScripts:true,
+					parameters: params, 
+					metod: 'POST', 
+					onComplete:rerenderAvaliacaoAlunoBack,				
+					encoding: 'ISO-8859-1'
+				}
+			);
+	}
+}
+function rerenderFinalizarAvaliacao(tag,id){
+	
+	var value = "";
+	try{
+		value = eval(tag.value);
+	}catch(Exception){}
+	
+	if(tag && value){
+		var page 	= project_root+"/function/rerenderfinalizaravaliacao";
 		
 		this.miniLoad(tag.parentNode,'miniload');
 		
@@ -1207,7 +1247,7 @@ function rerenderAvaliacaoAlunoBack(e, a){
 }
 
 function findQuestions(tag,table){
-	var page 	= project_root+"/function/findQuestions";
+	var page 	= project_root+"/function/findquestions";
 	
 	listaQuestao = $('listaQuestoes');
 	this.miniLoad(listaQuestao.parentNode,'miniload');
@@ -1304,7 +1344,7 @@ function findQuestionsBack(e, a){
 
 
 function listRender(tag,lista){
-	var page 	= project_root+"/function/listRender";
+	var page 	= project_root+"/function/listrender";
 	
 	this.miniLoad(tag.parentNode,'miniload');
 	

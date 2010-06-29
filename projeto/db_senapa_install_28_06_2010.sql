@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: localhost
--- Tempo de Geração: Jun 29, 2010 as 03:19 AM
+-- Tempo de Geração: Jun 29, 2010 as 05:51 AM
 -- Versão do Servidor: 5.1.37
 -- Versão do PHP: 5.2.10
 
@@ -13,6 +13,84 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- Banco de Dados: `leual27_senapa`
 --
 
+DROP DATABASE IF EXISTS `leual27_senapa`;
+COMMIT;
+CREATE DATABASE `leual27_senapa` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+COMMIT;
+USE `leual27_senapa`;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `aluno`
+--
+
+CREATE TABLE IF NOT EXISTS `aluno` (
+  `pessoa_escola_pessoa_fisica_pessoa_id` int(10) unsigned NOT NULL,
+  `pessoa_escola_matricula` varchar(10) NOT NULL,
+  `area_interece` varchar(250) NOT NULL,
+  PRIMARY KEY (`pessoa_escola_pessoa_fisica_pessoa_id`,`pessoa_escola_matricula`),
+  KEY `aluno_FKIndex1` (`pessoa_escola_matricula`,`pessoa_escola_pessoa_fisica_pessoa_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `aluno`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `aluno_resolve_questao`
+--
+
+CREATE TABLE IF NOT EXISTS `aluno_resolve_questao` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `questao_alternativa_id` int(10) unsigned DEFAULT NULL,
+  `questao_id` int(10) unsigned NOT NULL,
+  `disciplina_id` int(10) unsigned NOT NULL,
+  `avaliacao_id` int(10) unsigned NOT NULL,
+  `pessoa_id` int(10) unsigned NOT NULL,
+  `inicio` datetime NOT NULL,
+  `fim` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `aluno_resolve_questao_FKIndex1` (`pessoa_id`),
+  KEY `aluno_resolve_questao_FKIndex2` (`avaliacao_id`),
+  KEY `aluno_resolve_questao_FKIndex3` (`disciplina_id`),
+  KEY `aluno_resolve_questao_FKIndex4` (`questao_id`),
+  KEY `aluno_resolve_questao_FKIndex5` (`questao_alternativa_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `aluno_resolve_questao`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `assunto`
+--
+
+CREATE TABLE IF NOT EXISTS `assunto` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `nome` varchar(200) NOT NULL,
+  `date_create` datetime NOT NULL,
+  `date_update` datetime DEFAULT NULL,
+  `date_delete` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `assunto`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `assunto_questao`
+--
 
 CREATE TABLE IF NOT EXISTS `assunto_questao` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -21,11 +99,551 @@ CREATE TABLE IF NOT EXISTS `assunto_questao` (
   PRIMARY KEY (`id`),
   KEY `assunto_questao_FKIndex1` (`assunto_id`),
   KEY `assunto_questao_FKIndex2` (`questao_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=31 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 --
 -- Extraindo dados da tabela `assunto_questao`
 --
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `avaliacao`
+--
+
+CREATE TABLE IF NOT EXISTS `avaliacao` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `avaliacao_situacao_id` int(10) unsigned NOT NULL,
+  `nome` varchar(200) NOT NULL,
+  `data_inicio` date NOT NULL,
+  `hora_iniccio` time NOT NULL,
+  `data_fim` date NOT NULL,
+  `hora_fim` time NOT NULL,
+  `tempo_minimo_prova` time NOT NULL,
+  `tempo_maximo_prova` time NOT NULL,
+  `status` tinyint(1) DEFAULT NULL,
+  `date_create` datetime NOT NULL,
+  `date_update` datetime DEFAULT NULL,
+  `date_delete` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `avaliacao_FKIndex1` (`avaliacao_situacao_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `avaliacao`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `avaliacao_aluno`
+--
+
+CREATE TABLE IF NOT EXISTS `avaliacao_aluno` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `aluno_pessoa_escola_matricula` varchar(10) NOT NULL,
+  `aluno_pessoa_escola_pessoa_fisica_pessoa_id` int(10) unsigned NOT NULL,
+  `avaliacao_id` int(10) unsigned NOT NULL,
+  `data_inicio` datetime NOT NULL,
+  `data_fim` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `avaliacao_aluno_FKIndex1` (`avaliacao_id`),
+  KEY `avaliacao_aluno_FKIndex2` (`aluno_pessoa_escola_pessoa_fisica_pessoa_id`,`aluno_pessoa_escola_matricula`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `avaliacao_aluno`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `avaliacao_nivel`
+--
+
+CREATE TABLE IF NOT EXISTS `avaliacao_nivel` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `avaliacao_id` int(10) unsigned NOT NULL,
+  `nivel` int(10) unsigned NOT NULL,
+  `data_nivelamento` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `avaliacao_nivel_FKIndex1` (`avaliacao_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `avaliacao_nivel`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `avaliacao_questao`
+--
+
+CREATE TABLE IF NOT EXISTS `avaliacao_questao` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `questao_id` int(10) unsigned NOT NULL,
+  `avaliacao_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `avaliacao_questao_FKIndex1` (`avaliacao_id`),
+  KEY `avaliacao_questao_FKIndex2` (`questao_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `avaliacao_questao`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `avaliacao_situacao`
+--
+
+CREATE TABLE IF NOT EXISTS `avaliacao_situacao` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `nome` varchar(100) NOT NULL,
+  `status` tinyint(1) DEFAULT NULL,
+  `date_create` datetime NOT NULL,
+  `date_update` datetime DEFAULT NULL,
+  `date_delete` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `avaliacao_situacao`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `disciplina`
+--
+
+CREATE TABLE IF NOT EXISTS `disciplina` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `codigo` varchar(8) NOT NULL,
+  `nome` varchar(200) NOT NULL,
+  `date_create` datetime NOT NULL,
+  `date_update` datetime DEFAULT NULL,
+  `date_delete` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `disciplina`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `disciplina_assunto`
+--
+
+CREATE TABLE IF NOT EXISTS `disciplina_assunto` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `disciplina_id` int(10) unsigned NOT NULL,
+  `assunto_id` int(10) unsigned NOT NULL,
+  `data_atribuicao` date NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `disciplina_assunto_FKIndex1` (`assunto_id`),
+  KEY `disciplina_assunto_FKIndex2` (`disciplina_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `disciplina_assunto`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `feedbackavaliacao`
+--
+
+CREATE TABLE IF NOT EXISTS `feedbackavaliacao` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `descricao` mediumtext NOT NULL,
+  `date_create` datetime NOT NULL,
+  `date_update` datetime DEFAULT NULL,
+  `date_delete` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `feedbackavaliacao`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `feedback_avaliacao_alternativa`
+--
+
+CREATE TABLE IF NOT EXISTS `feedback_avaliacao_alternativa` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `feedbackAvaliacao_id` int(10) unsigned NOT NULL,
+  `descricao` mediumtext NOT NULL,
+  `status` tinyint(1) DEFAULT NULL,
+  `date_create` datetime NOT NULL,
+  `date_update` datetime DEFAULT NULL,
+  `date_delete` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `feedback_avaliacao_alternativa_FKIndex1` (`feedbackAvaliacao_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `feedback_avaliacao_alternativa`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `feedback_avaliacao_aluno`
+--
+
+CREATE TABLE IF NOT EXISTS `feedback_avaliacao_aluno` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `avaliacao_aluno_id` int(10) unsigned NOT NULL,
+  `feedback_avaliacao_alternativa_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `Table_29_FKIndex1` (`feedback_avaliacao_alternativa_id`),
+  KEY `Table_29_FKIndex2` (`avaliacao_aluno_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `feedback_avaliacao_aluno`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `nivel_avaliacao`
+--
+
+CREATE TABLE IF NOT EXISTS `nivel_avaliacao` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `avaliacao_id` int(10) unsigned NOT NULL,
+  `professor_avaliacao_id` int(10) unsigned NOT NULL,
+  `nivel` varchar(10) NOT NULL,
+  `por` char(1) NOT NULL,
+  `data_nivelamento` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `nivel_avaliacao_FKIndex1` (`professor_avaliacao_id`),
+  KEY `nivel_avaliacao_FKIndex2` (`avaliacao_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `nivel_avaliacao`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `nivel_questao`
+--
+
+CREATE TABLE IF NOT EXISTS `nivel_questao` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `questao_id` int(10) unsigned NOT NULL,
+  `nivel` int(10) unsigned NOT NULL,
+  `por` char(1) DEFAULT NULL,
+  `data_nivelamento` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `nivel_questao_FKIndex1` (`questao_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `nivel_questao`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `papel`
+--
+
+CREATE TABLE IF NOT EXISTS `papel` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `nome` varchar(100) NOT NULL,
+  `status` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `papel`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `pessoa`
+--
+
+CREATE TABLE IF NOT EXISTS `pessoa` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `nome` varchar(250) NOT NULL,
+  `email` varchar(250) DEFAULT NULL,
+  `site` varchar(250) DEFAULT NULL,
+  `date_create` datetime NOT NULL,
+  `date_update` datetime DEFAULT NULL,
+  `date_delete` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `pessoa`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `pessoa_escola`
+--
+
+CREATE TABLE IF NOT EXISTS `pessoa_escola` (
+  `matricula` varchar(10) NOT NULL,
+  `pessoa_fisica_pessoa_id` int(10) unsigned NOT NULL,
+  `senha` varchar(150) NOT NULL,
+  PRIMARY KEY (`matricula`,`pessoa_fisica_pessoa_id`),
+  KEY `pessoa_escola_FKIndex1` (`pessoa_fisica_pessoa_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `pessoa_escola`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `pessoa_escola_disciplina`
+--
+
+CREATE TABLE IF NOT EXISTS `pessoa_escola_disciplina` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `pessoa_escola_pessoa_fisica_pessoa_id` int(10) unsigned NOT NULL,
+  `pessoa_escola_matricula` varchar(10) NOT NULL,
+  `disciplina_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `pessoa_escola_disciplina_FKIndex1` (`disciplina_id`),
+  KEY `pessoa_escola_disciplina_FKIndex2` (`pessoa_escola_matricula`,`pessoa_escola_pessoa_fisica_pessoa_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `pessoa_escola_disciplina`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `pessoa_fisica`
+--
+
+CREATE TABLE IF NOT EXISTS `pessoa_fisica` (
+  `pessoa_id` int(10) unsigned NOT NULL,
+  `papel_id` int(10) unsigned NOT NULL,
+  `cpf` varchar(14) DEFAULT NULL,
+  `data_nascimento` date NOT NULL,
+  PRIMARY KEY (`pessoa_id`),
+  KEY `pessoa_fisica_FKIndex1` (`pessoa_id`),
+  KEY `pessoa_fisica_FKIndex2` (`papel_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `pessoa_fisica`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `pessoa_juridica`
+--
+
+CREATE TABLE IF NOT EXISTS `pessoa_juridica` (
+  `pessoa_id` int(10) unsigned NOT NULL,
+  `cnpj` varchar(18) NOT NULL,
+  `nome_fantasia` varchar(250) DEFAULT NULL,
+  `inscricao_estadual` varchar(100) DEFAULT NULL,
+  `inscricao_municipal` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`pessoa_id`),
+  KEY `pessoa_juridica_FKIndex1` (`pessoa_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `pessoa_juridica`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `professor`
+--
+
+CREATE TABLE IF NOT EXISTS `professor` (
+  `pessoa_escola_pessoa_fisica_pessoa_id` int(10) unsigned NOT NULL,
+  `pessoa_escola_matricula` varchar(10) NOT NULL,
+  `formacao` varchar(250) NOT NULL,
+  `area_atuacao` varchar(250) DEFAULT NULL,
+  PRIMARY KEY (`pessoa_escola_pessoa_fisica_pessoa_id`,`pessoa_escola_matricula`),
+  KEY `professor_FKIndex1` (`pessoa_escola_matricula`,`pessoa_escola_pessoa_fisica_pessoa_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `professor`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `professor_avaliacao`
+--
+
+CREATE TABLE IF NOT EXISTS `professor_avaliacao` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `avaliacao_id` int(10) unsigned NOT NULL,
+  `professor_pessoa_escola_matricula` varchar(10) NOT NULL,
+  `professor_pessoa_escola_pessoa_fisica_pessoa_id` int(10) unsigned NOT NULL,
+  `data_cadastro` datetime NOT NULL,
+  `date_create` datetime NOT NULL,
+  `date_update` datetime DEFAULT NULL,
+  `date_delete` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `professor_avaliacao_FKIndex1` (`professor_pessoa_escola_pessoa_fisica_pessoa_id`,`professor_pessoa_escola_matricula`),
+  KEY `professor_avaliacao_FKIndex2` (`avaliacao_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `professor_avaliacao`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `questao`
+--
+
+CREATE TABLE IF NOT EXISTS `questao` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `descricao` mediumtext NOT NULL,
+  `resposta` int(10) unsigned NOT NULL,
+  `descricao_resposta` mediumtext,
+  `date_create` datetime NOT NULL,
+  `date_update` datetime DEFAULT NULL,
+  `date_delete` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `questao`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `questao_alternativa`
+--
+
+CREATE TABLE IF NOT EXISTS `questao_alternativa` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `questao_id` int(10) unsigned NOT NULL,
+  `descricao` mediumtext NOT NULL,
+  `date_create` datetime NOT NULL,
+  `date_update` datetime DEFAULT NULL,
+  `date_delete` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `questao_alternativa_FKIndex1` (`questao_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `questao_alternativa`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `questao_aluno`
+--
+
+CREATE TABLE IF NOT EXISTS `questao_aluno` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `avaliacao_questao_id` int(10) unsigned NOT NULL,
+  `aluno_pessoa_escola_matricula` varchar(10) NOT NULL,
+  `aluno_pessoa_escola_pessoa_fisica_pessoa_id` int(10) unsigned NOT NULL,
+  `inicio` datetime NOT NULL,
+  `tempo_resolucao` time DEFAULT NULL,
+  `resposta` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `questao_aluno_FKIndex2` (`aluno_pessoa_escola_pessoa_fisica_pessoa_id`,`aluno_pessoa_escola_matricula`),
+  KEY `questao_aluno_FKIndex3` (`avaliacao_questao_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `questao_aluno`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `usabilidade_questao`
+--
+
+CREATE TABLE IF NOT EXISTS `usabilidade_questao` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `disciplina_id` int(10) unsigned NOT NULL,
+  `avaliacao_id` int(10) unsigned NOT NULL,
+  `professor_pessoa_escola_matricula` varchar(10) NOT NULL,
+  `professor_pessoa_escola_pessoa_fisica_pessoa_id` int(10) unsigned NOT NULL,
+  `questao_alternativa_id` int(10) unsigned NOT NULL,
+  `data_escolha` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `usabilidade_questao_FKIndex1` (`questao_alternativa_id`),
+  KEY `usabilidade_questao_FKIndex2` (`professor_pessoa_escola_pessoa_fisica_pessoa_id`,`professor_pessoa_escola_matricula`),
+  KEY `usabilidade_questao_FKIndex3` (`avaliacao_id`),
+  KEY `usabilidade_questao_FKIndex4` (`disciplina_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Extraindo dados da tabela `usabilidade_questao`
+--
+
+
+
+INSERT INTO `aluno` (`pessoa_escola_pessoa_fisica_pessoa_id`, `pessoa_escola_matricula`, `area_interece`) VALUES
+(6, 'A001', 'Informática'),
+(7, 'A002', 'Informática'),
+(8, 'A003', 'Informática');
+
+
+INSERT INTO `assunto` (`id`, `nome`, `date_create`, `date_update`, `date_delete`) VALUES
+(1, 'Windows', '2010-06-23 21:27:08', '2010-06-23 22:09:11', NULL),
+(2, 'Números Binários', '2010-06-23 21:56:08', '2010-06-23 21:56:51', NULL),
+(3, 'Hardware', '2010-06-23 22:00:11', NULL, NULL),
+(4, 'Word', '2010-06-23 22:08:53', NULL, NULL),
+(5, 'Internet Explorer', '2010-06-23 22:13:20', '2010-06-23 22:23:02', NULL),
+(6, 'Internet', '2010-06-23 22:22:51', NULL, NULL),
+(7, 'Excel', '2010-06-23 23:16:50', NULL, NULL);
 
 INSERT INTO `assunto_questao` (`id`, `questao_id`, `assunto_id`) VALUES
 (1, 1, 1),
@@ -59,23 +677,16 @@ INSERT INTO `assunto_questao` (`id`, `questao_id`, `assunto_id`) VALUES
 (29, 29, 7),
 (30, 30, 4);
 
---
--- Estrutura da tabela `disciplina_assunto`
---
+INSERT INTO `avaliacao_situacao` (`id`, `nome`, `status`, `date_create`, `date_update`, `date_delete`) VALUES
+(1, 'Válida', 1, '2010-05-18 23:57:51', NULL, NULL),
+(2, 'Inválida', 1, '2010-05-18 23:58:03', NULL, NULL),
+(3, 'Em andamento', 1, '2010-05-18 23:59:37', NULL, NULL);
 
-CREATE TABLE IF NOT EXISTS `disciplina_assunto` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `disciplina_id` int(10) unsigned NOT NULL,
-  `assunto_id` int(10) unsigned NOT NULL,
-  `data_atribuicao` date NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `disciplina_assunto_FKIndex1` (`assunto_id`),
-  KEY `disciplina_assunto_FKIndex2` (`disciplina_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;
-
---
--- Extraindo dados da tabela `disciplina_assunto`
---
+INSERT INTO `disciplina` (`id`, `codigo`, `nome`, `date_create`, `date_update`, `date_delete`) VALUES
+(1, 'W001', 'Windows Básico', '2010-06-23 21:26:43', NULL, NULL),
+(2, 'IB002', 'Informática Básica', '2010-06-23 21:54:03', NULL, NULL),
+(3, 'WI003', 'Word Intermediário', '2010-06-23 22:08:14', NULL, NULL),
+(4, 'EA004', 'Excel Avançado', '2010-06-23 23:16:27', NULL, NULL);
 
 INSERT INTO `disciplina_assunto` (`id`, `disciplina_id`, `assunto_id`, `data_atribuicao`) VALUES
 (2, 2, 2, '2010-06-23'),
@@ -89,24 +700,39 @@ INSERT INTO `disciplina_assunto` (`id`, `disciplina_id`, `assunto_id`, `data_atr
 (13, 1, 5, '2010-06-23'),
 (14, 4, 7, '2010-06-23');
 
--- --------------------------------------------------------
+INSERT INTO `feedbackavaliacao` (`id`, `descricao`, `date_create`, `date_update`, `date_delete`) VALUES
+(1, 'Como voc&ecirc; classifica esta avalia&ccedil;&atilde;o?\n', '2010-06-01 09:00:00', NULL, NULL),
+(2, 'O quanto voc&ecirc; estudou para esta avalia&ccedil;&atilde;o?\n', '2010-06-01 09:00:00', NULL, NULL),
+(3, 'O tempo foi suficiente para realiza&ccedil;&atilde;o da avalia&ccedil;&atilde;o?\n', '2010-06-01 09:00:00', NULL, NULL),
+(4, 'A prova estava de acordo com o conte&uacute;do aplicado?\n', '2010-06-01 09:00:00', NULL, NULL),
+(5, 'Qual o seu percentual de presen&ccedil;a nas aulas?\n', '2010-06-01 09:00:00', NULL, NULL);
 
---
--- Estrutura da tabela `nivel_questao`
---
-
-CREATE TABLE IF NOT EXISTS `nivel_questao` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `questao_id` int(10) unsigned NOT NULL,
-  `nivel` int(10) unsigned NOT NULL,
-  `data_nivelamento` datetime NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `nivel_questao_FKIndex1` (`questao_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=30 ;
-
---
--- Extraindo dados da tabela `nivel_questao`
---
+INSERT INTO `feedback_avaliacao_alternativa` (`id`, `feedbackAvaliacao_id`, `descricao`, `status`, `date_create`, `date_update`, `date_delete`) VALUES
+(1, 1, 'Muito Fácil', 1, '2010-06-01 09:00:00', NULL, NULL),
+(2, 1, 'Fácil', 1, '2010-06-01 09:00:00', NULL, NULL),
+(3, 1, 'Difícil', 1, '2010-06-01 09:00:00', NULL, NULL),
+(4, 1, 'Muito Difícil', 1, '2010-06-01 09:00:00', NULL, NULL),
+(5, 1, 'Médio', 1, '2010-06-01 09:00:00', NULL, NULL),
+(6, 2, 'Menos de 1 Hora', 1, '2010-06-01 09:00:00', NULL, NULL),
+(7, 2, '1 Hora', 1, '2010-06-01 09:00:00', NULL, NULL),
+(8, 2, '2 Horas', 1, '2010-06-01 09:00:00', NULL, NULL),
+(9, 2, 'Mais de 2 Horas', 1, '2010-06-01 09:00:00', NULL, NULL),
+(10, 2, 'Não estudou', 1, '2010-06-01 09:00:00', NULL, NULL),
+(11, 3, 'Muito pouco', 1, '2010-06-01 09:00:00', NULL, NULL),
+(12, 3, 'Pouco', 1, '2010-06-01 09:00:00', NULL, NULL),
+(13, 3, 'Razoável', 1, '2010-06-01 09:00:00', NULL, NULL),
+(14, 3, 'Suficiente', 1, '2010-06-01 09:00:00', NULL, NULL),
+(15, 3, 'Muito', 1, '2010-06-01 09:00:00', NULL, NULL),
+(16, 4, 'A prova não continha o conteúdo aplicado', 1, '2010-06-01 09:00:00', NULL, NULL),
+(17, 4, 'A prova continha parte do conteúdo aplicado', 1, '2010-06-01 09:00:00', NULL, NULL),
+(18, 4, 'A prova continha todo o conteúdo aplicado', 1, '2010-06-01 09:00:00', NULL, NULL),
+(19, 4, 'Não sei o conteúdo aplicado', 1, '2010-06-01 09:00:00', NULL, NULL),
+(20, 4, 'Nenhuma das resposta', 1, '2010-06-01 09:00:00', NULL, NULL),
+(21, 5, '100%', 1, '2010-06-01 09:00:00', NULL, NULL),
+(22, 5, '75%', 1, '2010-06-01 09:00:00', NULL, NULL),
+(23, 5, '50%', 1, '2010-06-01 09:00:00', NULL, NULL),
+(24, 5, '25%', 1, '2010-06-01 09:00:00', NULL, NULL),
+(25, 5, 'Não compareceu / Dispensado', 1, '2010-06-01 09:00:00', NULL, NULL);
 
 INSERT INTO `nivel_questao` (`id`, `questao_id`, `nivel`, `data_nivelamento`) VALUES
 (1, 1, 5, '2010-06-23 21:34:10'),
@@ -139,25 +765,51 @@ INSERT INTO `nivel_questao` (`id`, `questao_id`, `nivel`, `data_nivelamento`) VA
 (28, 29, 8, '2010-06-28 22:18:20'),
 (29, 30, 7, '2010-06-28 22:19:33');
 
+INSERT INTO `papel` (`id`, `nome`, `status`) VALUES
+(1, 'Super Administrador', NULL),
+(2, 'Administrador', NULL),
+(3, 'Professor', NULL),
+(4, 'Aluno', NULL);
 
---
--- Estrutura da tabela `questao`
---
+INSERT INTO `pessoa` (`id`, `nome`, `email`, `site`, `date_create`, `date_update`, `date_delete`) VALUES
+(1, 'Super Administrador', 'leual27@gmail.com', 'leopopik.com.br', '2010-06-01 09:00:00', NULL, NULL),
+(2, 'Admin', 'admin@senapa.com.br', 'senapa.com.br', '2010-06-01 09:00:00', NULL, NULL),
+(3, 'Professor 1', 'professor1@senapa.com.br', 'senapa.com.br', '2010-06-01 09:00:00', NULL, NULL),
+(4, 'Professor 2', 'professor2@senapa.com.br', 'senapa.com.br', '2010-06-01 09:00:00', NULL, NULL),
+(5, 'Professor 3', 'professor3@senapa.com.br', 'senapa.com.br', '2010-06-01 09:00:00', NULL, NULL),
+(6, 'Aluno 1', 'aluno1@senapa.com', 'senapa.com.br', '2010-06-01 09:00:00', NULL, NULL),
+(7, 'Aluno 2', 'aluno2@senapa.com.br', 'senapa.com.br', '2010-06-01 09:00:00', NULL, NULL),
+(8, 'Aluno 3', 'aluno3@senapa.com.br', 'senapa.com.br', '2010-06-01 09:00:00', NULL, NULL);
 
-CREATE TABLE IF NOT EXISTS `questao` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `descricao` mediumtext NOT NULL,
-  `resposta` int(10) unsigned NOT NULL,
-  `descricao_resposta` mediumtext,
-  `date_create` datetime NOT NULL,
-  `date_update` datetime DEFAULT NULL,
-  `date_delete` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=31 ;
+INSERT INTO `pessoa_escola` (`matricula`, `pessoa_fisica_pessoa_id`, `senha`) VALUES
+('A001', 6, 'UY2JgLt+v+QNO+5bm/9z5ULJ0qN7mE9S//cc+9TgJRvYuirzl+DGScF74bO+y8588O9a77r0EESLKM5ofoG1G1slLt+DhF+CL8Ul/4L1X9k='),
+('A002', 7, 'yPHbrv8w/1tKyyu+vSoe6rDSjtXtHSEm7psZNw7FHK6KMhYI8LkmV2Ayte5jluPwHD2PyBaN39KcEStrMTZN+qn931Y0RawX+w0jC+d8bSc='),
+('A003', 8, 'QhoYoB3gojgvVRqyv09RSdjhUQx18ruWnoo8meXaSOlZ++2VigWI9fTzhUOEnCQ/ek6m5FdddvLesNKMGTFKCFfL6lNOLm8nFnoEN92Y7DI='),
+('admin', 2, 'AdrH45SjVcyvm5bMTuormTb4P0LL5ZI6AMSvSXZgIPDL4AQAobCu4VAALYtzkbfbWmTkkFc/5Cb3p4AbS7zVWGDd1KHXvXjUflQbWaGqKD0='),
+('P001', 3, '8uO9tE/1petT115eT3KZpgWiGZ+TNfkXDjzUwKalbOb5MIwetoHESuKMWJGxCWiGONISBlyHFHvh3eSNHJldEgBaMkpdRr33NxmziTW1tKM='),
+('P002', 4, '58g14ND+i6SZPZ0dOMGcJA24GfXfO+VHB9h2a+sjXrfnO6RaiO30g21H0WHXG7qE8NKaNA6y7t/bXP7qp4ef6nwLBGIi3/gK+bzAm9MVFN4='),
+('P003', 5, 'ZIwa/TOZtY24d9WG/xtvWWLquouAqJRNIlaf+Kulcw0xVcr8EN3pQpy949CHSXdQBjzuIbde2ZNjSKgNZxoaBQYxJWacWSoCp4fGZxcS8s0='),
+('S001', 1, 'XdmxeeF5VOjn+E8yKTUp5FsLGlsF1Pzdnu18ovrhMaVU1RZbPoy2yGzhzUE3lREsEjv+Qc21EF4/W5sbRhEy4Qn7BXv9t9RJwiL0+c8zE+g=');
 
---
--- Extraindo dados da tabela `questao`
---
+INSERT INTO `pessoa_fisica` (`pessoa_id`, `papel_id`, `cpf`, `data_nascimento`) VALUES
+(1, 1, NULL, '2010-06-01'),
+(2, 2, NULL, '2010-06-01'),
+(3, 3, NULL, '2010-06-01'),
+(4, 3, NULL, '2010-06-01'),
+(5, 3, NULL, '2010-06-01'),
+(6, 4, NULL, '2010-06-01'),
+(7, 4, NULL, '2010-06-01'),
+(8, 4, NULL, '2010-06-01');
+
+
+INSERT INTO `pessoa_juridica` (`pessoa_id`, `cnpj`, `nome_fantasia`, `inscricao_estadual`, `inscricao_municipal`) VALUES
+(1, '45.677.473/0001-66', 'Senapa - Sistema Especialista', NULL, NULL);
+
+INSERT INTO `professor` (`pessoa_escola_pessoa_fisica_pessoa_id`, `pessoa_escola_matricula`, `formacao`, `area_atuacao`) VALUES
+(3, 'P001', 'Ciência da Computação', NULL),
+(4, 'P002', 'Ciência da Computação', NULL),
+(5, 'P003', 'Ciência da Computação', NULL);
+
 
 INSERT INTO `questao` (`id`, `descricao`, `resposta`, `descricao_resposta`, `date_create`, `date_update`, `date_delete`) VALUES
 (1, '<p>\n	<meta content="text/html; charset=utf-8" http-equiv="Content-Type" /><meta content="Word.Document" name="ProgId" /><meta content="Microsoft Word 12" name="Generator" /><meta content="Microsoft Word 12" name="Originator" /><link href="file:///C:%5CDOCUME%7E1%5CJOOMAR%7E1%5CCONFIG%7E1%5CTemp%5Cmsohtmlclip1%5C01%5Cclip_filelist.xml" rel="File-List" /><link href="file:///C:%5CDOCUME%7E1%5CJOOMAR%7E1%5CCONFIG%7E1%5CTemp%5Cmsohtmlclip1%5C01%5Cclip_themedata.thmx" rel="themeData" /><link href="file:///C:%5CDOCUME%7E1%5CJOOMAR%7E1%5CCONFIG%7E1%5CTemp%5Cmsohtmlclip1%5C01%5Cclip_colorschememapping.xml" rel="colorSchemeMapping" /><!--[if gte mso 9]><xml>\n <w:WordDocument>\n  <w:View>Normal</w:View>\n  <w:Zoom>0</w:Zoom>\n  <w:TrackMoves/>\n  <w:TrackFormatting/>\n  <w:DoNotShowRevisions/>\n  <w:DoNotPrintRevisions/>\n  <w:DoNotShowMarkup/>\n  <w:DoNotShowComments/>\n  <w:DoNotShowInsertionsAndDeletions/>\n  <w:DoNotShowPropertyChanges/>\n  <w:HyphenationZone>21</w:HyphenationZone>\n  <w:PunctuationKerning/>\n  <w:ValidateAgainstSchemas/>\n  <w:SaveIfXMLInvalid>false</w:SaveIfXMLInvalid>\n  <w:IgnoreMixedContent>false</w:IgnoreMixedContent>\n  <w:AlwaysShowPlaceholderText>false</w:AlwaysShowPlaceholderText>\n  <w:DoNotPromoteQF/>\n  <w:LidThemeOther>PT-BR</w:LidThemeOther>\n  <w:LidThemeAsian>X-NONE</w:LidThemeAsian>\n  <w:LidThemeComplexScript>X-NONE</w:LidThemeComplexScript>\n  <w:Compatibility>\n   <w:BreakWrappedTables/>\n   <w:SnapToGridInCell/>\n   <w:WrapTextWithPunct/>\n   <w:UseAsianBreakRules/>\n   <w:DontGrowAutofit/>\n   <w:SplitPgBreakAndParaMark/>\n   <w:DontVertAlignCellWithSp/>\n   <w:DontBreakConstrainedForcedTables/>\n   <w:DontVertAlignInTxbx/>\n   <w:Word11KerningPairs/>\n   <w:CachedColBalance/>\n  </w:Compatibility>\n  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>\n  <m:mathPr>\n   <m:mathFont m:val="Cambria Math"/>\n   <m:brkBin m:val="before"/>\n   <m:brkBinSub m:val="&#45;-"/>\n   <m:smallFrac m:val="off"/>\n   <m:dispDef/>\n   <m:lMargin m:val="0"/>\n   <m:rMargin m:val="0"/>\n   <m:defJc m:val="centerGroup"/>\n   <m:wrapIndent m:val="1440"/>\n   <m:intLim m:val="subSup"/>\n   <m:naryLim m:val="undOvr"/>\n  </m:mathPr></w:WordDocument>\n</xml><![endif]--><!--[if gte mso 9]><xml>\n <w:LatentStyles DefLockedState="false" DefUnhideWhenUsed="true"\n  DefSemiHidden="true" DefQFormat="false" DefPriority="99"\n  LatentStyleCount="267">\n  <w:LsdException Locked="false" Priority="0" SemiHidden="false"\n   UnhideWhenUsed="false" QFormat="true" Name="Normal"/>\n  <w:LsdException Locked="false" Priority="9" SemiHidden="false"\n   UnhideWhenUsed="false" QFormat="true" Name="heading 1"/>\n  <w:LsdException Locked="false" Priority="9" QFormat="true" Name="heading 2"/>\n  <w:LsdException Locked="false" Priority="9" QFormat="true" Name="heading 3"/>\n  <w:LsdException Locked="false" Priority="9" QFormat="true" Name="heading 4"/>\n  <w:LsdException Locked="false" Priority="9" QFormat="true" Name="heading 5"/>\n  <w:LsdException Locked="false" Priority="9" QFormat="true" Name="heading 6"/>\n  <w:LsdException Locked="false" Priority="9" QFormat="true" Name="heading 7"/>\n  <w:LsdException Locked="false" Priority="9" QFormat="true" Name="heading 8"/>\n  <w:LsdException Locked="false" Priority="9" QFormat="true" Name="heading 9"/>\n  <w:LsdException Locked="false" Priority="39" Name="toc 1"/>\n  <w:LsdException Locked="false" Priority="39" Name="toc 2"/>\n  <w:LsdException Locked="false" Priority="39" Name="toc 3"/>\n  <w:LsdException Locked="false" Priority="39" Name="toc 4"/>\n  <w:LsdException Locked="false" Priority="39" Name="toc 5"/>\n  <w:LsdException Locked="false" Priority="39" Name="toc 6"/>\n  <w:LsdException Locked="false" Priority="39" Name="toc 7"/>\n  <w:LsdException Locked="false" Priority="39" Name="toc 8"/>\n  <w:LsdException Locked="false" Priority="39" Name="toc 9"/>\n  <w:LsdException Locked="false" Priority="35" QFormat="true" Name="caption"/>\n  <w:LsdException Locked="false" Priority="10" SemiHidden="false"\n   UnhideWhenUsed="false" QFormat="true" Name="Title"/>\n  <w:LsdException Locked="false" Priority="1" Name="Default Paragraph Font"/>\n  <w:LsdException Locked="false" Priority="11" SemiHidden="false"\n   UnhideWhenUsed="false" QFormat="true" Name="Subtitle"/>\n  <w:LsdException Locked="false" Priority="22" SemiHidden="false"\n   UnhideWhenUsed="false" QFormat="true" Name="Strong"/>\n  <w:LsdException Locked="false" Priority="20" SemiHidden="false"\n   UnhideWhenUsed="false" QFormat="true" Name="Emphasis"/>\n  <w:LsdException Locked="false" Priority="59" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Table Grid"/>\n  <w:LsdException Locked="false" UnhideWhenUsed="false" Name="Placeholder Text"/>\n  <w:LsdException Locked="false" Priority="1" SemiHidden="false"\n   UnhideWhenUsed="false" QFormat="true" Name="No Spacing"/>\n  <w:LsdException Locked="false" Priority="60" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Light Shading"/>\n  <w:LsdException Locked="false" Priority="61" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Light List"/>\n  <w:LsdException Locked="false" Priority="62" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Light Grid"/>\n  <w:LsdException Locked="false" Priority="63" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Shading 1"/>\n  <w:LsdException Locked="false" Priority="64" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Shading 2"/>\n  <w:LsdException Locked="false" Priority="65" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium List 1"/>\n  <w:LsdException Locked="false" Priority="66" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium List 2"/>\n  <w:LsdException Locked="false" Priority="67" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Grid 1"/>\n  <w:LsdException Locked="false" Priority="68" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Grid 2"/>\n  <w:LsdException Locked="false" Priority="69" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Grid 3"/>\n  <w:LsdException Locked="false" Priority="70" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Dark List"/>\n  <w:LsdException Locked="false" Priority="71" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Colorful Shading"/>\n  <w:LsdException Locked="false" Priority="72" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Colorful List"/>\n  <w:LsdException Locked="false" Priority="73" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Colorful Grid"/>\n  <w:LsdException Locked="false" Priority="60" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Light Shading Accent 1"/>\n  <w:LsdException Locked="false" Priority="61" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Light List Accent 1"/>\n  <w:LsdException Locked="false" Priority="62" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Light Grid Accent 1"/>\n  <w:LsdException Locked="false" Priority="63" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Shading 1 Accent 1"/>\n  <w:LsdException Locked="false" Priority="64" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Shading 2 Accent 1"/>\n  <w:LsdException Locked="false" Priority="65" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium List 1 Accent 1"/>\n  <w:LsdException Locked="false" UnhideWhenUsed="false" Name="Revision"/>\n  <w:LsdException Locked="false" Priority="34" SemiHidden="false"\n   UnhideWhenUsed="false" QFormat="true" Name="List Paragraph"/>\n  <w:LsdException Locked="false" Priority="29" SemiHidden="false"\n   UnhideWhenUsed="false" QFormat="true" Name="Quote"/>\n  <w:LsdException Locked="false" Priority="30" SemiHidden="false"\n   UnhideWhenUsed="false" QFormat="true" Name="Intense Quote"/>\n  <w:LsdException Locked="false" Priority="66" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium List 2 Accent 1"/>\n  <w:LsdException Locked="false" Priority="67" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Grid 1 Accent 1"/>\n  <w:LsdException Locked="false" Priority="68" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Grid 2 Accent 1"/>\n  <w:LsdException Locked="false" Priority="69" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Grid 3 Accent 1"/>\n  <w:LsdException Locked="false" Priority="70" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Dark List Accent 1"/>\n  <w:LsdException Locked="false" Priority="71" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Colorful Shading Accent 1"/>\n  <w:LsdException Locked="false" Priority="72" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Colorful List Accent 1"/>\n  <w:LsdException Locked="false" Priority="73" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Colorful Grid Accent 1"/>\n  <w:LsdException Locked="false" Priority="60" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Light Shading Accent 2"/>\n  <w:LsdException Locked="false" Priority="61" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Light List Accent 2"/>\n  <w:LsdException Locked="false" Priority="62" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Light Grid Accent 2"/>\n  <w:LsdException Locked="false" Priority="63" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Shading 1 Accent 2"/>\n  <w:LsdException Locked="false" Priority="64" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Shading 2 Accent 2"/>\n  <w:LsdException Locked="false" Priority="65" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium List 1 Accent 2"/>\n  <w:LsdException Locked="false" Priority="66" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium List 2 Accent 2"/>\n  <w:LsdException Locked="false" Priority="67" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Grid 1 Accent 2"/>\n  <w:LsdException Locked="false" Priority="68" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Grid 2 Accent 2"/>\n  <w:LsdException Locked="false" Priority="69" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Grid 3 Accent 2"/>\n  <w:LsdException Locked="false" Priority="70" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Dark List Accent 2"/>\n  <w:LsdException Locked="false" Priority="71" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Colorful Shading Accent 2"/>\n  <w:LsdException Locked="false" Priority="72" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Colorful List Accent 2"/>\n  <w:LsdException Locked="false" Priority="73" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Colorful Grid Accent 2"/>\n  <w:LsdException Locked="false" Priority="60" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Light Shading Accent 3"/>\n  <w:LsdException Locked="false" Priority="61" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Light List Accent 3"/>\n  <w:LsdException Locked="false" Priority="62" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Light Grid Accent 3"/>\n  <w:LsdException Locked="false" Priority="63" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Shading 1 Accent 3"/>\n  <w:LsdException Locked="false" Priority="64" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Shading 2 Accent 3"/>\n  <w:LsdException Locked="false" Priority="65" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium List 1 Accent 3"/>\n  <w:LsdException Locked="false" Priority="66" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium List 2 Accent 3"/>\n  <w:LsdException Locked="false" Priority="67" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Grid 1 Accent 3"/>\n  <w:LsdException Locked="false" Priority="68" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Grid 2 Accent 3"/>\n  <w:LsdException Locked="false" Priority="69" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Grid 3 Accent 3"/>\n  <w:LsdException Locked="false" Priority="70" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Dark List Accent 3"/>\n  <w:LsdException Locked="false" Priority="71" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Colorful Shading Accent 3"/>\n  <w:LsdException Locked="false" Priority="72" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Colorful List Accent 3"/>\n  <w:LsdException Locked="false" Priority="73" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Colorful Grid Accent 3"/>\n  <w:LsdException Locked="false" Priority="60" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Light Shading Accent 4"/>\n  <w:LsdException Locked="false" Priority="61" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Light List Accent 4"/>\n  <w:LsdException Locked="false" Priority="62" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Light Grid Accent 4"/>\n  <w:LsdException Locked="false" Priority="63" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Shading 1 Accent 4"/>\n  <w:LsdException Locked="false" Priority="64" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Shading 2 Accent 4"/>\n  <w:LsdException Locked="false" Priority="65" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium List 1 Accent 4"/>\n  <w:LsdException Locked="false" Priority="66" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium List 2 Accent 4"/>\n  <w:LsdException Locked="false" Priority="67" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Grid 1 Accent 4"/>\n  <w:LsdException Locked="false" Priority="68" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Grid 2 Accent 4"/>\n  <w:LsdException Locked="false" Priority="69" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Grid 3 Accent 4"/>\n  <w:LsdException Locked="false" Priority="70" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Dark List Accent 4"/>\n  <w:LsdException Locked="false" Priority="71" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Colorful Shading Accent 4"/>\n  <w:LsdException Locked="false" Priority="72" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Colorful List Accent 4"/>\n  <w:LsdException Locked="false" Priority="73" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Colorful Grid Accent 4"/>\n  <w:LsdException Locked="false" Priority="60" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Light Shading Accent 5"/>\n  <w:LsdException Locked="false" Priority="61" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Light List Accent 5"/>\n  <w:LsdException Locked="false" Priority="62" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Light Grid Accent 5"/>\n  <w:LsdException Locked="false" Priority="63" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Shading 1 Accent 5"/>\n  <w:LsdException Locked="false" Priority="64" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Shading 2 Accent 5"/>\n  <w:LsdException Locked="false" Priority="65" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium List 1 Accent 5"/>\n  <w:LsdException Locked="false" Priority="66" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium List 2 Accent 5"/>\n  <w:LsdException Locked="false" Priority="67" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Grid 1 Accent 5"/>\n  <w:LsdException Locked="false" Priority="68" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Grid 2 Accent 5"/>\n  <w:LsdException Locked="false" Priority="69" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Grid 3 Accent 5"/>\n  <w:LsdException Locked="false" Priority="70" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Dark List Accent 5"/>\n  <w:LsdException Locked="false" Priority="71" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Colorful Shading Accent 5"/>\n  <w:LsdException Locked="false" Priority="72" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Colorful List Accent 5"/>\n  <w:LsdException Locked="false" Priority="73" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Colorful Grid Accent 5"/>\n  <w:LsdException Locked="false" Priority="60" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Light Shading Accent 6"/>\n  <w:LsdException Locked="false" Priority="61" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Light List Accent 6"/>\n  <w:LsdException Locked="false" Priority="62" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Light Grid Accent 6"/>\n  <w:LsdException Locked="false" Priority="63" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Shading 1 Accent 6"/>\n  <w:LsdException Locked="false" Priority="64" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Shading 2 Accent 6"/>\n  <w:LsdException Locked="false" Priority="65" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium List 1 Accent 6"/>\n  <w:LsdException Locked="false" Priority="66" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium List 2 Accent 6"/>\n  <w:LsdException Locked="false" Priority="67" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Grid 1 Accent 6"/>\n  <w:LsdException Locked="false" Priority="68" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Grid 2 Accent 6"/>\n  <w:LsdException Locked="false" Priority="69" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Medium Grid 3 Accent 6"/>\n  <w:LsdException Locked="false" Priority="70" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Dark List Accent 6"/>\n  <w:LsdException Locked="false" Priority="71" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Colorful Shading Accent 6"/>\n  <w:LsdException Locked="false" Priority="72" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Colorful List Accent 6"/>\n  <w:LsdException Locked="false" Priority="73" SemiHidden="false"\n   UnhideWhenUsed="false" Name="Colorful Grid Accent 6"/>\n  <w:LsdException Locked="false" Priority="19" SemiHidden="false"\n   UnhideWhenUsed="false" QFormat="true" Name="Subtle Emphasis"/>\n  <w:LsdException Locked="false" Priority="21" SemiHidden="false"\n   UnhideWhenUsed="false" QFormat="true" Name="Intense Emphasis"/>\n  <w:LsdException Locked="false" Priority="31" SemiHidden="false"\n   UnhideWhenUsed="false" QFormat="true" Name="Subtle Reference"/>\n  <w:LsdException Locked="false" Priority="32" SemiHidden="false"\n   UnhideWhenUsed="false" QFormat="true" Name="Intense Reference"/>\n  <w:LsdException Locked="false" Priority="33" SemiHidden="false"\n   UnhideWhenUsed="false" QFormat="true" Name="Book Title"/>\n  <w:LsdException Locked="false" Priority="37" Name="Bibliography"/>\n  <w:LsdException Locked="false" Priority="39" QFormat="true" Name="TOC Heading"/>\n </w:LatentStyles>\n</xml><![endif]--><style>\n<!--\n /* Font Definitions */\n @font-face\n	{font-family:"Cambria Math";\n	panose-1:2 4 5 3 5 4 6 3 2 4;\n	mso-font-charset:0;\n	mso-generic-font-family:roman;\n	mso-font-pitch:variable;\n	mso-font-signature:-1610611985 1107304683 0 0 159 0;}\n /* Style Definitions */\n p.MsoNormal, li.MsoNormal, div.MsoNormal\n	{mso-style-unhide:no;\n	mso-style-qformat:yes;\n	mso-style-parent:"";\n	margin:0cm;\n	margin-bottom:.0001pt;\n	mso-pagination:widow-orphan;\n	font-size:10.0pt;\n	font-family:"Times New Roman","serif";\n	mso-fareast-font-family:"Times New Roman";}\n.MsoChpDefault\n	{mso-style-type:export-only;\n	mso-default-props:yes;\n	font-size:10.0pt;\n	mso-ansi-font-size:10.0pt;\n	mso-bidi-font-size:10.0pt;}\n@page Section1\n	{size:612.0pt 792.0pt;\n	margin:70.85pt 3.0cm 70.85pt 3.0cm;\n	mso-header-margin:36.0pt;\n	mso-footer-margin:36.0pt;\n	mso-paper-source:0;}\ndiv.Section1\n	{page:Section1;}\n-->\n</style><!--[if gte mso 10]>\n<style>\n /* Style Definitions */\n table.MsoNormalTable\n	{mso-style-name:"Tabela normal";\n	mso-tstyle-rowband-size:0;\n	mso-tstyle-colband-size:0;\n	mso-style-noshow:yes;\n	mso-style-priority:99;\n	mso-style-qformat:yes;\n	mso-style-parent:"";\n	mso-padding-alt:0cm 5.4pt 0cm 5.4pt;\n	mso-para-margin:0cm;\n	mso-para-margin-bottom:.0001pt;\n	mso-pagination:widow-orphan;\n	font-size:11.0pt;\n	font-family:"Calibri","sans-serif";\n	mso-ascii-font-family:Calibri;\n	mso-ascii-theme-font:minor-latin;\n	mso-fareast-font-family:"Times New Roman";\n	mso-fareast-theme-font:minor-fareast;\n	mso-hansi-font-family:Calibri;\n	mso-hansi-theme-font:minor-latin;\n	mso-bidi-font-family:"Times New Roman";\n	mso-bidi-theme-font:minor-bidi;}\n</style>\n<![endif]--><span style="font-size: 12pt; font-family: &quot;Times New Roman&quot;,&quot;serif&quot;;">O Windows XP incorporou o acesso autom&aacute;tico a arquivos compactados, tratando-os como pastas no HD. Que tipo de arquivos compactados foi contemplado neste processo?</span></p>\n', 5, NULL, '2010-06-23 21:34:10', NULL, NULL),
@@ -196,27 +848,6 @@ INSERT INTO `questao` (`id`, `descricao`, `resposta`, `descricao_resposta`, `dat
 (28, '<p>\n	Faz parte de uma Tabela:</p>\n', 124, NULL, '2010-06-28 22:17:15', NULL, NULL),
 (29, '<p>\n	Tabela &eacute; uma forma simples de se organizar informa&ccedil;&otilde;es, semelhante:</p>\n', 128, NULL, '2010-06-28 22:18:20', NULL, NULL),
 (30, '<p>\n	A apresenta&ccedil;&atilde;o das letras que usamos no Word s&atilde;o chamadas:</p>\n', 132, NULL, '2010-06-28 22:19:33', NULL, NULL);
-
--- --------------------------------------------------------
-
---
--- Estrutura da tabela `questao_alternativa`
---
-
-CREATE TABLE IF NOT EXISTS `questao_alternativa` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `questao_id` int(10) unsigned NOT NULL,
-  `descricao` mediumtext NOT NULL,
-  `date_create` datetime NOT NULL,
-  `date_update` datetime DEFAULT NULL,
-  `date_delete` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `questao_alternativa_FKIndex1` (`questao_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=135 ;
-
---
--- Extraindo dados da tabela `questao_alternativa`
---
 
 INSERT INTO `questao_alternativa` (`id`, `questao_id`, `descricao`, `date_create`, `date_update`, `date_delete`) VALUES
 (1, 1, 'Arquivos .MP3', '2010-06-23 21:34:10', NULL, NULL),
@@ -354,4 +985,154 @@ INSERT INTO `questao_alternativa` (`id`, `questao_id`, `descricao`, `date_create
 (133, 30, 'c&Atilde;&copy;lulas', '2010-06-28 22:19:33', NULL, NULL),
 (134, 30, 'exibi&Atilde;&sect;&Atilde;&pound;o', '2010-06-28 22:19:33', NULL, NULL);
 
--- --------------------------------------------------------
+
+
+
+
+
+--
+-- Restrições para as tabelas dumpadas
+--
+
+--
+-- Restrições para a tabela `aluno`
+--
+ALTER TABLE `aluno`
+  ADD CONSTRAINT `aluno_ibfk_1` FOREIGN KEY (`pessoa_escola_matricula`, `pessoa_escola_pessoa_fisica_pessoa_id`) REFERENCES `pessoa_escola` (`matricula`, `pessoa_fisica_pessoa_id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `aluno_resolve_questao`
+--
+ALTER TABLE `aluno_resolve_questao`
+  ADD CONSTRAINT `aluno_resolve_questao_ibfk_1` FOREIGN KEY (`pessoa_id`) REFERENCES `pessoa` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `aluno_resolve_questao_ibfk_2` FOREIGN KEY (`avaliacao_id`) REFERENCES `avaliacao` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `aluno_resolve_questao_ibfk_3` FOREIGN KEY (`disciplina_id`) REFERENCES `disciplina` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `aluno_resolve_questao_ibfk_4` FOREIGN KEY (`questao_id`) REFERENCES `questao` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `aluno_resolve_questao_ibfk_5` FOREIGN KEY (`questao_alternativa_id`) REFERENCES `questao_alternativa` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Restrições para a tabela `assunto_questao`
+--
+ALTER TABLE `assunto_questao`
+  ADD CONSTRAINT `assunto_questao_ibfk_1` FOREIGN KEY (`assunto_id`) REFERENCES `assunto` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `assunto_questao_ibfk_2` FOREIGN KEY (`questao_id`) REFERENCES `questao` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `avaliacao`
+--
+ALTER TABLE `avaliacao`
+  ADD CONSTRAINT `avaliacao_ibfk_1` FOREIGN KEY (`avaliacao_situacao_id`) REFERENCES `avaliacao_situacao` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `avaliacao_aluno`
+--
+ALTER TABLE `avaliacao_aluno`
+  ADD CONSTRAINT `avaliacao_aluno_ibfk_1` FOREIGN KEY (`avaliacao_id`) REFERENCES `avaliacao` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `avaliacao_aluno_ibfk_2` FOREIGN KEY (`aluno_pessoa_escola_pessoa_fisica_pessoa_id`, `aluno_pessoa_escola_matricula`) REFERENCES `aluno` (`pessoa_escola_pessoa_fisica_pessoa_id`, `pessoa_escola_matricula`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `avaliacao_nivel`
+--
+ALTER TABLE `avaliacao_nivel`
+  ADD CONSTRAINT `avaliacao_nivel_ibfk_1` FOREIGN KEY (`avaliacao_id`) REFERENCES `avaliacao` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `avaliacao_questao`
+--
+ALTER TABLE `avaliacao_questao`
+  ADD CONSTRAINT `avaliacao_questao_ibfk_1` FOREIGN KEY (`avaliacao_id`) REFERENCES `avaliacao` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `avaliacao_questao_ibfk_2` FOREIGN KEY (`questao_id`) REFERENCES `questao` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `disciplina_assunto`
+--
+ALTER TABLE `disciplina_assunto`
+  ADD CONSTRAINT `disciplina_assunto_ibfk_1` FOREIGN KEY (`assunto_id`) REFERENCES `assunto` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `disciplina_assunto_ibfk_2` FOREIGN KEY (`disciplina_id`) REFERENCES `disciplina` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `feedback_avaliacao_alternativa`
+--
+ALTER TABLE `feedback_avaliacao_alternativa`
+  ADD CONSTRAINT `feedback_avaliacao_alternativa_ibfk_1` FOREIGN KEY (`feedbackAvaliacao_id`) REFERENCES `feedbackavaliacao` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `feedback_avaliacao_aluno`
+--
+ALTER TABLE `feedback_avaliacao_aluno`
+  ADD CONSTRAINT `feedback_avaliacao_aluno_ibfk_1` FOREIGN KEY (`feedback_avaliacao_alternativa_id`) REFERENCES `feedback_avaliacao_alternativa` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `feedback_avaliacao_aluno_ibfk_2` FOREIGN KEY (`avaliacao_aluno_id`) REFERENCES `avaliacao_aluno` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Restrições para a tabela `nivel_avaliacao`
+--
+ALTER TABLE `nivel_avaliacao`
+  ADD CONSTRAINT `nivel_avaliacao_ibfk_1` FOREIGN KEY (`professor_avaliacao_id`) REFERENCES `professor_avaliacao` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `nivel_avaliacao_ibfk_2` FOREIGN KEY (`avaliacao_id`) REFERENCES `avaliacao` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Restrições para a tabela `nivel_questao`
+--
+ALTER TABLE `nivel_questao`
+  ADD CONSTRAINT `nivel_questao_ibfk_1` FOREIGN KEY (`questao_id`) REFERENCES `questao` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `pessoa_escola`
+--
+ALTER TABLE `pessoa_escola`
+  ADD CONSTRAINT `pessoa_escola_ibfk_1` FOREIGN KEY (`pessoa_fisica_pessoa_id`) REFERENCES `pessoa_fisica` (`pessoa_id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `pessoa_escola_disciplina`
+--
+ALTER TABLE `pessoa_escola_disciplina`
+  ADD CONSTRAINT `pessoa_escola_disciplina_ibfk_1` FOREIGN KEY (`disciplina_id`) REFERENCES `disciplina` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `pessoa_escola_disciplina_ibfk_2` FOREIGN KEY (`pessoa_escola_matricula`, `pessoa_escola_pessoa_fisica_pessoa_id`) REFERENCES `pessoa_escola` (`matricula`, `pessoa_fisica_pessoa_id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `pessoa_fisica`
+--
+ALTER TABLE `pessoa_fisica`
+  ADD CONSTRAINT `pessoa_fisica_ibfk_1` FOREIGN KEY (`pessoa_id`) REFERENCES `pessoa` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `pessoa_fisica_ibfk_2` FOREIGN KEY (`papel_id`) REFERENCES `papel` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Restrições para a tabela `pessoa_juridica`
+--
+ALTER TABLE `pessoa_juridica`
+  ADD CONSTRAINT `pessoa_juridica_ibfk_1` FOREIGN KEY (`pessoa_id`) REFERENCES `pessoa` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `professor`
+--
+ALTER TABLE `professor`
+  ADD CONSTRAINT `professor_ibfk_1` FOREIGN KEY (`pessoa_escola_matricula`, `pessoa_escola_pessoa_fisica_pessoa_id`) REFERENCES `pessoa_escola` (`matricula`, `pessoa_fisica_pessoa_id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `professor_avaliacao`
+--
+ALTER TABLE `professor_avaliacao`
+  ADD CONSTRAINT `professor_avaliacao_ibfk_1` FOREIGN KEY (`professor_pessoa_escola_pessoa_fisica_pessoa_id`, `professor_pessoa_escola_matricula`) REFERENCES `professor` (`pessoa_escola_pessoa_fisica_pessoa_id`, `pessoa_escola_matricula`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `professor_avaliacao_ibfk_2` FOREIGN KEY (`avaliacao_id`) REFERENCES `avaliacao` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `questao_alternativa`
+--
+ALTER TABLE `questao_alternativa`
+  ADD CONSTRAINT `questao_alternativa_ibfk_1` FOREIGN KEY (`questao_id`) REFERENCES `questao` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Restrições para a tabela `questao_aluno`
+--
+ALTER TABLE `questao_aluno`
+  ADD CONSTRAINT `questao_aluno_ibfk_1` FOREIGN KEY (`aluno_pessoa_escola_pessoa_fisica_pessoa_id`, `aluno_pessoa_escola_matricula`) REFERENCES `aluno` (`pessoa_escola_pessoa_fisica_pessoa_id`, `pessoa_escola_matricula`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `questao_aluno_ibfk_2` FOREIGN KEY (`avaliacao_questao_id`) REFERENCES `avaliacao_questao` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Restrições para a tabela `usabilidade_questao`
+--
+ALTER TABLE `usabilidade_questao`
+  ADD CONSTRAINT `usabilidade_questao_ibfk_1` FOREIGN KEY (`questao_alternativa_id`) REFERENCES `questao_alternativa` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `usabilidade_questao_ibfk_2` FOREIGN KEY (`professor_pessoa_escola_pessoa_fisica_pessoa_id`, `professor_pessoa_escola_matricula`) REFERENCES `professor` (`pessoa_escola_pessoa_fisica_pessoa_id`, `pessoa_escola_matricula`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `usabilidade_questao_ibfk_3` FOREIGN KEY (`avaliacao_id`) REFERENCES `avaliacao` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `usabilidade_questao_ibfk_4` FOREIGN KEY (`disciplina_id`) REFERENCES `disciplina` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;

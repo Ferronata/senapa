@@ -8,7 +8,7 @@
 <center>
 	<div class="body">
 		<div class="innerBody">
-			<form id="form" name="form" method="post" action="javascript: enviarForm('/senapa/nivelavaliacao/NivelAvaliacao', 'form', 'save');" onsubmit="return(runAction(this))">
+			<form id="form" name="form" method="post" action="javascript: enviarForm('{php}print BASE_URL;{/php}/nivelavaliacao/NivelAvaliacao', 'form', 'save');" onsubmit="return(runAction(this))">
 				<h1>NivelAvaliacao</h1>
 				<sub>Gerencimento - NivelAvaliacao</sub>
 				<div class="content">

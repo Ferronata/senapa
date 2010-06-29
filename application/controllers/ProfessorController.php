@@ -92,7 +92,7 @@ class ProfessorController extends Zend_Controller_Action{
 				if($professor->insert())
 					$retorno = array('msg' => 'ok', 'display' => htmlentities('Professor inserido com sucesso'), 'url' => 'professor');
 				else
-					$retorno = array('msg' => 'error', 'display' => htmlentities('Erro ao inserir Professor'));
+					$retorno = array('msg' => 'error', 'display' => htmlentities('Erro ao inserir professor'));
 
 				die($funcao->array2json($retorno));
 			}else{

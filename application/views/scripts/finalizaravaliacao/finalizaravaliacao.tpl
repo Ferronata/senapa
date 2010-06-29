@@ -17,7 +17,8 @@
 			<form id="form" name="form" method="post" action="">				
 				<div id="aba1" class="content">
 					<h1 style="border:none; margin: 0; padding: 0; background: none;">Nivelamento - {$avaliacao->getNome()}</h1>
-				
+					<input type="hidden" id="id" name="id" value="{$professorAvaliacao->getId()}" />
+					<input type="hidden" id="action" name="action" value="end" />
 					<div>
 						<div class="line">
 							<label class="label">Disciplina</label>
@@ -91,10 +92,11 @@
 									</thead>
 									<tbody>
 										{assign var=avaliacaoNivel value=$avaliacao->getNivel()}
+										{assign var=avaliacaoPropostaNivel value=$avaliacao->getNivelProposto()}
 										<tr>
 											<td class="left">{$avaliacao->getNome()}</td>
 											<td>{$avaliacaoNivel->getNivel()}</td>
-											<td class="left"><input type="text" class="left input pequeno" />{if $avaliacaoNivel->getNivel() == $system.nivel}<span class="ok_16"></span>{/if}</td>
+											<td class="left"><input type="text" id="nivelAvaliacao" name="nivelAvaliacao" class="left input pequeno" value="{$avaliacaoPropostaNivel->getNivel()}" />{if $avaliacaoNivel->getNivel() == $avaliacaoPropostaNivel->getNivel()}<span class="ok_16"></span>{/if}</td>
 										</tr>
 									</tbody>
 								</table>
@@ -114,10 +116,11 @@
 									<tbody>
 										{foreach item=item from=$questoes->getListaQuestao()}
 											{assign var=questaoNivel value=$item->getNivelQuestao()}
+											{assign var=questaoPropostaNivel value=$item->getNivelProposto()}
 										    <tr>
 												<td class="left"><a href="javascript: viewQuestion($('question{$item->getId()}'))" title="Expandir">{$item->getResumo()}</a></td>
 												<td>{$questaoNivel->getNivel()}</td>
-												<td class="left"><input type="text" class="left input pequeno" /><span class="ok_16"></span></td>
+												<td class="left"><input type="text" name="nivelQuestao[{$item->getId()}]" class="left input pequeno" value="{$questaoPropostaNivel->getNivel()}" />{if $questaoNivel->getNivel() == $questaoPropostaNivel->getNivel()}<span class="ok_16"></span>{/if}</td>
 											</tr>
 											<tr>
 												<td class="left" colspan="3">
