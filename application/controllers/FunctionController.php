@@ -203,10 +203,8 @@ public function init(){
 		$get 		= Zend_Registry::get("get");
 
 		$funcao = new FuncoesProjeto();
-		
 		if(!empty($post->RelationValue) || !empty($get->RelationValue)){
 			try{
-				
 				$avaliacao = new Avaliacao();
 				$object = new Assunto();
 				$return = array();
@@ -216,7 +214,7 @@ public function init(){
 					$findTo = (int)$get->tpPesqusia;
 				}else{
 					$relation_value = (int)$post->RelationValue;
-					$findTo = (int)$post->FindTo;
+					$findTo = (int)$post->tpPesqusia;
 				}
 				switch($findTo){
 					case 'questions':
@@ -396,7 +394,18 @@ public function init(){
 
 		$funcao = new FuncoesProjeto();
 		
-		if(!empty($post->tpPesqusia)){
+		if(!empty($get->tpPesqusia)){
+			$tpPesqusia 	= $get->tpPesqusia;
+			$disciplina		= $get->Disciplina;
+			$lista_niveis	= $get->lista_niveis;
+			$lista_assuntos	= $get->lista_assuntos;
+		}elseif(!empty($post->tpPesqusia)){
+			$tpPesqusia 	= $post->tpPesqusia;
+			$disciplina		= $post->Disciplina;
+			$lista_niveis	= $post->lista_niveis;
+			$lista_assuntos	= $post->lista_assuntos;
+		}
+		if(!empty($tpPesqusia)){
 			try{
 //				tpPesqusia=1
 //				lista_niveis=5
@@ -404,14 +413,12 @@ public function init(){
 //				Disciplina=1
 //				lista_assuntos=1
 //				lista_assuntos=2
-				$tpPesqusia 	= $post->tpPesqusia;
-				$disciplina		= $post->Disciplina;
-				$lista_niveis	= $post->lista_niveis;
-				$lista_assuntos	= $post->lista_assuntos;
+				
 				
 				$object = new DefaultObject();
 				
-				$questoes = new ListaQuestao();
+				$questoes 	= new ListaQuestao();
+				$avaliacoes = new ListaAvaliacao();
 				
 				switch($tpPesqusia){
 					case $object->ENUM('QUESTAO'):
@@ -432,26 +439,73 @@ public function init(){
 								$questoes->addQuestao($tmpQuestao);
 						}
 						
-						break;
-					case $object->ENUM('AVALIACAO'):
+						$str = "";
+						$return = array();
+						try{
+							foreach($questoes->getListaQuestao() as $key => $values){
+								$alternativas = $values->getAlternativas()->getAlternativas();
+								$lista = array();
+								foreach($alternativas as $alternativa){
+									$lista[] = array("id" => $alternativa->getId(), "questao_id" => $alternativa->getQuestaoId(), "descricao" => $alternativa->getDescricao());
+								}
+								$return[] = array(
+									"id" => $values->getId(),
+									"resume" => $values->getResumo(150), 
+									"html" => $values->getDescricao(), 
+									"resposta" => $values->getResposta(), 
+									"descricao_resposta" => ($values->getDescricaoResposta())?$values->getDescricaoResposta():"", 
+									"alternativas" => $lista,
+									"nivel" => $values->getNivelQuestao()->getNivel()
+								);
+		//						$return[] = array("id" => $values->getId(),"resume" => $values->getDescricao(), "html" => $values->getDescricao(), "resposta" => $values->getResposta());
+							}
+							
+						}catch(Exception $erro){}
+				
 						
 						break;
+					case $object->ENUM('AVALIACAO'):
+						$avaliacao = new Avaliacao();
+						$where = 
+						"
+						`date_delete` IS NULL AND 
+						`id` IN (SELECT `questao_id` FROM `assunto_questao` WHERE `assunto_id` IN (".implode($lista_assuntos,",")."))
+						";
+						$where = 
+						"
+						`date_delete` IS NULL 
+						";
+						
+						$lista = $avaliacao->fetchAll($where);
+						
+						foreach($lista as $linha){
+							$tmpQuestao = new Avaliacao();
+							$tmpQuestao->load($linha->id);
+							
+							if($avaliacoes->findNivel($tmpQuestao,$lista_niveis) >= 0 )
+								$avaliacoes->addAvaliacao($tmpQuestao);
+						}
+						
+						$str = "";
+						$return = array();
+						try{
+							foreach($avaliacoes->getListaAvaliacao() as $key => $values){
+								$return[] = array(
+									"id" => $values->getId(),
+									"resume" => $values->getNome(), 
+									"html" => "", 
+									"resposta" => "", 
+									"descricao_resposta" => "", 
+									"alternativas" => "",
+									"nivel" => $values->getNivel()->getNivel(),
+									"tp" => 1
+								);
+							}
+							
+						}catch(Exception $erro){}
 				}
 				
-				$str = "";
-				$return = array();
-				try{
-					foreach($questoes->getListaQuestao() as $key => $values){
-						$alternativas = $values->getAlternativas()->getAlternativas();
-						$lista = array();
-						foreach($alternativas as $alternativa){
-							$lista[] = array("id" => $alternativa->getId(), "questao_id" => $alternativa->getQuestaoId(), "descricao" => $alternativa->getDescricao());
-						}
-						$return[] = array("id" => $values->getId(),"resume" => $values->getResumo(150), "html" => $values->getDescricao(), "resposta" => $values->getResposta(), "descricao_resposta" => ($values->getDescricaoResposta())?$values->getDescricaoResposta():"", "alternativas" => $lista);
-//						$return[] = array("id" => $values->getId(),"resume" => $values->getDescricao(), "html" => $values->getDescricao(), "resposta" => $values->getResposta());
-					}
-					
-				}catch(Exception $erro){}
+				
 				die($funcao->array2json($return));
 				
 			}catch(Exception $e){die($funcao->array2json(array('msg' => 'erro', 'display' => htmlentities('Problemas na renderização'))));}

@@ -21,7 +21,7 @@ class FeedbackAvaliacaoController extends Zend_Controller_Action{
 	}
 
 	public function indexAction(){
-		$this->FeedbackavaliacaoAction();
+		$this->feedbackavaliacaoAction();
 	}
 	public function feedbackavaliacaoAction(){
 		$view = Zend_Registry::get('view');
@@ -45,7 +45,7 @@ class FeedbackAvaliacaoController extends Zend_Controller_Action{
 					$feedbackavaliacao->load($get->id);
 					$feedbackavaliacao->delete();
 
-					$this->_redirect("feedbackAvaliacao/feedbackAvaliacao");
+					$this->_redirect("feedbackavaliacao/feedbackavaliacao");
 					die();
 			}
 			

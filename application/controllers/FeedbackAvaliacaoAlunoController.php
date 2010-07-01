@@ -25,7 +25,7 @@ class FeedbackAvaliacaoAlunoController extends Zend_Controller_Action{
 		}
 	}
 	public function indexAction(){
-		$this->FeedbackAvaliacaoAlunoAction();
+		$this->feedbackavaliacaoalunoAction();
 	}
 	public function feedbackavaliacaoalunoAction(){
 		$view = Zend_Registry::get('view');
@@ -49,6 +49,7 @@ class FeedbackAvaliacaoAlunoController extends Zend_Controller_Action{
 			
 		$avaliacaoAluno = new AvaliacaoAluno();
 	
+		//print "`aluno_pessoa_escola_pessoa_fisica_pessoa_id` = '".$usuario->getPessoaId()."' AND `avaliacao_id` = '".$avaliacao->getId()."'<br>";
 		$listAvaliacao 	= $avaliacaoAluno->fetchRow("`aluno_pessoa_escola_pessoa_fisica_pessoa_id` = '".$usuario->getPessoaId()."' AND `avaliacao_id` = '".$avaliacao->getId()."'");
 		
 		$avaliacaoAluno->setAlunoPessoaEscolaPessoaFisicaPessoaId($usuario->getPessoaId());
@@ -56,9 +57,13 @@ class FeedbackAvaliacaoAlunoController extends Zend_Controller_Action{
 					
 		if($listAvaliacao){
 			$avaliacaoAluno->load($listAvaliacao->id);
-			
+			if(!$avaliacaoAluno->getDataFim()){
+				$avaliacaoAluno->setDataFim(date("Y-m-d H:i:s"));
+				$avaliacaoAluno->update();
+			}
 			if($avaliacaoAluno->getDataFim()){
 				$feedbackAvaliacaoAluno = new FeedbackAvaliacaoAluno();
+				//print "`avaliacao_aluno_id` = '".$avaliacaoAluno->getId()."'<br>";
 				$tmp = $feedbackAvaliacaoAluno->fetchRow("`avaliacao_aluno_id` = '".$avaliacaoAluno->getId()."'");
 				
 				if($tmp)
@@ -80,10 +85,10 @@ class FeedbackAvaliacaoAlunoController extends Zend_Controller_Action{
 					$view->assign("header","html/default/header.tpl");
 					$view->assign("body","feedbackavaliacaoaluno/index.tpl");
 					$view->assign("footer","html/default/footer.tpl");
-					$view->output("index.tpl");
 				}
 			}
 		}
+		$view->output("index.tpl");
 	}
 	public function respostaAction(){
 		$view 		= Zend_Registry::get('view');
@@ -120,6 +125,7 @@ class FeedbackAvaliacaoAlunoController extends Zend_Controller_Action{
 						$feedbackAvaliacaoAluno->insert();
 					}
 				}
+				$session->atual = NULL;
 				die($funcao->array2json(array('url' => 'resultado')));
 			}catch(Exception $e){die($funcao->array2json(array('msg' => 'error', 'display' => htmlentities('Erro fatal => '.$str.$e))));}
 		}
