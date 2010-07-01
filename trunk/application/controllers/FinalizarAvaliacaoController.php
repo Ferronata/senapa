@@ -96,13 +96,14 @@ class FinalizarAvaliacaoController extends Zend_Controller_Action{
 					}catch(Exception $e){die($funcao->array2json(array('msg' => 'error', 'display' => htmlentities('Erro ao atualizar status da avaliação'))));};
 					
 					$retorno = array('msg' => 'ok', 'display' => htmlentities('Avaliação nivelada e finalizada com sucesso'));
-					die($funcao->array2json($retorno));
+					print "<script>window.close;</script>";
+					die();
 				break;
 			}
 			$view->assign("professorAvaliacao", $professorAvaliacao);
 			$view->assign("avaliacao", $avaliacao);
 			$view->assign("usuario", $usuario);
-			$view->assign("tmp", $tmp);		
+//			$view->assign("tmp", $tmp);		
 			
 			$view->assign("body","finalizaravaliacao/finalizaravaliacao.tpl");
 		}else
@@ -182,12 +183,15 @@ class FinalizarAvaliacaoController extends Zend_Controller_Action{
 				if(!empty($tmpNivel))
 					$nivel = (int)(($nivel+$tmpNivel)/2);
 				
+				if(empty($nivel)){
+					$questao = new Questao();
+					$nivel 	= $questao->getDesvioPadraoResoluao();
+				}
 				$nivelAvaliacao->setNivel($nivel);
 			}
 		}
 		$avaliacao->setNivelProposto($nivelAvaliacao);
 		/* FIM AVALIACAO */
-		
 		
 		/* NIVELAMENTO DE QUESTOES */
 		foreach($avaliacao->getListaQuestoes()->getListaQuestao() as $questao){
@@ -239,6 +243,7 @@ class FinalizarAvaliacaoController extends Zend_Controller_Action{
 /**/
 		}	
 		/* FIM QUESTOES */
+		
 		return $avaliacao;
 	}
 	private function classeModal($classeModal = array(),$value){

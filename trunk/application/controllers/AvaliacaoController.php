@@ -144,14 +144,21 @@ class AvaliacaoController extends Zend_Controller_Action{
 				$avaliacao->setTempoMaximoProva($funcao->to_sql($post->tempo_maximo_prova));
 				$avaliacao->setStatus($funcao->to_sql($post->status));
 				
-				if($post->lista_questoes){
-					$lista = $post->lista_questoes;
-					foreach($lista as $linha){
-						$questao = new Questao();
-						$questao->load($linha);
-						
-						$avaliacao->getListaQuestoes()->addQuestao($questao);
-					}
+				if($post->tpPesqusia == $avaliacao->ENUM('QUESTAO')){
+					if($post->lista_questoes){
+						$lista = $post->lista_questoes;
+						foreach($lista as $linha){
+							$questao = new Questao();
+							$questao->load($linha);
+							$avaliacao->getListaQuestoes()->addQuestao($questao);
+						}
+					}					
+				}else if($post->tpPesqusia == $avaliacao->ENUM('AVALIACAO')){
+					$idAvEsq = $post->avaliacaoEscolhidaId;
+					$tmpAv = $avaliacao->clonarAvaliacao($idAvEsq);
+					if($tmpAv->getNome())
+						$avaliacao = $tmpAv;
+					
 				}
 				
 				$pessoa_escola = new PessoaEscola();
@@ -161,7 +168,7 @@ class AvaliacaoController extends Zend_Controller_Action{
 				$professor->load($pessoa_escola->getMatricula());
 				
 				$avaliacao->setProfessor($professor);
-	
+					
 				if(empty($post->id)){
 					// CREATE
 
